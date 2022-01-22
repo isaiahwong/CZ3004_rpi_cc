@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/RPi.dir/main.cc.o -o RPi   -L/home/pi/Dev/CZ3004_rpi_c/src/Adder  -Wl,-rpath,/home/pi/Dev/CZ3004_rpi_c/src/Adder:/usr/local/lib /usr/local/lib/libwiringPi.so /usr/lib/arm-linux-gnueabihf/libbluetooth.so Adder/libadder.a 

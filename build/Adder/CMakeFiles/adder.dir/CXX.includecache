@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pi/Dev/CZ3004_rpi_c/src/Adder/adder.cc
+adder.h
+/home/pi/Dev/CZ3004_rpi_c/src/Adder/adder.h
+
+/home/pi/Dev/CZ3004_rpi_c/src/Adder/adder.h
+

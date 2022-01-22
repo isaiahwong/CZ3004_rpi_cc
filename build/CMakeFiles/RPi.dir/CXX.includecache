@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/pi/Dev/CZ3004_rpi_c/src/main.cc
+bluetooth/bluetooth.h
+-
+bluetooth/l2cap.h
+-
+bluetooth/rfcomm.h
+-
+bluetooth/sco.h
+-
+bluetooth/sdp.h
+-
+bluetooth/sdp_lib.h
+-
+errno.h
+-
+fcntl.h
+-
+stdio.h
+-
+stdlib.h
+-
+sys/ioctl.h
+-
+sys/socket.h
+-
+unistd.h
+-
+wiringPi.h
+-
+wiringSerial.h
+-
+cerrno
+-
+iostream
+-
+string
+-
+
