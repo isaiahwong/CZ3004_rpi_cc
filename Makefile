@@ -1,4 +1,4 @@
 default:
-	cmake -S ./src -B ./build
+	cmake -S . -B ./build
 	make -C build 
 	./build/RPi

@@ -1,6 +1,6 @@
 #include "protocol.hh"
 
-#include <format>
+#include <fmt/core.h>
 
 void Protocol::exec(Protocol* pThread) { pThread->run(); }
 
@@ -16,10 +16,10 @@ void Protocol::join() {
     pThread = nullptr;
 }
 
-std::string genFnName(std::string _class, std::string fn) {
-    return std::format("[{}]: {}", _class, fn);
+std::string Protocol::genFnName(std::string _class, std::string fn) {
+    return fmt::format("[{}]: {}", _class, fn);
 }
 
-std::string genError(std::string prefix, std::string msg) {
-    return std::format("{} {}", prefix, msg);
+std::string Protocol::genError(std::string prefix, std::string msg) {
+    return fmt::format("{} {}", prefix, msg);
 }

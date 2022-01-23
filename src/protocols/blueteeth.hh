@@ -1,5 +1,5 @@
-#ifndef BLUETEETH
-#define BLUETEETH
+#ifndef BLUETEETH_H_
+#define BLUETEETH_H_
 
 #include "protocol.hh"
 

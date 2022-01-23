@@ -1,5 +1,5 @@
-#ifndef PROTOCOL
-#define PROTOCOL
+#ifndef PROTOCOL_H_
+#define PROTOCOL_H_
 
 #include <string>
 #include <thread>

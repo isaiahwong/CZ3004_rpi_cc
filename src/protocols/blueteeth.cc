@@ -62,8 +62,7 @@ void Blueteeth::init() {
     int bindStatus =
         bind(bluetoothSocket, (struct sockaddr *)&localAddr, sizeof(localAddr));
 
-    if (bindStatus == -1)
-        throw this->genError(fn, "Error encountered creating BT socket");
+    if (bindStatus == -1) throw this->genError(fn, "Bluetooth bind failed");
 }
 
 void Blueteeth::run() {
