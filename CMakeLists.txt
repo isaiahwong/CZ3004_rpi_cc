@@ -28,16 +28,15 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
-# add_subdirectory(src/protocols)
 add_subdirectory(external/fmt)
 add_subdirectory(external/json)
 
 find_package (Threads)
-find_package(fmt)
-find_package(external/json)
+# find_package(external/fmt)
+# find_package(external/json)
 
 find_library(bluez_lib bluetooth)
-find_library(wiringPi_lib wiringPi)
+find_library(WIRINGPI_LIBRARIES NAMES wiringPi)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC external/fmt/include
@@ -45,7 +44,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} 
     Threads::Threads
-    ${wiringPi_lib}
+    ${WIRINGPI_LIBRARIES}
     ${bluez_LIB}
     fmt::fmt-header-only
     nlohmann_json::nlohmann_json
