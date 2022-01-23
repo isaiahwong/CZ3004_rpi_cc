@@ -23,3 +23,7 @@ std::string Protocol::genFnName(std::string _class, std::string fn) {
 std::string Protocol::genError(std::string prefix, std::string msg) {
     return fmt::format("{} {}", prefix, msg);
 }
+
+std::string Protocol::genError(std::string prefix, std::string msg, int code) {
+    return fmt::format("{} {}. ERRNO={}", prefix, msg, code);
+}

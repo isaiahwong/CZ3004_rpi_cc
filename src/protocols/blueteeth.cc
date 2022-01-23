@@ -17,6 +17,13 @@
 #include <bluetooth/sco.h>
 #include <bluetooth/sdp.h>
 #include <bluetooth/sdp_lib.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <fmt/color.h>
+#include <fmt/core.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include <chrono>
 #include <string>
@@ -27,45 +34,99 @@
 Blueteeth::Blueteeth() {
     this->name = "blueteeth";
     this->channel = 1;
+    this->clientAddr = new sockaddr_rc();
+    this->localAddr = new sockaddr_rc();
     this->init();
 }
 
 Blueteeth::Blueteeth(int channel, std::string name) {
     this->name = name;
     this->channel = channel;
+
+    // RFCOMM socket address
+    this->clientAddr = new sockaddr_rc();
+    this->localAddr = new sockaddr_rc();
     this->init();
 }
 
 void Blueteeth::init() {
     std::string fn = this->genFnName(this->name, "init");
-    int bluetoothSocket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-    // RFCOMM socket address
-    struct sockaddr_rc localAddr = {0};
-    struct sockaddr_rc clientAddr = {0};
+    int connections = 1;
 
-    // Socket length options
-    socklen_t opt = sizeof(clientAddr);
-
-    localAddr.rc_family = AF_BLUETOOTH;
+    (*localAddr).rc_family = AF_BLUETOOTH;
     // Allows any bluetooth address to be used
-    localAddr.rc_bdaddr = {0, 0, 0, 0, 0, 0};
+    (*localAddr).rc_bdaddr = {0, 0, 0, 0, 0, 0};
     // Sets RFComm channel
-    localAddr.rc_channel = (uint8_t)channel;
+    (*localAddr).rc_channel = (uint8_t)channel;
 
     // Creates RFComm BT Socket
+    int &bluetoothSocket = this->bluetoothSocket;
     bluetoothSocket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
     if (bluetoothSocket == -1)
         throw this->genError(fn, "Error encountered creating BT socket");
 
     // Binds socket to first available local bluetooth adapter
-    int bindStatus =
-        bind(bluetoothSocket, (struct sockaddr *)&localAddr, sizeof(localAddr));
+    int status =
+        bind(bluetoothSocket, (struct sockaddr *)localAddr, sizeof(localAddr));
 
-    if (bindStatus == -1) throw this->genError(fn, "Bluetooth bind failed");
+    if (status == -1) throw this->genError(fn, "Bluetooth bind failed", errno);
+
+    status = listen(bluetoothSocket, connections);
+    if (status == -1)
+        throw this->genError(fn, "Bluetooth listen failed", errno);
+}
+
+/**
+ * @brief Blocking. Listens to bluetooth client
+ *
+ * @param bluetoothSocket
+ */
+void Blueteeth::connect() {
+    // Socket length options
+    socklen_t clientOptLen = sizeof(clientAddr);
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
+               "Listening for connections.\n");
+
+    int client = accept(this->bluetoothSocket,
+                        (struct sockaddr *)this->clientAddr, &clientOptLen);
+
+    if (client == -1) {
+        printf("Bluetooth connect failed.\n");
+        // TODO: Retry
+        return;
+    }
+
+    char buf[1024] = {0};
+
+    // Converts sockaddr_rc to string
+    // ba2str(&(*localAddr).rc_bdaddr, buf);
+    fmt::format("Accepted connection from {} \n", buf);
+    // Clear buffer
+    memset(buf, 0, sizeof(buf));
+}
+
+/**
+ * @brief
+ *
+ */
+void Blueteeth::readClient() {
+    while (true) {
+        char buf[1024] = {0};
+        // read data from the client
+        int bytes_read = read(client, buf, sizeof(buf));
+        if (bytes_read > 0) {
+            std::cout << buf << std::endl;
+        }
+    }
 }
 
 void Blueteeth::run() {
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    std::cout << "Running" << std::endl;
+    // Wait for bluetooth client to accept
+    this->connect();
+}
+
+Blueteeth::~Blueteeth() {
+    close(client);
+    close(bluetoothSocket);
 }

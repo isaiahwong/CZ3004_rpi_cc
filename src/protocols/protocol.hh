@@ -20,6 +20,7 @@ class Protocol {
     virtual void run() = 0;
     std::string genFnName(std::string _class, std::string fn);
     std::string genError(std::string prefix, std::string msg);
+    std::string genError(std::string prefix, std::string msg, int code);
 };
 
 #endif
