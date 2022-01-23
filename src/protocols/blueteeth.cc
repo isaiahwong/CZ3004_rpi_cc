@@ -88,11 +88,11 @@ void Blueteeth::connect() {
     fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
                "Listening for connections.\n");
 
-    int client = accept(this->bluetoothSocket,
-                        (struct sockaddr *)this->clientAddr, &clientOptLen);
+    client = accept(this->bluetoothSocket, (struct sockaddr *)this->clientAddr,
+                    &clientOptLen);
 
     if (client == -1) {
-        printf("Bluetooth connect failed.\n");
+        fmt::print("Bluetooth connect failed\n");
         // TODO: Retry
         return;
     }
@@ -101,9 +101,11 @@ void Blueteeth::connect() {
 
     // Converts sockaddr_rc to string
     // ba2str(&(*localAddr).rc_bdaddr, buf);
-    fmt::format("Accepted connection from {} \n", buf);
+    fmt::print("Accepted connection from {} \n", buf);
     // Clear buffer
     memset(buf, 0, sizeof(buf));
+
+    this->readClient();
 }
 
 /**
@@ -111,8 +113,10 @@ void Blueteeth::connect() {
  *
  */
 void Blueteeth::readClient() {
+    char buf[1024] = {0};
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::sea_green),
+               "Reading from client.\n");
     while (true) {
-        char buf[1024] = {0};
         // read data from the client
         int bytes_read = read(client, buf, sizeof(buf));
         if (bytes_read > 0) {
