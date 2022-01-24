@@ -5,10 +5,16 @@ project(RPi)
 file(GLOB HEADERS "src/protocols/*.cc")
 file(GLOB SOURCES "src/protocols/*.hh")
 
+if (APPLE)
+    set(MAIN "src/macos.cc")
+else()
+    set(MAIN "src/main.cc")
+endif()
+
 add_executable(${PROJECT_NAME} 
     ${HEADERS}
     ${SOURCES}
-    src/main.cc
+    ${MAIN}
 )
 
 
@@ -37,6 +43,10 @@ find_package (Threads)
 
 find_library(bluez_lib bluetooth)
 find_library(WIRINGPI_LIBRARIES NAMES wiringPi)
+
+message(STATUS "VAR")
+
+message(STATUS ${WIRINGPI_LIBRARIES})
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC external/fmt/include
