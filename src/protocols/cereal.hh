@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef CEREAL_H_
 #define CEREAL_H_
 
@@ -6,7 +8,8 @@
 
 class Cereal : public Protocol {
    private:
-    void run();
+    void runRead();
+    void runWrite();
 };
 
 #endif

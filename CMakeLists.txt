@@ -45,12 +45,17 @@ endif()
 add_subdirectory(external/fmt)
 add_subdirectory(external/json)
 
+# Dependencies
 find_package (Threads)
+find_package(OpenCV REQUIRED)
+
 # find_package(external/fmt)
 # find_package(external/json)
 
 find_library(BLUEZ_LIB bluetooth)
 find_library(WIRINGPI_LIB NAMES wiringPi)
+
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC external/fmt/include
@@ -61,11 +66,13 @@ target_link_libraries(${PROJECT_NAME}
     Threads::Threads
     fmt::fmt-header-only
     nlohmann_json::nlohmann_json
+    ${OpenCV_LIBS}
 )
+
 
 # Function to check if library exists
 macro(make_if_exist target)
-    if (EXISTS ${WIRINGPI_LIB})
+    if (EXISTS target)
         target_link_libraries(${PROJECT_NAME} 
             ${target}
         )
@@ -74,3 +81,4 @@ endmacro(make_if_exist)
 
 make_if_exist(${WIRINGPI_LIB})
 make_if_exist(${BLUEZ_LIB})
+make_if_exist(${OpenCV_LIBS})

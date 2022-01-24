@@ -1,9 +1,10 @@
+#pragma once
 #ifndef BLUETEETH_H_
 #define BLUETEETH_H_
 
 #include "protocol.hh"
 
-class Blueteeth : public Protocol {
+class Blueteeth final : public Protocol {
    private:
     std::string name = "blueteeth";
     int channel = 1;
@@ -18,10 +19,10 @@ class Blueteeth : public Protocol {
     // bluetooth client
     int client = -1;
 
-    void run();
+    void runRead();
+    void runWrite();
     void init();
     void connect();
-    void readClient();
 
    public:
     ~Blueteeth();

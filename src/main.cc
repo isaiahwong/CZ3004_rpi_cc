@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 
+#include "opencv2/opencv.hpp"
 #include "protocols/blueteeth.hh"
 #include "protocols/cereal.hh"
 
