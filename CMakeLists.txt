@@ -2,14 +2,22 @@ cmake_minimum_required(VERSION 3.18.4)
 
 project(RPi)
 
-file(GLOB HEADERS "src/protocols/*.cc")
-file(GLOB SOURCES "src/protocols/*.hh")
+file(GLOB SOURCES "src/protocols/*.cc")
+file(GLOB HEADERS  "src/protocols/*.hh")
 
 if (APPLE)
+    # remove blueteeth
+    get_filename_component(TO_REMOVE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/protocols/blueteeth.hh ABSOLUTE)
+    get_filename_component(TO_REMOVE_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/protocols/blueteeth.cc ABSOLUTE)
+    list(REMOVE_ITEM HEADERS ${TO_REMOVE_HEADER})
+    list(REMOVE_ITEM SOURCES ${TO_REMOVE_SOURCE})
     set(MAIN "src/macos.cc")
 else()
     set(MAIN "src/main.cc")
 endif()
+
+message(STATUS ${HEADERS})
+message(STATUS ${SOURCES})
 
 add_executable(${PROJECT_NAME} 
     ${HEADERS}
@@ -41,21 +49,28 @@ find_package (Threads)
 # find_package(external/fmt)
 # find_package(external/json)
 
-find_library(bluez_lib bluetooth)
-find_library(WIRINGPI_LIBRARIES NAMES wiringPi)
-
-message(STATUS "VAR")
-
-message(STATUS ${WIRINGPI_LIBRARIES})
+find_library(BLUEZ_LIB bluetooth)
+find_library(WIRINGPI_LIB NAMES wiringPi)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC external/fmt/include
 )
 
+# Libraries that exists
 target_link_libraries(${PROJECT_NAME} 
     Threads::Threads
-    ${WIRINGPI_LIBRARIES}
-    ${bluez_LIB}
     fmt::fmt-header-only
     nlohmann_json::nlohmann_json
 )
+
+# Function to check if library exists
+macro(make_if_exist target)
+    if (EXISTS ${WIRINGPI_LIB})
+        target_link_libraries(${PROJECT_NAME} 
+            ${target}
+        )
+    endif()
+endmacro(make_if_exist)
+
+make_if_exist(${WIRINGPI_LIB})
+make_if_exist(${BLUEZ_LIB})
