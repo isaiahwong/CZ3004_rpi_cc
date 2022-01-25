@@ -22,18 +22,18 @@ void Cereal::listenBT(void* c, std::string msg) {
     static_cast<Cereal*>(c)->listenBT(msg);
 }
 
-void Cereal::listenBT(std::string msg) { std::cout << msg << std::endl; }
+void Cereal::listenBT(std::string msg) {
+    // TODO, send messages based on enums
+    writeClient(msg);
+}
+
+void Cereal::writeClient(std::string msg) {
+    char buf[1024];
+    strcpy(buf, msg.c_str());
+    serialPuts(serial, buf);
+}
 
 void Cereal::run() {
-    // int fd;
-    // if (fd = serialOpen("/dev/pts/5", 9600) < 0) {
-    //     std::cout << "Unable to open serial port" << std::endl;
-    // }
-
-    // while (true) {
-    //     std::cout << (char)serialGetchar(fd) << std::endl;
-    // }
-    // std::cout << "bye" << std::endl;
     while (true) {
         // if connect fails
         if (connect()) {
@@ -62,7 +62,6 @@ void Cereal::readClient() {
                "Reading serial from client.\n");
 
     // Clear
-    serialFlush(serial);
     char c;
     int sLen = 0;
     char buf[1024];
@@ -82,10 +81,11 @@ void Cereal::readClient() {
             continue;
         }
 
-        if (c == '\n') {
+        if (c == '\0') {
             buf[sLen] = '\0';
-            fmt::print("{} \n", buf);
             sLen = 0;
+            // Clear buffer
+            memset(buf, 0, sizeof(buf));
         } else {
             // Build String and it into serial_buf
             buf[sLen++] = c;

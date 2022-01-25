@@ -24,10 +24,14 @@ class Cereal : public Protocol {
      * @param msg
      */
     static void listenBT(void* c, std::string msg);
+
     void listenBT(std::string msg);
 
-    void readClient();
     void run();
+
+    void readClient();
+
+    void writeClient(std::string msg);
 };
 
 #endif
