@@ -49,6 +49,17 @@ Blueteeth::Blueteeth(int channel, std::string name) {
     this->init();
 }
 
+/**
+ * @brief Invokes function to run on thread
+ *
+ */
+void Blueteeth::run() {
+    while (true) {
+        connect();
+        this->readClient();
+    }
+}
+
 void Blueteeth::init() {
     std::string fn = this->genFnName(this->name, "init");
     int connections = 1;
@@ -78,12 +89,6 @@ void Blueteeth::init() {
 }
 
 /**
- * @brief Invokes function to run on thread
- *
- */
-void Blueteeth::run() { connect(); }
-
-/**
  * @brief Blocking. Listens to bluetooth client
  *
  * @param bluetoothSocket
@@ -92,7 +97,7 @@ void Blueteeth::connect() {
     // Socket length options
     socklen_t clientOptLen = sizeof(clientAddr);
     fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
-               "Listening for connections.\n");
+               "Bluetooth listening for connections.\n");
 
     client = accept(this->bluetoothSocket, (struct sockaddr *)this->clientAddr,
                     &clientOptLen);
@@ -107,11 +112,16 @@ void Blueteeth::connect() {
 
     // Converts sockaddr_rc to string
     // ba2str(&(*localAddr).rc_bdaddr, buf);
-    fmt::print("Accepted connection from {} \n", buf);
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::lime_green),
+               "Accepted connection from {} \n", buf);
     // Clear buffer
     memset(buf, 0, sizeof(buf));
+}
 
-    this->readClient();
+void Blueteeth::disconnect() {
+    if (!close(client) && !close(bluetoothSocket))
+        fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
+                   "BT closed\n");
 }
 
 /**
@@ -122,15 +132,21 @@ void Blueteeth::readClient() {
     // Wait for bluetooth client to accept
     char buf[1024] = {0};
     fmt::print(fmt::emphasis::bold | fg(fmt::color::sea_green),
-               "Reading from client.\n");
+               "Reading bluetooth from client.\n");
     // Run blocking loop to listen for bluetooth connections
     while (true) {
         // read data from the client
         int bytes_read = read(client, buf, sizeof(buf));
-        if (bytes_read > 0) {
-            this->publish("CLIENT", buf, bytes_read);
-            std::cout << buf << std::endl;
+
+        // Exit function call, attempt to reconnect
+        if (bytes_read <= 0) {
+            return;
         }
+
+        this->publish("CLIENT", buf, bytes_read);
+        // Clear buffer
+        memset(buf, 0, sizeof(buf));
+        continue;
     }
 }
 

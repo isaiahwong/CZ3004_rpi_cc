@@ -67,18 +67,20 @@ target_link_libraries(${PROJECT_NAME}
     fmt::fmt-header-only
     nlohmann_json::nlohmann_json
     ${OpenCV_LIBS}
+    ${WIRINGPI_LIB}
+    ${BLUEZ_LIB}
 )
 
 
 # Function to check if library exists
-macro(make_if_exist target)
-    if (EXISTS target)
-        target_link_libraries(${PROJECT_NAME} 
-            ${target}
-        )
-    endif()
-endmacro(make_if_exist)
+# macro(make_if_exist target)
+#     if (EXISTS target)
+#         target_link_libraries(${PROJECT_NAME} 
+#             ${target}
+#         )
+#     endif()
+# endmacro(make_if_exist)
 
-make_if_exist(${WIRINGPI_LIB})
-make_if_exist(${BLUEZ_LIB})
-make_if_exist(${OpenCV_LIBS})
+# make_if_exist(${WIRINGPI_LIB})
+# make_if_exist(${BLUEZ_LIB})
+# make_if_exist(${OpenCV_LIBS})

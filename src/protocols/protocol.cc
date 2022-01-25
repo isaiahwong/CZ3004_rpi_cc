@@ -5,7 +5,7 @@
 
 void Protocol::exec(Protocol* proto) { proto->run(); }
 
-void Protocol::subexec(PubSub* sub, SubCallback callback) {
+void Protocol::subexec(Protocol* proto, PubSub* sub, SubCallback callback) {
     char buf[100];
     auto idx = sub->sub();
     while (true) {
@@ -13,7 +13,7 @@ void Protocol::subexec(PubSub* sub, SubCallback callback) {
         if (res == PubSub::ReadOK) {
             PubSub::MsgHeader* header = (PubSub::MsgHeader*)buf;
             std::string msg = *(std::string*)(header + 1);
-            callback(msg);
+            callback(proto, msg);
         }
     }
 }
@@ -76,12 +76,13 @@ void Protocol::subscribe(Protocol* proto, std::string channel,
     auto i = subscriptions.find(channel);
     if (i == subscriptions.end()) {  // Create channel if not found
         pub = new PubSub();
+        subscriptions.emplace(channel, pub);
     } else {
         // found publisher
         pub = i->second;
     }
 
-    proto->_subscribe(channel, pub, callback);
+    proto->_subscribe(proto, channel, pub, callback);
 }
 
 /**
@@ -91,13 +92,14 @@ void Protocol::subscribe(Protocol* proto, std::string channel,
  * @param sub
  * @param callback
  */
-void Protocol::_subscribe(std::string channel, PubSub* sub,
+void Protocol::_subscribe(Protocol* proto, std::string channel, PubSub* sub,
                           SubCallback callback) {
     if (channel.empty()) return;
     if (sub == nullptr) return;
 
-    // start subscription
-    std::thread* t = new std::thread(Protocol::subexec, sub, callback);
+    // start subscription with subexec callback
+    std::thread* t = new std::thread(Protocol::subexec, proto, sub, callback);
+    // Create a subThread
     std::unique_ptr<std::thread> subThread;
     subThread.reset(t);
     subThreads.push_back(std::move(subThread));

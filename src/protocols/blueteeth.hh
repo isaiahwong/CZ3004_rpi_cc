@@ -21,6 +21,7 @@ class Blueteeth final : public Protocol {
 
     void init();
     void connect();
+    void disconnect();
     void readClient();
 
    public:
