@@ -78,6 +78,12 @@ void Blueteeth::init() {
 }
 
 /**
+ * @brief Invokes function to run on thread
+ *
+ */
+void Blueteeth::run() { connect(); }
+
+/**
  * @brief Blocking. Listens to bluetooth client
  *
  * @param bluetoothSocket
@@ -105,24 +111,15 @@ void Blueteeth::connect() {
     // Clear buffer
     memset(buf, 0, sizeof(buf));
 
-    this->runRead();
+    this->readClient();
 }
 
-/**
- * @brief Reads from incoming channels and sends it over to bluetooth client
- *
- */
-void Blueteeth::runRead() {
-    // Wait for bluetooth client to accept
-    // bytes_write = write(client, msg, strlen(msg));
-}
 /**
  * @brief Publishes incoming bluetooth connections
  *
  */
-void Blueteeth::runWrite() {
+void Blueteeth::readClient() {
     // Wait for bluetooth client to accept
-    connect();
     char buf[1024] = {0};
     fmt::print(fmt::emphasis::bold | fg(fmt::color::sea_green),
                "Reading from client.\n");
@@ -131,7 +128,7 @@ void Blueteeth::runWrite() {
         // read data from the client
         int bytes_read = read(client, buf, sizeof(buf));
         if (bytes_read > 0) {
-            this->publish(buf, bytes_read);
+            this->publish("CLIENT", buf, bytes_read);
             std::cout << buf << std::endl;
         }
     }

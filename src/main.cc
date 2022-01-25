@@ -14,11 +14,11 @@
 
 int main() {
     Blueteeth bt;
-    Cereal c;
+    //    Cereal c;
 
     bt.start();
-    c.start();
-    c.join();
+    // c.start();
+    // c.join();
     bt.join();
     return 0;
 }

@@ -1,53 +1,127 @@
 #include "protocol.hh"
 
+#include <fmt/color.h>
 #include <fmt/core.h>
 
-void Protocol::exec(Protocol* proto, Protocol::ThreadOp op) {
-    switch (op) {
-        case Protocol::READ:
-            proto->runRead();
-            break;
-        case Protocol::WRITE:
-            proto->runWrite();
-            break;
+void Protocol::exec(Protocol* proto) { proto->run(); }
+
+void Protocol::subexec(PubSub* sub, SubCallback callback) {
+    char buf[100];
+    auto idx = sub->sub();
+    while (true) {
+        auto res = sub->read(idx, buf, sizeof(buf));
+        if (res == PubSub::ReadOK) {
+            PubSub::MsgHeader* header = (PubSub::MsgHeader*)buf;
+            std::string msg = *(std::string*)(header + 1);
+            callback(msg);
+        }
     }
 }
 
-Protocol::Protocol() { pub = new PubSub(); }
+Protocol::~Protocol() {
+    for (auto it = subscriptions.begin(); it != subscriptions.end(); it++) {
+        delete it->second;
+        subscriptions.erase(it);
+    }
+}
 
-void Protocol::setSub(PubSub* sub) { this->sub = sub; }
+Protocol::Protocol() {
+    // Reserve 10 pub sub mem slots
+    pubThreads.reserve(10);
+    subThreads.reserve(10);
+}
 
-// Run thread protocol
 void Protocol::start() {
-    // Spawn threads for read and write threads
-    std::thread* rt = new std::thread(Protocol::exec, this, Protocol::READ);
-    std::thread* wt = new std::thread(Protocol::exec, this, Protocol::WRITE);
-
-    // assign pointer to smart pointer
-    readThread.reset(rt);
-    writeThread.reset(wt);
+    std::thread* t = new std::thread(Protocol::exec, this);
+    mainThread.reset(t);
 }
 
 void Protocol::join() {
-    if (readThread != nullptr) readThread->join();
-    if (writeThread != nullptr) writeThread->join();
-    readThread = nullptr;
-    writeThread = nullptr;
+    for (auto& t : subThreads) {
+        if (t != nullptr) {
+            t->join();
+            t.reset();
+        }
+        t = nullptr;
+    }
+
+    for (auto& t : pubThreads) {
+        if (t != nullptr) {
+            t->join();
+            t.reset();
+        }
+        t = nullptr;
+    }
+
+    // Joins main thread
+    if (mainThread != nullptr) {
+        mainThread->join();
+        mainThread.reset();
+    }
+    mainThread = nullptr;
 }
 
 /**
- * @brief Assigns the publisher of the current class
+ * @brief Assigns publisher to current class
  *
  * @param proto
  */
-void Protocol::subscribe(Protocol* proto) { proto->setSub(this->pub); }
+void Protocol::subscribe(Protocol* proto, std::string channel,
+                         SubCallback callback) {
+    if (proto == nullptr) return;
+    if (channel.empty()) return;
 
-void Protocol::publish(char* buffer, int bufflen) {
-    std::string message(buffer, bufflen);
-    publish(message);
+    PubSub* pub;
+    // Check if channel exists
+    auto i = subscriptions.find(channel);
+    if (i == subscriptions.end()) {  // Create channel if not found
+        pub = new PubSub();
+    } else {
+        // found publisher
+        pub = i->second;
+    }
+
+    proto->_subscribe(channel, pub, callback);
 }
 
-void Protocol::publish(std::string message) {
+/**
+ * @brief
+ *
+ * @param channel
+ * @param sub
+ * @param callback
+ */
+void Protocol::_subscribe(std::string channel, PubSub* sub,
+                          SubCallback callback) {
+    if (channel.empty()) return;
+    if (sub == nullptr) return;
+
+    // start subscription
+    std::thread* t = new std::thread(Protocol::subexec, sub, callback);
+    std::unique_ptr<std::thread> subThread;
+    subThread.reset(t);
+    subThreads.push_back(std::move(subThread));
+}
+
+void Protocol::publish(std::string channel, char* buffer, int bufflen) {
+    std::string message(buffer, bufflen);
+    publish(channel, message);
+}
+
+void Protocol::publish(std::string channel, std::string message) {
+    // Check if channel exists
+    PubSub* pub;
+
+    auto i = subscriptions.find(channel);
+    if (i == subscriptions.end()) {  // Create channel if not found
+        fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
+                   "Channel does not exist\n");
+        return;
+    } else {
+        // found publisher
+        pub = i->second;
+    }
+
     PubSub::MsgHeader* header = pub->alloc(sizeof(std::string));
     *(std::string*)(header + 1) = message;
     pub->pub();

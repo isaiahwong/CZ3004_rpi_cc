@@ -19,13 +19,13 @@ class Blueteeth final : public Protocol {
     // bluetooth client
     int client = -1;
 
-    void runRead();
-    void runWrite();
     void init();
     void connect();
+    void readClient();
 
    public:
     ~Blueteeth();
+    void run();
     Blueteeth();
     Blueteeth(int channel, std::string name);
 };
