@@ -23,9 +23,9 @@ class Cereal : public Protocol {
      * @param c
      * @param msg
      */
-    static void listenBT(void* c, std::string msg);
+    static void onCommand(void* c, std::string msg);
 
-    void listenBT(std::string msg);
+    void onCommand(std::string msg);
 
     void run();
 

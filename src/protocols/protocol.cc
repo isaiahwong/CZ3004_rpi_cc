@@ -5,6 +5,13 @@
 
 void Protocol::exec(Protocol* proto) { proto->run(); }
 
+/**
+ * @brief execute sub thread with their handlers
+ * 
+ * @param proto 
+ * @param sub 
+ * @param callback 
+ */
 void Protocol::subexec(Protocol* proto, PubSub* sub, SubCallback callback) {
     char buf[100];
     auto idx = sub->sub();
@@ -27,8 +34,8 @@ Protocol::~Protocol() {
 
 Protocol::Protocol() {
     // Reserve 10 pub sub mem slots
-    pubThreads.reserve(10);
-    subThreads.reserve(10);
+    pubThreads.reserve(3);
+    subThreads.reserve(3);
 }
 
 void Protocol::start() {
@@ -66,7 +73,7 @@ void Protocol::join() {
  *
  * @param proto
  */
-void Protocol::subscribe(Protocol* proto, std::string channel,
+void Protocol::registerSub(Protocol* proto, std::string channel,
                          SubCallback callback) {
     if (proto == nullptr) return;
     if (channel.empty()) return;
@@ -74,7 +81,8 @@ void Protocol::subscribe(Protocol* proto, std::string channel,
     PubSub* pub;
     // Check if channel exists
     auto i = subscriptions.find(channel);
-    if (i == subscriptions.end()) {  // Create channel if not found
+    // Create channel if not found
+    if (i == subscriptions.end()) {  
         pub = new PubSub();
         subscriptions.emplace(channel, pub);
     } else {
@@ -82,7 +90,7 @@ void Protocol::subscribe(Protocol* proto, std::string channel,
         pub = i->second;
     }
 
-    proto->_subscribe(proto, channel, pub, callback);
+    proto->_registerSub(proto, channel, pub, callback);
 }
 
 /**
@@ -92,7 +100,7 @@ void Protocol::subscribe(Protocol* proto, std::string channel,
  * @param sub
  * @param callback
  */
-void Protocol::_subscribe(Protocol* proto, std::string channel, PubSub* sub,
+void Protocol::_registerSub(Protocol* proto, std::string channel, PubSub* sub,
                           SubCallback callback) {
     if (channel.empty()) return;
     if (sub == nullptr) return;
@@ -134,9 +142,14 @@ std::string Protocol::genFnName(std::string _class, std::string fn) {
 }
 
 std::string Protocol::genError(std::string prefix, std::string msg) {
-    return fmt::format("{} {}", prefix, msg);
+    return fmt::format(fmt::emphasis::bold | fg(fmt::color::hot_pink), "{} {}", prefix, msg);
 }
 
 std::string Protocol::genError(std::string prefix, std::string msg, int code) {
     return fmt::format("{} {}. ERRNO={}", prefix, msg, code);
+}
+
+void Protocol::printRed(std::string msg) {
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
+               msg + "\n");
 }

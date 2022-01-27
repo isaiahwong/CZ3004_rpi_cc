@@ -10,7 +10,7 @@
 #include <string>
 #include <thread>
 
-#include "iostream"
+#include <iostream>
 
 /**
  * @brief static function to forward
@@ -18,11 +18,11 @@
  * @param c
  * @param msg
  */
-void Cereal::listenBT(void* c, std::string msg) {
-    static_cast<Cereal*>(c)->listenBT(msg);
+void Cereal::onCommand(void* c, std::string msg) {
+    static_cast<Cereal*>(c)->onCommand(msg);
 }
 
-void Cereal::listenBT(std::string msg) {
+void Cereal::onCommand(std::string msg) {
     // TODO, send messages based on enums
     writeClient(msg);
 }

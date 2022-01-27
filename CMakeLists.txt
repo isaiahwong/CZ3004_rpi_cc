@@ -7,24 +7,22 @@ file(GLOB HEADERS  "src/protocols/*.hh")
 
 if (APPLE)
     # remove blueteeth
-    get_filename_component(TO_REMOVE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/protocols/blueteeth.hh ABSOLUTE)
-    get_filename_component(TO_REMOVE_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/protocols/blueteeth.cc ABSOLUTE)
+    get_filename_component(TO_REMOVE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/blueteeth.hh ABSOLUTE)
+    get_filename_component(TO_REMOVE_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/blueteeth.cc ABSOLUTE)
     list(REMOVE_ITEM HEADERS ${TO_REMOVE_HEADER})
     list(REMOVE_ITEM SOURCES ${TO_REMOVE_SOURCE})
     set(MAIN "src/macos.cc")
 else()
+    get_filename_component(TO_REMOVE_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src/macos.cc ABSOLUTE)
+    list(REMOVE_ITEM SOURCES ${TO_REMOVE_SOURCE})
     set(MAIN "src/main.cc")
 endif()
-
-message(STATUS ${HEADERS})
-message(STATUS ${SOURCES})
 
 add_executable(${PROJECT_NAME} 
     ${HEADERS}
     ${SOURCES}
     ${MAIN}
 )
-
 
 # Download Git submodules
 find_package(Git QUIET)
@@ -51,14 +49,16 @@ find_package(OpenCV REQUIRED)
 
 # find_package(external/fmt)
 # find_package(external/json)
-
 find_library(BLUEZ_LIB bluetooth)
 find_library(WIRINGPI_LIB NAMES wiringPi)
 
-include_directories(${OpenCV_INCLUDE_DIRS})
+message(STATUS "hello")
+message(STATUS ${OpenCV_INCLUDE_DIRS})
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC external/fmt/include
+    external/json/include
+    ${OpenCV_INCLUDE_DIRS}
 )
 
 # Libraries that exists
@@ -70,7 +70,6 @@ target_link_libraries(${PROJECT_NAME}
     ${WIRINGPI_LIB}
     ${BLUEZ_LIB}
 )
-
 
 # Function to check if library exists
 # macro(make_if_exist target)
