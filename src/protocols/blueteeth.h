@@ -2,7 +2,7 @@
 #ifndef BLUETEETH_H_
 #define BLUETEETH_H_
 
-#include "protocol.hh"
+#include "protocol.h"
 
 class Blueteeth final : public Protocol {
    private:

@@ -1,4 +1,4 @@
-#include "protocol.hh"
+#include "protocol.h"
 
 #include <fmt/color.h>
 #include <fmt/core.h>

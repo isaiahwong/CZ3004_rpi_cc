@@ -8,7 +8,7 @@
 #include <thread>
 #include <vector>
 
-#include "../common/pubsub.hh"
+#include "../common/pubsub.h"
 
 using PubSub = PubSubQueue<1024>;
 using UniquePtr = std::unique_ptr<std::thread>;

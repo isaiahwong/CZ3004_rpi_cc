@@ -5,7 +5,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
-#include "camera.hh"
+#include "camera.h"
 
 using namespace cv;
 

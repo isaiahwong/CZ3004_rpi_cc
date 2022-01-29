@@ -2,9 +2,21 @@ cmake_minimum_required(VERSION 3.18.4)
 
 project(RPi)
 
-file(GLOB SOURCES "src/protocols/*.cc")
-file(GLOB HEADERS  "src/protocols/*.hh")
+include(./cmake/common.cmake)
 
+# GRPC and Protocol Buffers libraries location
+list(APPEND CMAKE_PREFIX_PATH "/usr/local" )
+# Cmake find modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+# Get files
+file(GLOB SOURCES "src/protocols/*.cc")
+file(GLOB HEADERS  "src/protocols/*.h")
+
+# Get grpc source headers
+file(GLOB GRPC_SOURCE_HEADERS "src/protocols/*pb*")
+
+# Check OS
 if (APPLE)
     # remove blueteeth
     get_filename_component(TO_REMOVE_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/blueteeth.hh ABSOLUTE)
@@ -19,7 +31,6 @@ else()
 endif()
 
 add_executable(${PROJECT_NAME} 
-    ${HEADERS}
     ${SOURCES}
     ${MAIN}
 )
@@ -46,16 +57,17 @@ add_subdirectory(external/json)
 # Dependencies
 find_package (Threads)
 find_package(OpenCV REQUIRED)
-# find_package(Torch REQUIRED)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+# find_package(Protobuf REQUIRED)
+# find_package(GRPC REQUIRED)
 
-# find_package(external/fmt)
-# find_package(external/json)
 find_library(BLUEZ_LIB bluetooth)
 find_library(WIRINGPI_LIB NAMES wiringPi)
 
 message(STATUS "hello")
 message(STATUS ${OpenCV_INCLUDE_DIRS})
+
+# Include generated *.pb.h files
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/src/protocols")
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC external/fmt/include
@@ -63,11 +75,19 @@ target_include_directories(${PROJECT_NAME}
     ${OpenCV_INCLUDE_DIRS}
 )
 
+# Add library for grpc files
+add_library(GRPC_PROTO ${GRPC_SOURCE_HEADERS})
+target_link_libraries(GRPC_PROTO
+  ${_REFLECTION}
+  ${_GRPC_GRPCPP}
+  ${_PROTOBUF_LIBPROTOBUF})
+
 # Libraries that exists
 target_link_libraries(${PROJECT_NAME} 
     Threads::Threads
     fmt::fmt-header-only
     nlohmann_json::nlohmann_json
+    GRPC_PROTO
     ${OpenCV_LIBS}
     ${WIRINGPI_LIB}
     ${BLUEZ_LIB}

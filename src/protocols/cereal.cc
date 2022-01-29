@@ -1,4 +1,4 @@
-#include "cereal.hh"
+#include "cereal.h"
 
 #include <fmt/color.h>
 #include <fmt/core.h>
@@ -28,7 +28,7 @@ void Cereal::onCommand(std::string msg) {
 }
 
 void Cereal::writeClient(std::string msg) {
-    int LEN = 4;
+    const int LEN = 4;
     char buf[LEN]; 
     strcpy(buf, msg.c_str());
     buf[LEN-1] = '\0';

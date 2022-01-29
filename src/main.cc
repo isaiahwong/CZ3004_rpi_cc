@@ -7,9 +7,9 @@
 #include <signal.h>
 
 #include "opencv2/opencv.hpp"
-#include "protocols/camera.hh"
-#include "protocols/blueteeth.hh"
-#include "protocols/cereal.hh"
+#include "protocols/camera.h"
+#include "protocols/blueteeth.h"
+#include "protocols/cereal.h"
 
 void test(std::string msg) {}
 

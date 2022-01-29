@@ -5,8 +5,7 @@ default:
 	if [ ! -d "build" ]; then \
 		mkdir build; \
 	fi
-	cmake -DCMAKE_PREFIX_PATH=/home/pi/Dev/lib/libtorch -S . -B ./build
-	cmake --build ./build --config Release
+	cmake -S . -B ./build
 	make -C build 
 	./build/RPi
 

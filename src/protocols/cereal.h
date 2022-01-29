@@ -6,7 +6,7 @@
 #include <string>
 
 #include "iostream"
-#include "protocol.hh"
+#include "protocol.h"
 
 class Cereal : public Protocol {
    private:

@@ -2,7 +2,10 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-#include "protocol.hh"
+#include "protocol.h"
+
+#include <grpcpp/grpcpp.h>
+
 
 class Camera final : public Protocol {
     private: 
