@@ -28,9 +28,13 @@ void Cereal::onCommand(std::string msg) {
 }
 
 void Cereal::writeClient(std::string msg) {
-    char buf[1024];
+    int LEN = 4;
+    char buf[LEN]; 
     strcpy(buf, msg.c_str());
-    serialPuts(serial, buf);
+    buf[LEN-1] = '\0';
+    fmt::print("Serial send: {}\n", buf);
+    serialPuts(serial, buf); 
+    serialFlush(serial);
 }
 
 void Cereal::run() {
@@ -49,7 +53,7 @@ void Cereal::run() {
 void Cereal::init() {}
 
 int Cereal::connect() {
-    if ((serial = serialOpen("/dev/pts/5", 115200)) < 0) {
+    if ((serial = serialOpen("/dev/ttyUSB1", 115200)) < 0) {
         fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
                    "Unable to open serial device: {} \n", strerror(errno));
         return 1;
@@ -64,7 +68,7 @@ void Cereal::readClient() {
     // Clear
     char c;
     int sLen = 0;
-    char buf[1024];
+    char buf[3];
 
     while (true) {
         // Checks if serial
@@ -82,8 +86,9 @@ void Cereal::readClient() {
         }
 
         if (c == '\0') {
-            buf[sLen] = '\0';
+            buf[sLen-1] = '\0';
             sLen = 0;
+            fmt::print("{} \n", c);
             // Clear buffer
             memset(buf, 0, sizeof(buf));
         } else {

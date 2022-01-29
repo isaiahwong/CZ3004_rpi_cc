@@ -1,8 +1,12 @@
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+mkfile_dir := $(dir $(mkfile_path))
+
 default:
 	if [ ! -d "build" ]; then \
 		mkdir build; \
 	fi
-	cmake -S . -B ./build
+	cmake -DCMAKE_PREFIX_PATH=/home/pi/Dev/lib/libtorch -S . -B ./build
+	cmake --build ./build --config Release
 	make -C build 
 	./build/RPi
 
