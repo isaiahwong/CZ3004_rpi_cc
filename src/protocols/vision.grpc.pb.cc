@@ -20,55 +20,62 @@
 #include <grpcpp/impl/codegen/service_type.h>
 #include <grpcpp/impl/codegen/sync_stream.h>
 
-static const char* Vision_method_names[] = {
-  "/Vision/FrameStream",
+static const char* VisionService_method_names[] = {
+  "/VisionService/SendFrame",
 };
 
-std::unique_ptr< Vision::Stub> Vision::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
+std::unique_ptr< VisionService::Stub> VisionService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
   (void)options;
-  std::unique_ptr< Vision::Stub> stub(new Vision::Stub(channel, options));
+  std::unique_ptr< VisionService::Stub> stub(new VisionService::Stub(channel, options));
   return stub;
 }
 
-Vision::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
-  : channel_(channel), rpcmethod_FrameStream_(Vision_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::CLIENT_STREAMING, channel)
+VisionService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
+  : channel_(channel), rpcmethod_SendFrame_(VisionService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::ClientWriter< ::Request>* Vision::Stub::FrameStreamRaw(::grpc::ClientContext* context, ::Response* response) {
-  return ::grpc::internal::ClientWriterFactory< ::Request>::Create(channel_.get(), rpcmethod_FrameStream_, context, response);
+::grpc::Status VisionService::Stub::SendFrame(::grpc::ClientContext* context, const ::Request& request, ::Response* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_SendFrame_, context, request, response);
 }
 
-void Vision::Stub::async::FrameStream(::grpc::ClientContext* context, ::Response* response, ::grpc::ClientWriteReactor< ::Request>* reactor) {
-  ::grpc::internal::ClientCallbackWriterFactory< ::Request>::Create(stub_->channel_.get(), stub_->rpcmethod_FrameStream_, context, response, reactor);
+void VisionService::Stub::async::SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SendFrame_, context, request, response, std::move(f));
 }
 
-::grpc::ClientAsyncWriter< ::Request>* Vision::Stub::AsyncFrameStreamRaw(::grpc::ClientContext* context, ::Response* response, ::grpc::CompletionQueue* cq, void* tag) {
-  return ::grpc::internal::ClientAsyncWriterFactory< ::Request>::Create(channel_.get(), cq, rpcmethod_FrameStream_, context, response, true, tag);
+void VisionService::Stub::async::SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SendFrame_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncWriter< ::Request>* Vision::Stub::PrepareAsyncFrameStreamRaw(::grpc::ClientContext* context, ::Response* response, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncWriterFactory< ::Request>::Create(channel_.get(), cq, rpcmethod_FrameStream_, context, response, false, nullptr);
+::grpc::ClientAsyncResponseReader< ::Response>* VisionService::Stub::PrepareAsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::Response, ::Request, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_SendFrame_, context, request);
 }
 
-Vision::Service::Service() {
+::grpc::ClientAsyncResponseReader< ::Response>* VisionService::Stub::AsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncSendFrameRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+VisionService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
-      Vision_method_names[0],
-      ::grpc::internal::RpcMethod::CLIENT_STREAMING,
-      new ::grpc::internal::ClientStreamingHandler< Vision::Service, ::Request, ::Response>(
-          [](Vision::Service* service,
+      VisionService_method_names[0],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< VisionService::Service, ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](VisionService::Service* service,
              ::grpc::ServerContext* ctx,
-             ::grpc::ServerReader<::Request>* reader,
+             const ::Request* req,
              ::Response* resp) {
-               return service->FrameStream(ctx, reader, resp);
+               return service->SendFrame(ctx, req, resp);
              }, this)));
 }
 
-Vision::Service::~Service() {
+VisionService::Service::~Service() {
 }
 
-::grpc::Status Vision::Service::FrameStream(::grpc::ServerContext* context, ::grpc::ServerReader< ::Request>* reader, ::Response* response) {
+::grpc::Status VisionService::Service::SendFrame(::grpc::ServerContext* context, const ::Request* request, ::Response* response) {
   (void) context;
-  (void) reader;
+  (void) request;
   (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }

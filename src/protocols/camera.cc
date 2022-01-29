@@ -9,6 +9,12 @@
 
 using namespace cv;
 
+Camera::Camera(std::string addr) {
+    this->addr = addr;
+    this->visionClient = new VisionClient(addr);
+
+}
+
 void Camera::run() {
     // Keep camera thread running
     while (true) {}
@@ -27,8 +33,6 @@ void Camera::onVideoOpen(void* c, std::string msg) {
 void Camera::onVideoOpen(std::string msg) {
     Mat frame;
     VideoCapture cap;
-    // open the default camera using default API
-    // cap.open(0);
     int deviceID = 0;         // 0 = open default camera
     int apiID = cv::CAP_ANY;  // 0 = autodetect default API
 
@@ -47,11 +51,17 @@ void Camera::onVideoOpen(std::string msg) {
         printRed("Blank frame grabbed");
         // break;
     }
+
+    Size matSize = frame.size();
+    int width  = matSize.width,
+        height = matSize.height,
+        channels =  frame.channels();
+    
+    std::string byteStr(frame.datastart, frame.dataend);
+    visionClient->SendFrame(byteStr, width, height, channels);
+    
     // show live and wait for a key with timeout long enough to show images
-//    imwrite(msg+"_test.jpg", frame);
-
-    imshow("Live", frame);
-
+    //    imwrite(msg+"_test.jpg", frame);
     // while (true) {
     //     // wait for a new frame from camera and store it into 'frame'
     //     cap.read(frame);
@@ -69,5 +79,5 @@ void Camera::onVideoOpen(std::string msg) {
 
 
 Camera::~Camera() {
-
+    delete visionClient;
 }

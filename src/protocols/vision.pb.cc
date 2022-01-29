@@ -32,7 +32,7 @@ constexpr Request::Request(
   : image_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , width_(0)
   , height_(0)
-  , channel_(0){}
+  , channels_(0){}
 struct RequestDefaultTypeInternal {
   constexpr RequestDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -74,7 +74,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_vision_2eproto::offsets[] PROT
   PROTOBUF_FIELD_OFFSET(::Request, image_),
   PROTOBUF_FIELD_OFFSET(::Request, width_),
   PROTOBUF_FIELD_OFFSET(::Request, height_),
-  PROTOBUF_FIELD_OFFSET(::Request, channel_),
+  PROTOBUF_FIELD_OFFSET(::Request, channels_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Response, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -96,15 +96,15 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_vision_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014vision.proto\"\007\n\005Empty\"H\n\007Request\022\r\n\005im"
+  "\n\014vision.proto\"\007\n\005Empty\"I\n\007Request\022\r\n\005im"
   "age\030\001 \001(\014\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 \001(\005"
-  "\022\017\n\007channel\030\004 \001(\005\"\031\n\010Response\022\r\n\005count\030\001"
-  " \001(\0052.\n\006Vision\022$\n\013FrameStream\022\010.Request\032"
-  "\t.Response(\001b\006proto3"
+  "\022\020\n\010channels\030\004 \001(\005\"\031\n\010Response\022\r\n\005count\030"
+  "\001 \001(\00521\n\rVisionService\022 \n\tSendFrame\022\010.Re"
+  "quest\032\t.Responseb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_vision_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_vision_2eproto = {
-  false, false, 180, descriptor_table_protodef_vision_2eproto, "vision.proto", 
+  false, false, 184, descriptor_table_protodef_vision_2eproto, "vision.proto", 
   &descriptor_table_vision_2eproto_once, nullptr, 0, 3,
   schemas, file_default_instances, TableStruct_vision_2eproto::offsets,
   file_level_metadata_vision_2eproto, file_level_enum_descriptors_vision_2eproto, file_level_service_descriptors_vision_2eproto,
@@ -179,8 +179,8 @@ Request::Request(const Request& from)
       GetArenaForAllocation());
   }
   ::memcpy(&width_, &from.width_,
-    static_cast<size_t>(reinterpret_cast<char*>(&channel_) -
-    reinterpret_cast<char*>(&width_)) + sizeof(channel_));
+    static_cast<size_t>(reinterpret_cast<char*>(&channels_) -
+    reinterpret_cast<char*>(&width_)) + sizeof(channels_));
   // @@protoc_insertion_point(copy_constructor:Request)
 }
 
@@ -188,8 +188,8 @@ void Request::SharedCtor() {
 image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&width_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&channel_) -
-    reinterpret_cast<char*>(&width_)) + sizeof(channel_));
+    0, static_cast<size_t>(reinterpret_cast<char*>(&channels_) -
+    reinterpret_cast<char*>(&width_)) + sizeof(channels_));
 }
 
 Request::~Request() {
@@ -222,8 +222,8 @@ void Request::Clear() {
 
   image_.ClearToEmpty();
   ::memset(&width_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&channel_) -
-      reinterpret_cast<char*>(&width_)) + sizeof(channel_));
+      reinterpret_cast<char*>(&channels_) -
+      reinterpret_cast<char*>(&width_)) + sizeof(channels_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -258,10 +258,10 @@ const char* Request::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
         } else
           goto handle_unusual;
         continue;
-      // int32 channel = 4;
+      // int32 channels = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
-          channel_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          channels_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -313,10 +313,10 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_height(), target);
   }
 
-  // int32 channel = 4;
-  if (this->_internal_channel() != 0) {
+  // int32 channels = 4;
+  if (this->_internal_channels() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_channel(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_channels(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -352,9 +352,9 @@ size_t Request::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_height());
   }
 
-  // int32 channel = 4;
-  if (this->_internal_channel() != 0) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_channel());
+  // int32 channels = 4;
+  if (this->_internal_channels() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_channels());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
@@ -388,8 +388,8 @@ void Request::MergeFrom(const Request& from) {
   if (from._internal_height() != 0) {
     _internal_set_height(from._internal_height());
   }
-  if (from._internal_channel() != 0) {
-    _internal_set_channel(from._internal_channel());
+  if (from._internal_channels() != 0) {
+    _internal_set_channels(from._internal_channels());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -416,8 +416,8 @@ void Request::InternalSwap(Request* other) {
       &other->image_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Request, channel_)
-      + sizeof(Request::channel_)
+      PROTOBUF_FIELD_OFFSET(Request, channels_)
+      + sizeof(Request::channels_)
       - PROTOBUF_FIELD_OFFSET(Request, width_)>(
           reinterpret_cast<char*>(&width_),
           reinterpret_cast<char*>(&other->width_));

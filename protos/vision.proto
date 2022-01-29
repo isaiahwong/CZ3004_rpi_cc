@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-service Vision {
-    rpc FrameStream (stream Request) returns (Response);
+service VisionService {
+    rpc SendFrame (Request) returns (Response);
 }
 
 message Empty{}
@@ -10,7 +10,7 @@ message Request {
     bytes image = 1;
     int32 width = 2;
     int32 height = 3;
-    int32 channel = 4;
+    int32 channels = 4;
 }
 
 message Response {

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.18.4)
+add_compile_options(-std=c++17)
 
 project(RPi)
 

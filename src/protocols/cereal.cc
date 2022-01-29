@@ -12,6 +12,10 @@
 
 #include <iostream>
 
+Cereal::~Cereal() {
+    close(serial);
+}
+
 /**
  * @brief static function to forward
  *
@@ -53,7 +57,7 @@ void Cereal::run() {
 void Cereal::init() {}
 
 int Cereal::connect() {
-    if ((serial = serialOpen("/dev/ttyUSB1", 115200)) < 0) {
+    if ((serial = serialOpen(port.c_str(), baudrate)) < 0) {
         fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
                    "Unable to open serial device: {} \n", strerror(errno));
         return 1;

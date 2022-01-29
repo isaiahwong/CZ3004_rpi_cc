@@ -10,13 +10,23 @@
 
 class Cereal : public Protocol {
    private:
+    std::string port;
+
     int serial = -1;
+
+    int baudrate;
 
     void runWrite();
     void init();
     int connect();
 
    public:
+    Cereal(std::string _port) : port(_port), baudrate(115200) {}
+
+    Cereal(std::string _port, int _baudrate) : port(_port), baudrate(_baudrate) {}
+
+    ~Cereal();
+
     /**
      * @brief Forwarder static function to access cereal member functions
      *

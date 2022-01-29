@@ -5,9 +5,11 @@ default:
 	if [ ! -d "build" ]; then \
 		mkdir build; \
 	fi
+	make -C protos
 	cmake -S . -B ./build
 	make -C build 
-	./build/RPi
+	./build/RPi --serial=/dev/tty1 \
+		--vision=localhost:50051
 
 make_cv:
 	cmake -D CMAKE_BUILD_TYPE=RELEASE \

@@ -308,7 +308,7 @@ class Request final :
     kImageFieldNumber = 1,
     kWidthFieldNumber = 2,
     kHeightFieldNumber = 3,
-    kChannelFieldNumber = 4,
+    kChannelsFieldNumber = 4,
   };
   // bytes image = 1;
   void clear_image();
@@ -342,13 +342,13 @@ class Request final :
   void _internal_set_height(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // int32 channel = 4;
-  void clear_channel();
-  ::PROTOBUF_NAMESPACE_ID::int32 channel() const;
-  void set_channel(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // int32 channels = 4;
+  void clear_channels();
+  ::PROTOBUF_NAMESPACE_ID::int32 channels() const;
+  void set_channels(::PROTOBUF_NAMESPACE_ID::int32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_channel() const;
-  void _internal_set_channel(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_channels() const;
+  void _internal_set_channels(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:Request)
@@ -361,7 +361,7 @@ class Request final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr image_;
   ::PROTOBUF_NAMESPACE_ID::int32 width_;
   ::PROTOBUF_NAMESPACE_ID::int32 height_;
-  ::PROTOBUF_NAMESPACE_ID::int32 channel_;
+  ::PROTOBUF_NAMESPACE_ID::int32 channels_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_vision_2eproto;
 };
@@ -609,24 +609,24 @@ inline void Request::set_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:Request.height)
 }
 
-// int32 channel = 4;
-inline void Request::clear_channel() {
-  channel_ = 0;
+// int32 channels = 4;
+inline void Request::clear_channels() {
+  channels_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::_internal_channel() const {
-  return channel_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 Request::_internal_channels() const {
+  return channels_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::channel() const {
-  // @@protoc_insertion_point(field_get:Request.channel)
-  return _internal_channel();
+inline ::PROTOBUF_NAMESPACE_ID::int32 Request::channels() const {
+  // @@protoc_insertion_point(field_get:Request.channels)
+  return _internal_channels();
 }
-inline void Request::_internal_set_channel(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void Request::_internal_set_channels(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  channel_ = value;
+  channels_ = value;
 }
-inline void Request::set_channel(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_channel(value);
-  // @@protoc_insertion_point(field_set:Request.channel)
+inline void Request::set_channels(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_channels(value);
+  // @@protoc_insertion_point(field_set:Request.channels)
 }
 
 // -------------------------------------------------------------------
