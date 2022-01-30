@@ -8,13 +8,16 @@ default:
 	make -C protos
 	cmake -S . -B ./build
 	make -C build 
-	cp ./build/RPI ./bin
+	cp ./build/RPi ./bin
 	make run
 	
 
 run:
 	./bin/RPi --serial=/dev/pts/3 \
 		--vision=localhost:50051
+
+gen-protos:
+	make -C protos
 
 make_cv:
 	cmake -D CMAKE_BUILD_TYPE=RELEASE \
