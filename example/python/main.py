@@ -14,6 +14,9 @@ from vision_pb2_grpc import *
 
 @jit(nopython=True)
 def fast_reshape(byteStr, width, height, channels):
+    """
+    Using JIT for faster numpy reshape
+    """
     frame = np.frombuffer(byteStr, dtype=np.uint8)
     return np.reshape(frame, (height, width, channels))
 
@@ -26,9 +29,8 @@ class ImageServer(VisionServiceServicer):
     def SendFrame(self, req, ctx):
         # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
-        self.model.predict(frame, req.width, req.height)
-        # cv2.imwrite('out/frame{}.jpg'.format(self.count),
-        #             self.model.predict(frame, req.width, req.height, ))
+        cv2.imwrite('out/frame{}.jpg'.format(self.count),
+                    self.model.predict(frame, req.width, req.height, ))
         self.count += 1
         return Response(count=self.count)
 

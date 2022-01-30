@@ -67,6 +67,8 @@ void Camera::onCapture(void* c, std::string msg) {
 void Camera::onCapture(std::string msg) {
     cv::Mat frame;
 
+    print(msg);
+
     // Start time
     print("\nStart Capture");
     auto t1 = std::chrono::high_resolution_clock::now();

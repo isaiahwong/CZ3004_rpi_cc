@@ -22,7 +22,7 @@ class Cereal : public Protocol {
 
    public:
     // Channels
-    inline static const std::string SERIAL_SEND = "SERIAL_SEND";
+    inline static const std::string SERIAL_MAIN_READ = "SERIAL_MAIN_READ";
 
     Cereal(std::string _port) : port(_port), baudrate(115200) {}
 

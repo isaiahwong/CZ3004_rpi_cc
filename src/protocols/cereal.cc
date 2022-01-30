@@ -31,9 +31,8 @@ void Cereal::onCommand(std::string msg) {
 void Cereal::writeClient(std::string msg) {
     const int LEN = 4;
     char buf[LEN];
-    strcpy(buf, msg.c_str());
+    strncpy(buf, msg.c_str(), LEN);
     buf[LEN - 1] = '\0';
-    fmt::print("Serial send: {}\n", buf);
     serialPuts(serial, buf);
     serialFlush(serial);
 }
@@ -71,6 +70,8 @@ void Cereal::readClient() {
     int sLen = 0;
     char buf[1024];
 
+    serialFlush(serial);
+
     while (true) {
         // Checks if serial
         if (serialDataAvail(serial) < 0) {
@@ -86,13 +87,16 @@ void Cereal::readClient() {
             continue;
         }
 
-        if (c == '\n') {
-            print(fmt::format("{} {}", sLen, buf));
-            // buf[sLen] = '\0';
-            // sLen = 0;
-            this->publish(Cereal::SERIAL_SEND, buf, sLen);
+        if (c == '\n' || c == '\r' || c == '\0') {
+            // Overflow from buffer
+            if (sLen >= 1024) sLen = 1023;
+            buf[sLen] = '\0';
+            // Publish Serial in
+            this->publish(Cereal::SERIAL_MAIN_READ, buf, sLen);
             // Clear buffer
             memset(buf, 0, sizeof(buf));
+            // Reset length
+            sLen = 0;
         } else {
             // Build String and it into serial_buf
             buf[sLen++] = c;

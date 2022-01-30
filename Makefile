@@ -8,11 +8,12 @@ default:
 	make -C protos
 	cmake -S . -B ./build
 	make -C build 
+	cp ./build/RPI ./bin
 	make run
 	
 
 run:
-	./build/RPi --serial=/dev/pts/2 \
+	./bin/RPi --serial=/dev/pts/3 \
 		--vision=localhost:50051
 
 make_cv:

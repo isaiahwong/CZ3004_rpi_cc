@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     Camera cam(p.get<std::string>("vision"));
 
     bt.registerSub(&c, Blueteeth::BT_SERIAL_SEND, Cereal::onCommand);
-    c.registerSub(&cam, Cereal::SERIAL_SEND, Camera::onCapture);
+    c.registerSub(&cam, Cereal::SERIAL_MAIN_READ, Camera::onCapture);
 
     bt.start();
     c.start();
