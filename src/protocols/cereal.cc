@@ -7,14 +7,11 @@
 #include <wiringSerial.h>
 
 #include <chrono>
+#include <iostream>
 #include <string>
 #include <thread>
 
-#include <iostream>
-
-Cereal::~Cereal() {
-    close(serial);
-}
+Cereal::~Cereal() { close(serial); }
 
 /**
  * @brief static function to forward
@@ -33,11 +30,11 @@ void Cereal::onCommand(std::string msg) {
 
 void Cereal::writeClient(std::string msg) {
     const int LEN = 4;
-    char buf[LEN]; 
+    char buf[LEN];
     strcpy(buf, msg.c_str());
-    buf[LEN-1] = '\0';
+    buf[LEN - 1] = '\0';
     fmt::print("Serial send: {}\n", buf);
-    serialPuts(serial, buf); 
+    serialPuts(serial, buf);
     serialFlush(serial);
 }
 
@@ -72,7 +69,7 @@ void Cereal::readClient() {
     // Clear
     char c;
     int sLen = 0;
-    char buf[3];
+    char buf[1024];
 
     while (true) {
         // Checks if serial
@@ -89,10 +86,11 @@ void Cereal::readClient() {
             continue;
         }
 
-        if (c == '\0') {
-            buf[sLen-1] = '\0';
-            sLen = 0;
-            fmt::print("{} \n", c);
+        if (c == '\n') {
+            print(fmt::format("{} {}", sLen, buf));
+            // buf[sLen] = '\0';
+            // sLen = 0;
+            this->publish(Cereal::SERIAL_SEND, buf, sLen);
             // Clear buffer
             memset(buf, 0, sizeof(buf));
         } else {

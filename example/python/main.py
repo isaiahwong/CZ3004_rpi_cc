@@ -1,6 +1,8 @@
 
 import grpc
 import numpy as np
+from numba import jit
+
 import cv2
 from model import Model
 
@@ -10,19 +12,23 @@ from vision_pb2 import *
 from vision_pb2_grpc import *
 
 
+@jit(nopython=True)
+def fast_reshape(byteStr, width, height, channels):
+    frame = np.frombuffer(byteStr, dtype=np.uint8)
+    return np.reshape(frame, (height, width, channels))
+
+
 class ImageServer(VisionServiceServicer):
     def __init__(self):
         self.count = 0
         self.model = Model()
 
     def SendFrame(self, req, ctx):
-        frame = np.array(list(req.image))
-        frame = np.array(frame, dtype=np.uint8)
         # Reshape pixels back to its dimensions
-        array = np.reshape(frame, (req.height, req.width, req.channels))
-
-        cv2.imwrite('out/frame{}.jpg'.format(self.count),
-                    self.model.predict(array, req.width, req.height, ))
+        frame = fast_reshape(req.image, req.width, req.height, req.channels)
+        self.model.predict(frame, req.width, req.height)
+        # cv2.imwrite('out/frame{}.jpg'.format(self.count),
+        #             self.model.predict(frame, req.width, req.height, ))
         self.count += 1
         return Response(count=self.count)
 

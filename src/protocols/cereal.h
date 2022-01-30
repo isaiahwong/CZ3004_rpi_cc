@@ -21,9 +21,13 @@ class Cereal : public Protocol {
     int connect();
 
    public:
+    // Channels
+    inline static const std::string SERIAL_SEND = "SERIAL_SEND";
+
     Cereal(std::string _port) : port(_port), baudrate(115200) {}
 
-    Cereal(std::string _port, int _baudrate) : port(_port), baudrate(_baudrate) {}
+    Cereal(std::string _port, int _baudrate)
+        : port(_port), baudrate(_baudrate) {}
 
     ~Cereal();
 
