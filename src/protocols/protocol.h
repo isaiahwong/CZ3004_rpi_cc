@@ -67,7 +67,12 @@ class Protocol {
     std::string genFnName(std::string _class, std::string fn);
     std::string genError(std::string prefix, std::string msg);
     std::string genError(std::string prefix, std::string msg, int code);
+
+    void print(std::string msg);
+    
     void printRed(std::string msg);
+
+
 
    private:
     UniquePtr mainThread;

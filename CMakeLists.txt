@@ -3,6 +3,7 @@ add_compile_options(-std=c++17)
 
 project(RPi)
 
+# GRPC Common cmake
 include(./cmake/common.cmake)
 
 # GRPC and Protocol Buffers libraries location
@@ -54,6 +55,7 @@ endif()
 
 add_subdirectory(external/fmt)
 add_subdirectory(external/json)
+add_subdirectory(external/concurrentqueue)
 
 # Dependencies
 find_package (Threads)
@@ -73,6 +75,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}/src/protocols")
 target_include_directories(${PROJECT_NAME} 
     PUBLIC external/fmt/include
     external/json/include
+    external/concurrentqueue/include
     ${OpenCV_INCLUDE_DIRS}
 )
 
@@ -88,6 +91,7 @@ target_link_libraries(${PROJECT_NAME}
     Threads::Threads
     fmt::fmt-header-only
     nlohmann_json::nlohmann_json
+    concurrentqueue
     GRPC_PROTO
     ${OpenCV_LIBS}
     ${WIRINGPI_LIB}

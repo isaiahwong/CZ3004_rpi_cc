@@ -1,6 +1,7 @@
 #pragma once
 
 #include <grpcpp/grpcpp.h>
+#include <fmt/core.h>
 #include "vision.grpc.pb.h"
 
 using grpc::Channel;
@@ -22,8 +23,10 @@ class VisionClient {
                 )
             ) {}
 
-        void SendFrame(std::string frame, int width, int height, int channels) {
+        Response* SendFrame(std::string frame, int width, int height, int channels) {
             Request request;
+            Response *res = new Response();
+
             request.set_image(frame);
             request.set_width(width);
             request.set_height(height);
@@ -33,6 +36,12 @@ class VisionClient {
             // the server and/or tweak certain RPC behaviors.
             ClientContext context;
 
-            // stub_->SendFrame()
+            Status status = stub_->SendFrame(&context, request, res);
+
+            if (!status.ok()) {
+                throw fmt::format("{} : {}", status.error_code(), status.error_message());
+            }
+
+            return res;
         }
 };

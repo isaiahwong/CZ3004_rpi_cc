@@ -1,23 +1,57 @@
-#include <stdio.h>
-
-#include <iostream>
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/videoio.hpp>
-
 #include "camera.h"
 
-using namespace cv;
+#include <fmt/core.h>
+#include <stdio.h>
+
+#include <chrono>
+#include <iostream>
 
 Camera::Camera(std::string addr) {
     this->addr = addr;
     this->visionClient = new VisionClient(addr);
-
+    this->videoCap = new cv::VideoCapture();
+    this->q = new Queue();
 }
 
 void Camera::run() {
+    int deviceID = 0;         // 0 = open default camera
+    int apiID = cv::CAP_ANY;  // 0 = autodetect default API
+
+    // Open selected camera using selected API
+    this->videoCap->open(deviceID, apiID);
+
+    // TODO handle error. Move to function
+    if (!this->videoCap->isOpened()) {
+        printRed("Unable to open camera");
+        return;
+    }
+
     // Keep camera thread running
-    while (true) {}
+    onReadFrame();
+}
+
+/**
+ * @brief Constantly reads frames from camera and puts it into queue..
+ *
+ */
+void Camera::onReadFrame() {
+    cv::Mat frame;
+    cv::Mat noopFrame;
+
+    while (true) {
+        this->videoCap->read(frame);
+
+        // check if we succeeded
+        if (frame.empty()) {
+            printRed("Blank frame grabbed");
+            continue;
+        }
+
+        // Discard old frame
+        this->q->try_dequeue(noopFrame);
+        // Insert new frame
+        this->q->enqueue(frame);
+    }
 }
 
 /**
@@ -26,58 +60,48 @@ void Camera::run() {
  * @param c
  * @param msg
  */
-void Camera::onVideoOpen(void* c, std::string msg) {
-    static_cast<Camera*>(c)->onVideoOpen(msg);
+void Camera::onCapture(void* c, std::string msg) {
+    static_cast<Camera*>(c)->onCapture(msg);
 }
 
-void Camera::onVideoOpen(std::string msg) {
-    Mat frame;
-    VideoCapture cap;
-    int deviceID = 0;         // 0 = open default camera
-    int apiID = cv::CAP_ANY;  // 0 = autodetect default API
+void Camera::onCapture(std::string msg) {
+    cv::Mat frame;
 
-    // Open selected camera using selected API
-    cap.open(deviceID, apiID);
+    // Start time
+    print("\nStart Capture");
+    auto t1 = std::chrono::high_resolution_clock::now();
 
-    if (!cap.isOpened()) {
-        // TODO: error handling
-        printRed("Unable to open camera");
+    // Retrieves photo frames from queue
+    bool found = this->q->try_dequeue(frame);
+
+    // check if we succeeded
+    if (!found) {
+        printRed("No frame grabbed");
         return;
     }
 
-    cap.read(frame);
-    // check if we succeeded
-    if (frame.empty()) {
-        printRed("Blank frame grabbed");
-        // break;
-    }
+    cv::Size matSize = frame.size();
+    int width = matSize.width, height = matSize.height,
+        channels = frame.channels();
 
-    Size matSize = frame.size();
-    int width  = matSize.width,
-        height = matSize.height,
-        channels =  frame.channels();
-    
+    // Convert cv mat to byte string
     std::string byteStr(frame.datastart, frame.dataend);
-    visionClient->SendFrame(byteStr, width, height, channels);
-    
-    // show live and wait for a key with timeout long enough to show images
-    //    imwrite(msg+"_test.jpg", frame);
-    // while (true) {
-    //     // wait for a new frame from camera and store it into 'frame'
-    //     cap.read(frame);
-    //     // check if we succeeded
-    //     if (frame.empty()) {
-    //         printRed(ERROR! blank frame grabbed);
-    //         break;
-    //     }
-    //     // show live and wait for a key with timeout long enough to show images
-    //     imshow("Live", frame);
-    //     if (waitKey(5) >= 0) break;
-    // }
-    // the camera will be deinitialized automatically in VideoCapture destructor
+    try {
+        Response* res =
+            visionClient->SendFrame(byteStr, width, height, channels);
+        print(fmt::format("{}", res->count()));
+    } catch (std::string e) {
+        printRed(e);
+    }
+    // End Timer
+    auto t3 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> ms = t3 - t1;
+    print(fmt::format("End Capture {} ms", ms.count()));
 }
 
-
 Camera::~Camera() {
+    this->videoCap->release();
+
     delete visionClient;
+    delete videoCap;
 }

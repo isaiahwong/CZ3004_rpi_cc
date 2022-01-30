@@ -153,3 +153,9 @@ void Protocol::printRed(std::string msg) {
     fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
                msg + "\n");
 }
+
+void Protocol::print(std::string msg) {
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::turquoise),
+               msg + "\n");
+}
+

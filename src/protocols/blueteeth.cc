@@ -143,7 +143,7 @@ void Blueteeth::readClient() {
             return;
         }
 
-        this->publish(Blueteeth::BT_SERIAL_SEND, buf, bytes_read);
+        this->publish(Blueteeth::BT_CAMERA_VIDEO, buf, bytes_read);
         // Clear buffer
         memset(buf, 0, sizeof(buf));
         continue;
