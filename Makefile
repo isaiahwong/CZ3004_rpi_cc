@@ -13,7 +13,7 @@ default:
 	
 
 run:
-	./bin/RPi --serial=/dev/pts/3 \
+	./bin/RPi --serial=/dev/pts/5 \
 		--vision=localhost:50051
 
 gen-protos:

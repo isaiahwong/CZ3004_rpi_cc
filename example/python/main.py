@@ -1,7 +1,6 @@
 
 import grpc
 import numpy as np
-from numba import jit
 
 import cv2
 from model import Model
@@ -12,7 +11,6 @@ from vision_pb2 import *
 from vision_pb2_grpc import *
 
 
-@jit(nopython=True)
 def fast_reshape(byteStr, width, height, channels):
     """
     Using JIT for faster numpy reshape
