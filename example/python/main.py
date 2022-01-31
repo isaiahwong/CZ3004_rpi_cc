@@ -27,6 +27,7 @@ class ImageServer(VisionServiceServicer):
         self.model = Model()
 
     def SendFrame(self, req, ctx):
+        print("Receive")
         # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
         cv2.imwrite('out/frame{}.jpg'.format(self.count),
@@ -39,6 +40,7 @@ def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
     add_VisionServiceServicer_to_server(ImageServer(), server)
     server.add_insecure_port('[::]:50051')
+    print("Starting CV")
     server.start()
     server.wait_for_termination()
 

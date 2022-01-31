@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-from tflite_runtime.interpreter import Interpreter
+import importlib.util
 
 
 class Model:
@@ -18,6 +18,12 @@ class Model:
         self.init()
 
     def init(self):
+        pkg = importlib.util.find_spec('tflite_runtime')
+        if pkg:
+            from tflite_runtime.interpreter import Interpreter
+        else:
+            from tensorflow.lite.python.interpreter import Interpreter
+
         CWD_PATH = os.getcwd()
 
         # Path to .tflite file, which contains the model that is used for object detection
