@@ -26,8 +26,9 @@ class Blueteeth final : public Protocol {
 
    public:
     // Channels
-    inline static const std::string BT_SERIAL_SEND = "BT_SERIAL_SEND";
-    inline static const std::string BT_CAMERA_VIDEO = "BT_CAMERA_VIDEO";
+    inline static const std::string BT_MAIN_READ = "BT_MAIN_READ";
+
+    inline static const std::string BT_CAMERA_CAPTURE = "BT_CAMERA_CAPTURE";
 
     ~Blueteeth();
     Blueteeth();

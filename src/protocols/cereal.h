@@ -4,6 +4,7 @@
 #define CEREAL_H_
 
 #include <string>
+#include <vector>
 
 #include "iostream"
 #include "protocol.h"
@@ -16,6 +17,14 @@ class Cereal : public Protocol {
 
     int baudrate;
 
+    /**
+     * @brief
+     *
+     */
+    std::vector<std::string> hosts;
+
+    int hostPointer = 0;
+
     void runWrite();
     void init();
     int connect();
@@ -24,10 +33,7 @@ class Cereal : public Protocol {
     // Channels
     inline static const std::string SERIAL_MAIN_READ = "SERIAL_MAIN_READ";
 
-    Cereal(std::string _port) : port(_port), baudrate(115200) {}
-
-    Cereal(std::string _port, int _baudrate)
-        : port(_port), baudrate(_baudrate) {}
+    Cereal(std::string _port, int _baudrate);
 
     ~Cereal();
 
@@ -37,15 +43,27 @@ class Cereal : public Protocol {
      * @param c
      * @param msg
      */
-    static void onCommand(void* c, std::string msg);
+    static void onMoveAction(void* c, std::string msg);
 
-    void onCommand(std::string msg);
+    void onMoveAction(std::string msg);
 
     void run();
 
     void readClient();
 
     void writeClient(std::string msg);
+
+    /**
+     * @brief Movement fns
+     * TODO refactor
+     */
+    void forward(std::string);
+
+    void back(std::string);
+
+    void left(std::string);
+
+    void right(std::string);
 };
 
 #endif

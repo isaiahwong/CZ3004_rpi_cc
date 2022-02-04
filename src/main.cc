@@ -36,10 +36,10 @@ int main(int argc, char *argv[]) {
     p.parse_check(argc, argv);
 
     Blueteeth bt;
-    Cereal c(p.get<std::string>("serial"));
+    Cereal c(p.get<std::string>("serial"), 115200);
     Camera cam(p.get<std::string>("vision"));
 
-    bt.registerSub(&c, Blueteeth::BT_SERIAL_SEND, Cereal::onCommand);
+    bt.registerSub(&c, Blueteeth::BT_MAIN_READ, Cereal::onMoveAction);
     c.registerSub(&cam, Cereal::SERIAL_MAIN_READ, Camera::onCapture);
 
     bt.start();

@@ -16,6 +16,3 @@
 [submodule "external/concurrentqueue"]
 	path = external/concurrentqueue
 	url = https://github.com/cameron314/concurrentqueue.git
-[submodule "external/tensorflow"]
-	path = external/tensorflow
-	url = https://github.com/tensorflow/tensorflow.git
