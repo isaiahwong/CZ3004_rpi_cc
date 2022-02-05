@@ -15,7 +15,6 @@
 Cereal::Cereal(std::string _port, int _baudrate = 115200) {
     port = _port;
     baudrate = _baudrate;
-
     // split strings
     std::stringstream ss(_port);
     std::string word;
@@ -30,31 +29,52 @@ Cereal::~Cereal() { close(serial); }
  * @param c
  * @param msg
  */
-void Cereal::onMoveAction(void* c, std::string msg) {
-    static_cast<Cereal*>(c)->onMoveAction(msg);
+void Cereal::onAction(void* c, std::string msg) {
+    static_cast<Cereal*>(c)->onAction(msg);
 }
 
-void Cereal::onMoveAction(std::string msg) {
-    const int LEN = 4;
-    char* buf;
-    char command;
-    strncpy(buf, msg.c_str(), LEN);
-    command = buf[0];
+void Cereal::onAction(std::string msg) {
+    json data = json::parse(msg);
 
-    switch (command) {
-        case 'F':
-            forward(msg);
-            break;
-        case 'B':
-            back(msg);
-            break;
-        case 'L':
-            left(msg);
-            break;
-        case 'R':
-            right(msg);
-            break;
+    // Parse action
+    Action a;
+    Action::from_json(data, a);
+
+    if (a.type.empty()) {
+        printRed("Empty type received");
+        return;
     }
+
+    if (a.action.empty()) {
+        printRed("Empty action received");
+        return;
+    }
+
+    // Switch cases
+    if (a.action.compare(Movement::FORWARD))
+        movement.forward(a, this, writeClient);
+    else if (a.action.compare(Movement::BACK))
+        movement.back(a, this, writeClient);
+    else if (a.action.compare(Movement::FORWARD_LEFT))
+        movement.forwardLeft(a, this, writeClient);
+    else if (a.action.compare(Movement::FORWARD_RIGHT))
+        movement.forwardRight(a, this, writeClient);
+    else if (a.action.compare(Movement::BACK_LEFT))
+        movement.backLeft(a, this, writeClient);
+    else if (a.action.compare(Movement::BACK_RIGHT))
+        movement.backRight(a, this, writeClient);
+    else if (a.action.compare(Movement::STOP))
+        movement.stop(a, this, writeClient);
+}
+
+/**
+ * @brief static function to forward
+ *
+ * @param c
+ * @param msg
+ */
+void Cereal::writeClient(void* c, std::string msg) {
+    static_cast<Cereal*>(c)->writeClient(msg);
 }
 
 void Cereal::writeClient(std::string msg) {
@@ -79,6 +99,8 @@ void Cereal::right(std::string command) {
     writeClient("D000");
     writeClient("W057");
 }
+
+void Cereal::stop(std::string command) { writeClient(command); }
 
 void Cereal::run() {
     while (true) {

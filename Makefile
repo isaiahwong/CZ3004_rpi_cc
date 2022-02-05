@@ -13,7 +13,7 @@ default:
 	
 
 run:
-	./bin/RPi --serial="/dev/pts/8 /dev/tty1"\
+	./bin/RPi --serial="/dev/ttyUSB0 /dev/ttyUSB1"\
 		--vision=localhost:50051
 
 gen-protos:

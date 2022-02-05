@@ -6,7 +6,9 @@
 #include <string>
 #include <vector>
 
+#include "action.h"
 #include "iostream"
+#include "movement.h"
 #include "protocol.h"
 
 class Cereal : public Protocol {
@@ -16,6 +18,8 @@ class Cereal : public Protocol {
     int serial = -1;
 
     int baudrate;
+
+    Movement movement;
 
     /**
      * @brief
@@ -38,18 +42,26 @@ class Cereal : public Protocol {
     ~Cereal();
 
     /**
-     * @brief Forwarder static function to access cereal member functions
+     * @brief Forwarder static function to access Cereal onAction
      *
      * @param c
      * @param msg
      */
-    static void onMoveAction(void* c, std::string msg);
+    static void onAction(void* c, std::string msg);
 
-    void onMoveAction(std::string msg);
+    void onAction(std::string msg);
 
     void run();
 
     void readClient();
+
+    /**
+     * @brief Forwarder static function to access Cereal onAction
+     *
+     * @param c
+     * @param msg
+     */
+    static void writeClient(void* c, std::string msg);
 
     void writeClient(std::string msg);
 
@@ -64,6 +76,8 @@ class Cereal : public Protocol {
     void left(std::string);
 
     void right(std::string);
+
+    void stop(std::string);
 };
 
 #endif
