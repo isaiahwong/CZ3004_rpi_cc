@@ -47,9 +47,9 @@ class Cereal : public Protocol {
      * @param c
      * @param msg
      */
-    static void onAction(void* c, std::string msg);
+    static void onAction(void* c, Action* action);
 
-    void onAction(std::string msg);
+    void onAction(Action* action);
 
     void run();
 
@@ -64,20 +64,6 @@ class Cereal : public Protocol {
     static void writeClient(void* c, std::string msg);
 
     void writeClient(std::string msg);
-
-    /**
-     * @brief Movement fns
-     * TODO refactor
-     */
-    void forward(std::string);
-
-    void back(std::string);
-
-    void left(std::string);
-
-    void right(std::string);
-
-    void stop(std::string);
 };
 
 #endif

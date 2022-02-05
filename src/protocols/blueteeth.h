@@ -30,6 +30,8 @@ class Blueteeth final : public Protocol {
 
     inline static const std::string BT_CAMERA_CAPTURE = "BT_CAMERA_CAPTURE";
 
+    inline static const std::string BT_MOVEMENT = "BT_MOVEMENT";
+
     ~Blueteeth();
     Blueteeth();
     void run();

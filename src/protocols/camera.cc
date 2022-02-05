@@ -60,14 +60,12 @@ void Camera::onReadFrame() {
  * @param c
  * @param msg
  */
-void Camera::onCapture(void* c, std::string msg) {
-    static_cast<Camera*>(c)->onCapture(msg);
+void Camera::onCapture(void* c, Action* action) {
+    static_cast<Camera*>(c)->onCapture(action);
 }
 
-void Camera::onCapture(std::string msg) {
+void Camera::onCapture(Action* action) {
     cv::Mat frame;
-
-    print(msg);
 
     // Start time
     print("\nStart Capture");

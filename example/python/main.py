@@ -3,7 +3,7 @@ import grpc
 import numpy as np
 
 import cv2
-from model import Model
+from tfmodel import TF
 
 from concurrent import futures
 
@@ -22,7 +22,7 @@ def fast_reshape(byteStr, width, height, channels):
 class ImageServer(VisionServiceServicer):
     def __init__(self):
         self.count = 0
-        self.model = Model()
+        self.model = TF()
 
     def SendFrame(self, req, ctx):
         print("Receive")

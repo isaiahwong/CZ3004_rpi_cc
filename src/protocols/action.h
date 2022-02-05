@@ -14,6 +14,10 @@ class Action {
     int angle;
     int distance;
 
+    inline static const std::string TYPE_MOVE = "move";
+
+    inline static const std::string TYPE_CAPTURE = "capture";
+
     void to_json(json& j, const Action& a) {
         j = json{
             {"type", a.type},

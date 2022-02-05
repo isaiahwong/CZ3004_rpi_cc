@@ -7,13 +7,13 @@ void Protocol::exec(Protocol* proto) { proto->run(); }
 
 /**
  * @brief execute sub thread with their handlers
- * 
- * @param proto 
- * @param sub 
- * @param callback 
+ *
+ * @param proto
+ * @param sub
+ * @param callback
  */
 void Protocol::subexec(Protocol* proto, PubSub* sub, SubCallback callback) {
-    char buf[100];
+    char buf[1024];
     auto idx = sub->sub();
     while (true) {
         auto res = sub->read(idx, buf, sizeof(buf));
@@ -21,6 +21,20 @@ void Protocol::subexec(Protocol* proto, PubSub* sub, SubCallback callback) {
             PubSub::MsgHeader* header = (PubSub::MsgHeader*)buf;
             std::string msg = *(std::string*)(header + 1);
             callback(proto, msg);
+        }
+    }
+}
+
+void Protocol::subexecA(Protocol* proto, PubSub* sub,
+                        SubActionCallback callback) {
+    char buf[1024];
+    auto idx = sub->sub();
+    while (true) {
+        auto res = sub->read(idx, buf, sizeof(buf));
+        if (res == PubSub::ReadOK) {
+            PubSub::MsgHeader* header = (PubSub::MsgHeader*)buf;
+            Action* action = (Action*)(header + 1);
+            callback(proto, action);
         }
     }
 }
@@ -68,29 +82,40 @@ void Protocol::join() {
     mainThread = nullptr;
 }
 
+void Protocol::registerSub(Protocol* proto, std::string channel,
+                           SubActionCallback callback) {
+    if (proto == nullptr) return;
+    if (channel.empty()) return;
+
+    proto->_registerSub(proto, channel, getPub(channel), callback);
+}
+
 /**
  * @brief Assigns publisher to current class
  *
  * @param proto
  */
 void Protocol::registerSub(Protocol* proto, std::string channel,
-                         SubCallback callback) {
+                           SubCallback callback) {
     if (proto == nullptr) return;
     if (channel.empty()) return;
 
+    proto->_registerSub(proto, channel, getPub(channel), callback);
+}
+
+PubSub* Protocol::getPub(std::string channel) {
     PubSub* pub;
     // Check if channel exists
     auto i = subscriptions.find(channel);
     // Create channel if not found
-    if (i == subscriptions.end()) {  
+    if (i == subscriptions.end()) {
         pub = new PubSub();
         subscriptions.emplace(channel, pub);
     } else {
         // found publisher
         pub = i->second;
     }
-
-    proto->_registerSub(proto, channel, pub, callback);
+    return pub;
 }
 
 /**
@@ -101,16 +126,54 @@ void Protocol::registerSub(Protocol* proto, std::string channel,
  * @param callback
  */
 void Protocol::_registerSub(Protocol* proto, std::string channel, PubSub* sub,
-                          SubCallback callback) {
+                            SubActionCallback callback) {
     if (channel.empty()) return;
     if (sub == nullptr) return;
+    // start subscription with subexec callback
+    std::thread* t = new std::thread(Protocol::subexecA, proto, sub, callback);
+    // Create a subThread
+    std::unique_ptr<std::thread> subThread;
+    subThread.reset(t);
+    subThreads.push_back(std::move(subThread));
+}
 
+/**
+ * @brief
+ *
+ * @param proto
+ * @param channel
+ * @param sub
+ * @param callback
+ */
+void Protocol::_registerSub(Protocol* proto, std::string channel, PubSub* sub,
+                            SubCallback callback) {
+    if (channel.empty()) return;
+    if (sub == nullptr) return;
     // start subscription with subexec callback
     std::thread* t = new std::thread(Protocol::subexec, proto, sub, callback);
     // Create a subThread
     std::unique_ptr<std::thread> subThread;
     subThread.reset(t);
     subThreads.push_back(std::move(subThread));
+}
+
+void Protocol::publish(std::string channel, Action* action) {
+    // Check if channel exists
+    PubSub* pub;
+
+    auto i = subscriptions.find(channel);
+    if (i == subscriptions.end()) {  // Create channel if not found
+        fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
+                   "Channel does not exist\n");
+        return;
+    } else {
+        // found publisher
+        pub = i->second;
+    }
+
+    PubSub::MsgHeader* header = pub->alloc(sizeof(Action));
+    *(Action*)(header + 1) = *action;
+    pub->pub();
 }
 
 void Protocol::publish(std::string channel, char* buffer, int bufflen) {
@@ -142,7 +205,8 @@ std::string Protocol::genFnName(std::string _class, std::string fn) {
 }
 
 std::string Protocol::genError(std::string prefix, std::string msg) {
-    return fmt::format(fmt::emphasis::bold | fg(fmt::color::hot_pink), "{} {}", prefix, msg);
+    return fmt::format(fmt::emphasis::bold | fg(fmt::color::hot_pink), "{} {}",
+                       prefix, msg);
 }
 
 std::string Protocol::genError(std::string prefix, std::string msg, int code) {
@@ -150,12 +214,9 @@ std::string Protocol::genError(std::string prefix, std::string msg, int code) {
 }
 
 void Protocol::printRed(std::string msg) {
-    fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
-               msg + "\n");
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink), msg + "\n");
 }
 
 void Protocol::print(std::string msg) {
-    fmt::print(fmt::emphasis::bold | fg(fmt::color::turquoise),
-               msg + "\n");
+    fmt::print(fmt::emphasis::bold | fg(fmt::color::turquoise), msg + "\n");
 }
-

@@ -29,42 +29,30 @@ Cereal::~Cereal() { close(serial); }
  * @param c
  * @param msg
  */
-void Cereal::onAction(void* c, std::string msg) {
-    static_cast<Cereal*>(c)->onAction(msg);
+void Cereal::onAction(void* c, Action* action) {
+    static_cast<Cereal*>(c)->onAction(action);
 }
 
-void Cereal::onAction(std::string msg) {
-    json data = json::parse(msg);
-
-    // Parse action
-    Action a;
-    Action::from_json(data, a);
-
-    if (a.type.empty()) {
-        printRed("Empty type received");
-        return;
+void Cereal::onAction(Action* action) {
+    Action a = *action;
+    try {
+        // Switch cases
+        if (a.action.compare(Movement::FORWARD) == 0)
+            movement.forward(a, this, writeClient);
+        else if (a.action.compare(Movement::BACK) == 0)
+            movement.back(a, this, writeClient);
+        else if (a.action.compare(Movement::FORWARD_LEFT) == 0)
+            movement.forwardLeft(a, this, writeClient);
+        else if (a.action.compare(Movement::FORWARD_RIGHT) == 0)
+            movement.forwardRight(a, this, writeClient);
+        else if (a.action.compare(Movement::BACK_LEFT) == 0)
+            movement.backLeft(a, this, writeClient);
+        else if (a.action.compare(Movement::BACK_RIGHT) == 0)
+            movement.backRight(a, this, writeClient);
+        else if (a.action.compare(Movement::STOP) == 0)
+            movement.stop(a, this, writeClient);
+    } catch (...) {
     }
-
-    if (a.action.empty()) {
-        printRed("Empty action received");
-        return;
-    }
-
-    // Switch cases
-    if (a.action.compare(Movement::FORWARD))
-        movement.forward(a, this, writeClient);
-    else if (a.action.compare(Movement::BACK))
-        movement.back(a, this, writeClient);
-    else if (a.action.compare(Movement::FORWARD_LEFT))
-        movement.forwardLeft(a, this, writeClient);
-    else if (a.action.compare(Movement::FORWARD_RIGHT))
-        movement.forwardRight(a, this, writeClient);
-    else if (a.action.compare(Movement::BACK_LEFT))
-        movement.backLeft(a, this, writeClient);
-    else if (a.action.compare(Movement::BACK_RIGHT))
-        movement.backRight(a, this, writeClient);
-    else if (a.action.compare(Movement::STOP))
-        movement.stop(a, this, writeClient);
 }
 
 /**
@@ -77,30 +65,20 @@ void Cereal::writeClient(void* c, std::string msg) {
     static_cast<Cereal*>(c)->writeClient(msg);
 }
 
+/**
+ * @brief Write to STM
+ *
+ * @param msg
+ */
 void Cereal::writeClient(std::string msg) {
-    const int LEN = 4;
+    const int LEN = 5;
     char buf[LEN];
     // Truncates till 4
     strncpy(buf, msg.c_str(), LEN);
     buf[LEN - 1] = '\0';
+    std::cout << buf << std::endl;
     serialPuts(serial, buf);
 }
-
-void Cereal::forward(std::string command) { writeClient(command); }
-
-void Cereal::back(std::string command) { writeClient(command); }
-
-void Cereal::left(std::string command) {
-    writeClient("A000");
-    writeClient("W028");
-}
-
-void Cereal::right(std::string command) {
-    writeClient("D000");
-    writeClient("W057");
-}
-
-void Cereal::stop(std::string command) { writeClient(command); }
 
 void Cereal::run() {
     while (true) {

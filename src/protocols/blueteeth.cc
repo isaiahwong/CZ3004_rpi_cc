@@ -26,10 +26,11 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <iostream>
 #include <string>
 #include <thread>
 
-#include "iostream"
+#include "action.h"
 
 Blueteeth::Blueteeth() {
     this->name = "blueteeth";
@@ -136,19 +137,54 @@ void Blueteeth::readClient() {
     // Run blocking loop to listen for bluetooth connections
     while (true) {
         // read data from the client
-        int bytes_read = read(client, buf, sizeof(buf));
+        int bufflen = read(client, buf, sizeof(buf));
 
         // Exit function call, attempt to reconnect
-        if (bytes_read <= 0) {
+        if (bufflen <= 0) {
             return;
         }
 
-        this->publish(Blueteeth::BT_MAIN_READ, buf, bytes_read);
+        // Parse char to string
+        std::string message(buf, bufflen);
+        
+        // Parse action
+        Action a;
+
+        try {
+            // parse string to json
+            json data = json::parse(message);
+            // deserialise json to Action
+            Action::from_json(data, a);
+        } catch (const json::parse_error &e) {
+            // Issues with fmt::format
+            std::cout << e.what() << std::endl;
+            continue;
+        }
+
+        if (a.type.empty()) {
+            printRed("Empty type received");
+            continue;
+        }
+
+        if (a.action.empty()) {
+            printRed("Empty action received");
+            continue;
+        }
+
+        // map to different channels
+        if (a.type.compare(Action::TYPE_MOVE) == 0) 
+            this->publish(Blueteeth::BT_MOVEMENT, &a);
+        else if (a.type.compare(Action::TYPE_CAPTURE) == 0)
+            this->publish(Blueteeth::BT_CAMERA_CAPTURE, &a);
+
+        // Publish to generic main read for debug
+        // this->publish(Blueteeth::BT_MAIN_READ, buf, bufflen);
         // Clear buffer
         memset(buf, 0, sizeof(buf));
         continue;
     }
 }
+
 
 Blueteeth::~Blueteeth() {
     close(client);

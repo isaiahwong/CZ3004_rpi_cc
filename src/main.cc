@@ -39,8 +39,12 @@ int main(int argc, char *argv[]) {
     Cereal c(p.get<std::string>("serial"), 115200);
     Camera cam(p.get<std::string>("vision"));
 
-    bt.registerSub(&c, Blueteeth::BT_MAIN_READ, Cereal::onAction);
-    c.registerSub(&cam, Cereal::SERIAL_MAIN_READ, Camera::onCapture);
+    // Register cereal to listen for movement calls
+    bt.registerSub(&c, Blueteeth::BT_MOVEMENT, Cereal::onAction);
+
+    // Register cereal to listen for movement calls
+    // c.registerSub(&cam, Cereal::SERIAL_MAIN_READ, Camera::onCapture);
+    // c.registerSub(&c, Cereal::SERIAL_MAIN_READ, Cereal::onAction);
 
     bt.start();
     c.start();

@@ -9,19 +9,26 @@
 #include <vector>
 
 #include "../common/pubsub.h"
+#include "action.h"
 
 using PubSub = PubSubQueue<1024>;
 using UniquePtr = std::unique_ptr<std::thread>;
 using VectorThread = std::vector<UniquePtr>;
 
 class Protocol {
-   public:    
+   public:
     /**
      * @brief Defines a void pointer to allow variable class as well as allowing
      * class to access member functions
      * https://stackoverflow.com/questions/12662891/how-can-i-pass-a-member-function-where-a-free-function-is-expected
      */
     typedef void (*SubCallback)(void* proto, std::string);
+
+    /**
+     * @brief void pointer to allow Actions
+     *
+     */
+    typedef void (*SubActionCallback)(void* proto, Action*);
 
     /**
      * @brief Construct a new Protocol object
@@ -49,12 +56,18 @@ class Protocol {
 
     /**
      * @brief Registers a protocol to be subscribed to a channel
-     * 
-     * @param proto 
-     * @param channel 
-     * @param callback 
+     *
+     * @param proto
+     * @param channel
+     * @param callback
      */
-    void registerSub(Protocol* proto, std::string channel, SubCallback callback);
+    void registerSub(Protocol* proto, std::string channel,
+                     SubCallback callback);
+
+    void registerSub(Protocol* proto, std::string channel,
+                     SubActionCallback callback);
+
+    void publish(std::string channel, Action* a);
 
     void publish(std::string channel, char* buffer, int bufflen);
 
@@ -63,16 +76,14 @@ class Protocol {
     virtual void run() = 0;
 
    protected:
-   // Utility
+    // Utility
     std::string genFnName(std::string _class, std::string fn);
     std::string genError(std::string prefix, std::string msg);
     std::string genError(std::string prefix, std::string msg, int code);
 
     void print(std::string msg);
-    
+
     void printRed(std::string msg);
-
-
 
    private:
     UniquePtr mainThread;
@@ -85,14 +96,22 @@ class Protocol {
     // Pointers to the subscription threads
     VectorThread subThreads;
 
+    PubSub* getPub(std::string);
+
     void _registerSub(Protocol* proto, std::string channel, PubSub* sub,
-                    SubCallback callback);
+                      SubActionCallback callback);
+
+    void _registerSub(Protocol* proto, std::string channel, PubSub* sub,
+                      SubCallback callback);
 
     // callback function to run thread instance
     static void exec(Protocol* proto);
 
-    // callback function to run thread instance
     static void subexec(Protocol* proto, PubSub* sub, SubCallback callback);
+
+    // callback function to run thread instance
+    static void subexecA(Protocol* proto, PubSub* sub,
+                         SubActionCallback callback);
 };
 
 #endif

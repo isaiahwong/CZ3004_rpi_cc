@@ -10,6 +10,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
+#include "action.h"
 #include "protocol.h"
 #include "vision_client.h"
 
@@ -37,9 +38,9 @@ class Camera final : public Protocol {
      * @param c
      * @param msg
      */
-    static void onCapture(void *c, std::string msg);
+    static void onCapture(void *c, Action* action);
 
-    void onCapture(std::string msg);
+    void onCapture(Action *action);
 
     void run();
 };
