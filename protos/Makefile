@@ -1,5 +1,5 @@
 cpp_out_path := ../src/protocols
-python_out_path := ../example/python
+python_out_path := ../cv
 
 .default:
 	gen-cpp
