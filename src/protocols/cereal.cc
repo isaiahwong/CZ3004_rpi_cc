@@ -138,6 +138,8 @@ void Cereal::readClient() {
             // Overflow from buffer
             if (sLen >= 1024) sLen = 1023;
             buf[sLen] = '\0';
+            // TODO: map SERIAL RESPONSE AND SEND TO ANDROID
+
             // Publish Serial in
             this->publish(Cereal::SERIAL_MAIN_READ, buf, sLen);
             // Clear buffer
