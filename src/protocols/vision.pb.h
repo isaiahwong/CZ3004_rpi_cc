@@ -57,16 +57,16 @@ extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table
 class Empty;
 struct EmptyDefaultTypeInternal;
 extern EmptyDefaultTypeInternal _Empty_default_instance_;
-class Request;
-struct RequestDefaultTypeInternal;
-extern RequestDefaultTypeInternal _Request_default_instance_;
-class Response;
-struct ResponseDefaultTypeInternal;
-extern ResponseDefaultTypeInternal _Response_default_instance_;
+class VisionRequest;
+struct VisionRequestDefaultTypeInternal;
+extern VisionRequestDefaultTypeInternal _VisionRequest_default_instance_;
+class VisionResponse;
+struct VisionResponseDefaultTypeInternal;
+extern VisionResponseDefaultTypeInternal _VisionResponse_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Empty* Arena::CreateMaybeMessage<::Empty>(Arena*);
-template<> ::Request* Arena::CreateMaybeMessage<::Request>(Arena*);
-template<> ::Response* Arena::CreateMaybeMessage<::Response>(Arena*);
+template<> ::VisionRequest* Arena::CreateMaybeMessage<::VisionRequest>(Arena*);
+template<> ::VisionResponse* Arena::CreateMaybeMessage<::VisionResponse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 // ===================================================================
@@ -186,24 +186,24 @@ class Empty final :
 };
 // -------------------------------------------------------------------
 
-class Request final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Request) */ {
+class VisionRequest final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VisionRequest) */ {
  public:
-  inline Request() : Request(nullptr) {}
-  ~Request() override;
-  explicit constexpr Request(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline VisionRequest() : VisionRequest(nullptr) {}
+  ~VisionRequest() override;
+  explicit constexpr VisionRequest(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Request(const Request& from);
-  Request(Request&& from) noexcept
-    : Request() {
+  VisionRequest(const VisionRequest& from);
+  VisionRequest(VisionRequest&& from) noexcept
+    : VisionRequest() {
     *this = ::std::move(from);
   }
 
-  inline Request& operator=(const Request& from) {
+  inline VisionRequest& operator=(const VisionRequest& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Request& operator=(Request&& from) noexcept {
+  inline VisionRequest& operator=(VisionRequest&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -226,20 +226,20 @@ class Request final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Request& default_instance() {
+  static const VisionRequest& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Request* internal_default_instance() {
-    return reinterpret_cast<const Request*>(
-               &_Request_default_instance_);
+  static inline const VisionRequest* internal_default_instance() {
+    return reinterpret_cast<const VisionRequest*>(
+               &_VisionRequest_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(Request& a, Request& b) {
+  friend void swap(VisionRequest& a, VisionRequest& b) {
     a.Swap(&b);
   }
-  inline void Swap(Request* other) {
+  inline void Swap(VisionRequest* other) {
     if (other == this) return;
     if (GetOwningArena() == other->GetOwningArena()) {
       InternalSwap(other);
@@ -247,7 +247,7 @@ class Request final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Request* other) {
+  void UnsafeArenaSwap(VisionRequest* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -255,17 +255,17 @@ class Request final :
 
   // implements Message ----------------------------------------------
 
-  inline Request* New() const final {
-    return new Request();
+  inline VisionRequest* New() const final {
+    return new VisionRequest();
   }
 
-  Request* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Request>(arena);
+  VisionRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<VisionRequest>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Request& from);
+  void CopyFrom(const VisionRequest& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const Request& from);
+  void MergeFrom(const VisionRequest& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -282,13 +282,13 @@ class Request final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Request* other);
+  void InternalSwap(VisionRequest* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Request";
+    return "VisionRequest";
   }
   protected:
-  explicit Request(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit VisionRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -351,7 +351,7 @@ class Request final :
   void _internal_set_channels(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Request)
+  // @@protoc_insertion_point(class_scope:VisionRequest)
  private:
   class _Internal;
 
@@ -367,24 +367,24 @@ class Request final :
 };
 // -------------------------------------------------------------------
 
-class Response final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Response) */ {
+class VisionResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VisionResponse) */ {
  public:
-  inline Response() : Response(nullptr) {}
-  ~Response() override;
-  explicit constexpr Response(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline VisionResponse() : VisionResponse(nullptr) {}
+  ~VisionResponse() override;
+  explicit constexpr VisionResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Response(const Response& from);
-  Response(Response&& from) noexcept
-    : Response() {
+  VisionResponse(const VisionResponse& from);
+  VisionResponse(VisionResponse&& from) noexcept
+    : VisionResponse() {
     *this = ::std::move(from);
   }
 
-  inline Response& operator=(const Response& from) {
+  inline VisionResponse& operator=(const VisionResponse& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Response& operator=(Response&& from) noexcept {
+  inline VisionResponse& operator=(VisionResponse&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -407,20 +407,20 @@ class Response final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Response& default_instance() {
+  static const VisionResponse& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Response* internal_default_instance() {
-    return reinterpret_cast<const Response*>(
-               &_Response_default_instance_);
+  static inline const VisionResponse* internal_default_instance() {
+    return reinterpret_cast<const VisionResponse*>(
+               &_VisionResponse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     2;
 
-  friend void swap(Response& a, Response& b) {
+  friend void swap(VisionResponse& a, VisionResponse& b) {
     a.Swap(&b);
   }
-  inline void Swap(Response* other) {
+  inline void Swap(VisionResponse* other) {
     if (other == this) return;
     if (GetOwningArena() == other->GetOwningArena()) {
       InternalSwap(other);
@@ -428,7 +428,7 @@ class Response final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Response* other) {
+  void UnsafeArenaSwap(VisionResponse* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -436,17 +436,17 @@ class Response final :
 
   // implements Message ----------------------------------------------
 
-  inline Response* New() const final {
-    return new Response();
+  inline VisionResponse* New() const final {
+    return new VisionResponse();
   }
 
-  Response* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<Response>(arena);
+  VisionResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<VisionResponse>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Response& from);
+  void CopyFrom(const VisionResponse& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom(const Response& from);
+  void MergeFrom(const VisionResponse& from);
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
@@ -463,13 +463,13 @@ class Response final :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Response* other);
+  void InternalSwap(VisionResponse* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Response";
+    return "VisionResponse";
   }
   protected:
-  explicit Response(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit VisionResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   private:
   static void ArenaDtor(void* object);
@@ -486,25 +486,41 @@ class Response final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kCountFieldNumber = 1,
+    kImageidFieldNumber = 2,
+    kStatusFieldNumber = 1,
   };
-  // int32 count = 1;
-  void clear_count();
-  ::PROTOBUF_NAMESPACE_ID::int32 count() const;
-  void set_count(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // string imageid = 2;
+  void clear_imageid();
+  const std::string& imageid() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_imageid(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_imageid();
+  PROTOBUF_MUST_USE_RESULT std::string* release_imageid();
+  void set_allocated_imageid(std::string* imageid);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_count() const;
-  void _internal_set_count(::PROTOBUF_NAMESPACE_ID::int32 value);
+  const std::string& _internal_imageid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_imageid(const std::string& value);
+  std::string* _internal_mutable_imageid();
   public:
 
-  // @@protoc_insertion_point(class_scope:Response)
+  // int32 status = 1;
+  void clear_status();
+  ::PROTOBUF_NAMESPACE_ID::int32 status() const;
+  void set_status(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_status() const;
+  void _internal_set_status(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:VisionResponse)
  private:
   class _Internal;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::int32 count_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr imageid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 status_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_vision_2eproto;
 };
@@ -521,44 +537,44 @@ class Response final :
 
 // -------------------------------------------------------------------
 
-// Request
+// VisionRequest
 
 // bytes image = 1;
-inline void Request::clear_image() {
+inline void VisionRequest::clear_image() {
   image_.ClearToEmpty();
 }
-inline const std::string& Request::image() const {
-  // @@protoc_insertion_point(field_get:Request.image)
+inline const std::string& VisionRequest::image() const {
+  // @@protoc_insertion_point(field_get:VisionRequest.image)
   return _internal_image();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void Request::set_image(ArgT0&& arg0, ArgT... args) {
+void VisionRequest::set_image(ArgT0&& arg0, ArgT... args) {
  
  image_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Request.image)
+  // @@protoc_insertion_point(field_set:VisionRequest.image)
 }
-inline std::string* Request::mutable_image() {
+inline std::string* VisionRequest::mutable_image() {
   std::string* _s = _internal_mutable_image();
-  // @@protoc_insertion_point(field_mutable:Request.image)
+  // @@protoc_insertion_point(field_mutable:VisionRequest.image)
   return _s;
 }
-inline const std::string& Request::_internal_image() const {
+inline const std::string& VisionRequest::_internal_image() const {
   return image_.Get();
 }
-inline void Request::_internal_set_image(const std::string& value) {
+inline void VisionRequest::_internal_set_image(const std::string& value) {
   
   image_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
 }
-inline std::string* Request::_internal_mutable_image() {
+inline std::string* VisionRequest::_internal_mutable_image() {
   
   return image_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
 }
-inline std::string* Request::release_image() {
-  // @@protoc_insertion_point(field_release:Request.image)
+inline std::string* VisionRequest::release_image() {
+  // @@protoc_insertion_point(field_release:VisionRequest.image)
   return image_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
 }
-inline void Request::set_allocated_image(std::string* image) {
+inline void VisionRequest::set_allocated_image(std::string* image) {
   if (image != nullptr) {
     
   } else {
@@ -566,91 +582,137 @@ inline void Request::set_allocated_image(std::string* image) {
   }
   image_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), image,
       GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set_allocated:Request.image)
+  // @@protoc_insertion_point(field_set_allocated:VisionRequest.image)
 }
 
 // int32 width = 2;
-inline void Request::clear_width() {
+inline void VisionRequest::clear_width() {
   width_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::_internal_width() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionRequest::_internal_width() const {
   return width_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::width() const {
-  // @@protoc_insertion_point(field_get:Request.width)
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionRequest::width() const {
+  // @@protoc_insertion_point(field_get:VisionRequest.width)
   return _internal_width();
 }
-inline void Request::_internal_set_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void VisionRequest::_internal_set_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   width_ = value;
 }
-inline void Request::set_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void VisionRequest::set_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_width(value);
-  // @@protoc_insertion_point(field_set:Request.width)
+  // @@protoc_insertion_point(field_set:VisionRequest.width)
 }
 
 // int32 height = 3;
-inline void Request::clear_height() {
+inline void VisionRequest::clear_height() {
   height_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::_internal_height() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionRequest::_internal_height() const {
   return height_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::height() const {
-  // @@protoc_insertion_point(field_get:Request.height)
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionRequest::height() const {
+  // @@protoc_insertion_point(field_get:VisionRequest.height)
   return _internal_height();
 }
-inline void Request::_internal_set_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void VisionRequest::_internal_set_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   height_ = value;
 }
-inline void Request::set_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void VisionRequest::set_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_height(value);
-  // @@protoc_insertion_point(field_set:Request.height)
+  // @@protoc_insertion_point(field_set:VisionRequest.height)
 }
 
 // int32 channels = 4;
-inline void Request::clear_channels() {
+inline void VisionRequest::clear_channels() {
   channels_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::_internal_channels() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionRequest::_internal_channels() const {
   return channels_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Request::channels() const {
-  // @@protoc_insertion_point(field_get:Request.channels)
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionRequest::channels() const {
+  // @@protoc_insertion_point(field_get:VisionRequest.channels)
   return _internal_channels();
 }
-inline void Request::_internal_set_channels(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void VisionRequest::_internal_set_channels(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   channels_ = value;
 }
-inline void Request::set_channels(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void VisionRequest::set_channels(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_channels(value);
-  // @@protoc_insertion_point(field_set:Request.channels)
+  // @@protoc_insertion_point(field_set:VisionRequest.channels)
 }
 
 // -------------------------------------------------------------------
 
-// Response
+// VisionResponse
 
-// int32 count = 1;
-inline void Response::clear_count() {
-  count_ = 0;
+// int32 status = 1;
+inline void VisionResponse::clear_status() {
+  status_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Response::_internal_count() const {
-  return count_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionResponse::_internal_status() const {
+  return status_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 Response::count() const {
-  // @@protoc_insertion_point(field_get:Response.count)
-  return _internal_count();
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionResponse::status() const {
+  // @@protoc_insertion_point(field_get:VisionResponse.status)
+  return _internal_status();
 }
-inline void Response::_internal_set_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void VisionResponse::_internal_set_status(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  count_ = value;
+  status_ = value;
 }
-inline void Response::set_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_count(value);
-  // @@protoc_insertion_point(field_set:Response.count)
+inline void VisionResponse::set_status(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_status(value);
+  // @@protoc_insertion_point(field_set:VisionResponse.status)
+}
+
+// string imageid = 2;
+inline void VisionResponse::clear_imageid() {
+  imageid_.ClearToEmpty();
+}
+inline const std::string& VisionResponse::imageid() const {
+  // @@protoc_insertion_point(field_get:VisionResponse.imageid)
+  return _internal_imageid();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void VisionResponse::set_imageid(ArgT0&& arg0, ArgT... args) {
+ 
+ imageid_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:VisionResponse.imageid)
+}
+inline std::string* VisionResponse::mutable_imageid() {
+  std::string* _s = _internal_mutable_imageid();
+  // @@protoc_insertion_point(field_mutable:VisionResponse.imageid)
+  return _s;
+}
+inline const std::string& VisionResponse::_internal_imageid() const {
+  return imageid_.Get();
+}
+inline void VisionResponse::_internal_set_imageid(const std::string& value) {
+  
+  imageid_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* VisionResponse::_internal_mutable_imageid() {
+  
+  return imageid_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* VisionResponse::release_imageid() {
+  // @@protoc_insertion_point(field_release:VisionResponse.imageid)
+  return imageid_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void VisionResponse::set_allocated_imageid(std::string* imageid) {
+  if (imageid != nullptr) {
+    
+  } else {
+    
+  }
+  imageid_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), imageid,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:VisionResponse.imageid)
 }
 
 #ifdef __GNUC__

@@ -23,18 +23,18 @@ def fast_reshape(byteStr, width, height, channels):
 class ImageServer(VisionServiceServicer):
     def __init__(self):
         self.count = 0
-        self.model = YoloV5()
-        # self.model = TF()
+        # self.model = YoloV5()
+        self.model = TF()
 
     def SendFrame(self, req, ctx):
         print("Receive")
         # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
-        print(self.model.predict(frame, req.width))
-        # cv2.imwrite('out/frame{}.jpg'.format(self.count),
-        #             self.model.predict(frame, req.width, req.height, ))
-        # self.count += 1
-        return Response(count=self.count)
+        # print(self.model.predict(frame, req.width))
+        frame, label = self.model.predict(frame, req.width, req.height)
+        cv2.imwrite('out/frame0.jpg',frame)
+        status = 0 if str(label) == '-1' else 1
+        return VisionResponse(imageid=label, status=status)
 
 
 def main():

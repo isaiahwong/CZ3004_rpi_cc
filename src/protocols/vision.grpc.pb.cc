@@ -34,23 +34,23 @@ VisionService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& chan
   : channel_(channel), rpcmethod_SendFrame_(VisionService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
-::grpc::Status VisionService::Stub::SendFrame(::grpc::ClientContext* context, const ::Request& request, ::Response* response) {
-  return ::grpc::internal::BlockingUnaryCall< ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_SendFrame_, context, request, response);
+::grpc::Status VisionService::Stub::SendFrame(::grpc::ClientContext* context, const ::VisionRequest& request, ::VisionResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::VisionRequest, ::VisionResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_SendFrame_, context, request, response);
 }
 
-void VisionService::Stub::async::SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, std::function<void(::grpc::Status)> f) {
-  ::grpc::internal::CallbackUnaryCall< ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SendFrame_, context, request, response, std::move(f));
+void VisionService::Stub::async::SendFrame(::grpc::ClientContext* context, const ::VisionRequest* request, ::VisionResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::VisionRequest, ::VisionResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SendFrame_, context, request, response, std::move(f));
 }
 
-void VisionService::Stub::async::SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, ::grpc::ClientUnaryReactor* reactor) {
+void VisionService::Stub::async::SendFrame(::grpc::ClientContext* context, const ::VisionRequest* request, ::VisionResponse* response, ::grpc::ClientUnaryReactor* reactor) {
   ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SendFrame_, context, request, response, reactor);
 }
 
-::grpc::ClientAsyncResponseReader< ::Response>* VisionService::Stub::PrepareAsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::Response, ::Request, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_SendFrame_, context, request);
+::grpc::ClientAsyncResponseReader< ::VisionResponse>* VisionService::Stub::PrepareAsyncSendFrameRaw(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::VisionResponse, ::VisionRequest, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_SendFrame_, context, request);
 }
 
-::grpc::ClientAsyncResponseReader< ::Response>* VisionService::Stub::AsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
+::grpc::ClientAsyncResponseReader< ::VisionResponse>* VisionService::Stub::AsyncSendFrameRaw(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) {
   auto* result =
     this->PrepareAsyncSendFrameRaw(context, request, cq);
   result->StartCall();
@@ -61,11 +61,11 @@ VisionService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       VisionService_method_names[0],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< VisionService::Service, ::Request, ::Response, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+      new ::grpc::internal::RpcMethodHandler< VisionService::Service, ::VisionRequest, ::VisionResponse, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](VisionService::Service* service,
              ::grpc::ServerContext* ctx,
-             const ::Request* req,
-             ::Response* resp) {
+             const ::VisionRequest* req,
+             ::VisionResponse* resp) {
                return service->SendFrame(ctx, req, resp);
              }, this)));
 }
@@ -73,7 +73,7 @@ VisionService::Service::Service() {
 VisionService::Service::~Service() {
 }
 
-::grpc::Status VisionService::Service::SendFrame(::grpc::ServerContext* context, const ::Request* request, ::Response* response) {
+::grpc::Status VisionService::Service::SendFrame(::grpc::ServerContext* context, const ::VisionRequest* request, ::VisionResponse* response) {
   (void) context;
   (void) request;
   (void) response;

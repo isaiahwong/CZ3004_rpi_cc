@@ -23,8 +23,9 @@ class YoloV5:
         self.model.conf = self.conf 
 
     def predict(self, frame, imageWidth):
-        results = self.model(frame, size=imageWidth)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = self.model(frame, size=416)
         results.save("./out")
-        print(results.pandas().xyxy[0])
-        # return results.pandas().xyxy[0].iloc[0]['name']
-        return ''
+        if len(results.pandas().xyxy[0]):
+            return results.pandas().xyxy[0].iloc[0]['name']
+        return -1

@@ -7,6 +7,33 @@
 
 using json = nlohmann::json;
 
+class Response {
+   public:
+    std::string result;
+    int status;
+
+    inline static const int OK = 1;
+    inline static const int ERROR = 0;
+
+    Response(std::string result, int status) {
+        this->result = result;
+        this->status = status;
+    }
+
+    void to_json(json& j) {
+        j = json{
+            {"status", status},
+            {"result", result},
+
+        };
+    }
+
+    static void from_json(const json& j, Response& a) {
+        j.at("status").get_to(a.status);
+        j.at("result").get_to(a.result);
+    }
+};
+
 class Action {
    public:
     std::string type;

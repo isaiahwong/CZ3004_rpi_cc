@@ -85,16 +85,17 @@ class TF:
             scores = self.interpreter.get_tensor(
                 self.output_details[0]['index'])[0]
 
-            frame = self.draw(frame=frame, scores=scores,
+            frame, label = self.draw(frame=frame, scores=scores,
                               boxes=boxes, classes=classes)
             # Resize back to camera resolution
             frame = cv2.resize(frame, (imageWidth, imageHeight))
-            return frame
+            return frame, label
         except Exception as e:
             print(e)
             return
 
     def draw(self, frame=None, scores=[], boxes=[[]], classes=[]):
+        object_name = '-1'
         # Loop over all detections and draw detection box if confidence is above minimum threshold
         for i in range(len(scores)):
             if ((scores[i] > self.threshold) and (scores[i] <= 1.0)):
@@ -135,4 +136,4 @@ class TF:
                 cv2.putText(frame, label, (xmin, label_ymin-7),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw label text
 
-        return frame
+        return frame, object_name

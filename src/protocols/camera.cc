@@ -87,9 +87,12 @@ void Camera::onCapture(Action* action) {
     // Convert cv mat to byte string
     std::string byteStr(frame.datastart, frame.dataend);
     try {
-        Response* res =
+        VisionResponse* vres =
             visionClient->SendFrame(byteStr, width, height, channels);
-        print(fmt::format("{}", res->count()));
+
+        Response res(vres->imageid(), vres->status());
+        this->publish(Camera::CAM_CAPTURE_RESULT, &res);
+        print(fmt::format("{}", vres->imageid()));
     } catch (std::string e) {
         printRed(e);
     }

@@ -16,8 +16,8 @@ class VisionServiceStub(object):
         """
         self.SendFrame = channel.unary_unary(
                 '/VisionService/SendFrame',
-                request_serializer=vision__pb2.Request.SerializeToString,
-                response_deserializer=vision__pb2.Response.FromString,
+                request_serializer=vision__pb2.VisionRequest.SerializeToString,
+                response_deserializer=vision__pb2.VisionResponse.FromString,
                 )
 
 
@@ -35,8 +35,8 @@ def add_VisionServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'SendFrame': grpc.unary_unary_rpc_method_handler(
                     servicer.SendFrame,
-                    request_deserializer=vision__pb2.Request.FromString,
-                    response_serializer=vision__pb2.Response.SerializeToString,
+                    request_deserializer=vision__pb2.VisionRequest.FromString,
+                    response_serializer=vision__pb2.VisionResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -60,7 +60,7 @@ class VisionService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/VisionService/SendFrame',
-            vision__pb2.Request.SerializeToString,
-            vision__pb2.Response.FromString,
+            vision__pb2.VisionRequest.SerializeToString,
+            vision__pb2.VisionResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -27,33 +27,34 @@ struct EmptyDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT EmptyDefaultTypeInternal _Empty_default_instance_;
-constexpr Request::Request(
+constexpr VisionRequest::VisionRequest(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : image_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
   , width_(0)
   , height_(0)
   , channels_(0){}
-struct RequestDefaultTypeInternal {
-  constexpr RequestDefaultTypeInternal()
+struct VisionRequestDefaultTypeInternal {
+  constexpr VisionRequestDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~RequestDefaultTypeInternal() {}
+  ~VisionRequestDefaultTypeInternal() {}
   union {
-    Request _instance;
+    VisionRequest _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT RequestDefaultTypeInternal _Request_default_instance_;
-constexpr Response::Response(
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VisionRequestDefaultTypeInternal _VisionRequest_default_instance_;
+constexpr VisionResponse::VisionResponse(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : count_(0){}
-struct ResponseDefaultTypeInternal {
-  constexpr ResponseDefaultTypeInternal()
+  : imageid_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , status_(0){}
+struct VisionResponseDefaultTypeInternal {
+  constexpr VisionResponseDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~ResponseDefaultTypeInternal() {}
+  ~VisionResponseDefaultTypeInternal() {}
   union {
-    Response _instance;
+    VisionResponse _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ResponseDefaultTypeInternal _Response_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VisionResponseDefaultTypeInternal _VisionResponse_default_instance_;
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_vision_2eproto[3];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_vision_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_vision_2eproto = nullptr;
@@ -66,45 +67,47 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_vision_2eproto::offsets[] PROT
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Request, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::VisionRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Request, image_),
-  PROTOBUF_FIELD_OFFSET(::Request, width_),
-  PROTOBUF_FIELD_OFFSET(::Request, height_),
-  PROTOBUF_FIELD_OFFSET(::Request, channels_),
+  PROTOBUF_FIELD_OFFSET(::VisionRequest, image_),
+  PROTOBUF_FIELD_OFFSET(::VisionRequest, width_),
+  PROTOBUF_FIELD_OFFSET(::VisionRequest, height_),
+  PROTOBUF_FIELD_OFFSET(::VisionRequest, channels_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Response, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::VisionResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Response, count_),
+  PROTOBUF_FIELD_OFFSET(::VisionResponse, status_),
+  PROTOBUF_FIELD_OFFSET(::VisionResponse, imageid_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Empty)},
-  { 6, -1, -1, sizeof(::Request)},
-  { 16, -1, -1, sizeof(::Response)},
+  { 6, -1, -1, sizeof(::VisionRequest)},
+  { 16, -1, -1, sizeof(::VisionResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Empty_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Request_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Response_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_VisionRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_VisionResponse_default_instance_),
 };
 
 const char descriptor_table_protodef_vision_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014vision.proto\"\007\n\005Empty\"I\n\007Request\022\r\n\005im"
-  "age\030\001 \001(\014\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 \001(\005"
-  "\022\020\n\010channels\030\004 \001(\005\"\031\n\010Response\022\r\n\005count\030"
-  "\001 \001(\00521\n\rVisionService\022 \n\tSendFrame\022\010.Re"
-  "quest\032\t.Responseb\006proto3"
+  "\n\014vision.proto\"\007\n\005Empty\"O\n\rVisionRequest"
+  "\022\r\n\005image\030\001 \001(\014\022\r\n\005width\030\002 \001(\005\022\016\n\006height"
+  "\030\003 \001(\005\022\020\n\010channels\030\004 \001(\005\"1\n\016VisionRespon"
+  "se\022\016\n\006status\030\001 \001(\005\022\017\n\007imageid\030\002 \001(\t2=\n\rV"
+  "isionService\022,\n\tSendFrame\022\016.VisionReques"
+  "t\032\017.VisionResponseb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_vision_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_vision_2eproto = {
-  false, false, 184, descriptor_table_protodef_vision_2eproto, "vision.proto", 
+  false, false, 226, descriptor_table_protodef_vision_2eproto, "vision.proto", 
   &descriptor_table_vision_2eproto_once, nullptr, 0, 3,
   schemas, file_default_instances, TableStruct_vision_2eproto::offsets,
   file_level_metadata_vision_2eproto, file_level_enum_descriptors_vision_2eproto, file_level_service_descriptors_vision_2eproto,
@@ -157,20 +160,20 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Empty::GetClassData() const { 
 
 // ===================================================================
 
-class Request::_Internal {
+class VisionRequest::_Internal {
  public:
 };
 
-Request::Request(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+VisionRequest::VisionRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
   if (!is_message_owned) {
     RegisterArenaDtor(arena);
   }
-  // @@protoc_insertion_point(arena_constructor:Request)
+  // @@protoc_insertion_point(arena_constructor:VisionRequest)
 }
-Request::Request(const Request& from)
+VisionRequest::VisionRequest(const VisionRequest& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -181,10 +184,10 @@ Request::Request(const Request& from)
   ::memcpy(&width_, &from.width_,
     static_cast<size_t>(reinterpret_cast<char*>(&channels_) -
     reinterpret_cast<char*>(&width_)) + sizeof(channels_));
-  // @@protoc_insertion_point(copy_constructor:Request)
+  // @@protoc_insertion_point(copy_constructor:VisionRequest)
 }
 
-void Request::SharedCtor() {
+void VisionRequest::SharedCtor() {
 image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&width_) - reinterpret_cast<char*>(this)),
@@ -192,30 +195,30 @@ image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlread
     reinterpret_cast<char*>(&width_)) + sizeof(channels_));
 }
 
-Request::~Request() {
-  // @@protoc_insertion_point(destructor:Request)
+VisionRequest::~VisionRequest() {
+  // @@protoc_insertion_point(destructor:VisionRequest)
   if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-inline void Request::SharedDtor() {
+inline void VisionRequest::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   image_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void Request::ArenaDtor(void* object) {
-  Request* _this = reinterpret_cast< Request* >(object);
+void VisionRequest::ArenaDtor(void* object) {
+  VisionRequest* _this = reinterpret_cast< VisionRequest* >(object);
   (void)_this;
 }
-void Request::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void VisionRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void Request::SetCachedSize(int size) const {
+void VisionRequest::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
 
-void Request::Clear() {
-// @@protoc_insertion_point(message_clear_start:Request)
+void VisionRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:VisionRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -227,7 +230,7 @@ void Request::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* Request::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* VisionRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
@@ -289,9 +292,9 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* Request::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* VisionRequest::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Request)
+  // @@protoc_insertion_point(serialize_to_array_start:VisionRequest)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -323,12 +326,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Request)
+  // @@protoc_insertion_point(serialize_to_array_end:VisionRequest)
   return target;
 }
 
-size_t Request::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Request)
+size_t VisionRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:VisionRequest)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -360,21 +363,21 @@ size_t Request::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Request::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData VisionRequest::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
-    Request::MergeImpl
+    VisionRequest::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Request::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*VisionRequest::GetClassData() const { return &_class_data_; }
 
-void Request::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+void VisionRequest::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
                       const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<Request *>(to)->MergeFrom(
-      static_cast<const Request &>(from));
+  static_cast<VisionRequest *>(to)->MergeFrom(
+      static_cast<const VisionRequest &>(from));
 }
 
 
-void Request::MergeFrom(const Request& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Request)
+void VisionRequest::MergeFrom(const VisionRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:VisionRequest)
   GOOGLE_DCHECK_NE(&from, this);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
@@ -394,18 +397,18 @@ void Request::MergeFrom(const Request& from) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void Request::CopyFrom(const Request& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Request)
+void VisionRequest::CopyFrom(const VisionRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:VisionRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool Request::IsInitialized() const {
+bool VisionRequest::IsInitialized() const {
   return true;
 }
 
-void Request::InternalSwap(Request* other) {
+void VisionRequest::InternalSwap(VisionRequest* other) {
   using std::swap;
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
@@ -416,14 +419,14 @@ void Request::InternalSwap(Request* other) {
       &other->image_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Request, channels_)
-      + sizeof(Request::channels_)
-      - PROTOBUF_FIELD_OFFSET(Request, width_)>(
+      PROTOBUF_FIELD_OFFSET(VisionRequest, channels_)
+      + sizeof(VisionRequest::channels_)
+      - PROTOBUF_FIELD_OFFSET(VisionRequest, width_)>(
           reinterpret_cast<char*>(&width_),
           reinterpret_cast<char*>(&other->width_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata Request::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata VisionRequest::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_vision_2eproto_getter, &descriptor_table_vision_2eproto_once,
       file_level_metadata_vision_2eproto[1]);
@@ -431,71 +434,89 @@ void Request::InternalSwap(Request* other) {
 
 // ===================================================================
 
-class Response::_Internal {
+class VisionResponse::_Internal {
  public:
 };
 
-Response::Response(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+VisionResponse::VisionResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
   if (!is_message_owned) {
     RegisterArenaDtor(arena);
   }
-  // @@protoc_insertion_point(arena_constructor:Response)
+  // @@protoc_insertion_point(arena_constructor:VisionResponse)
 }
-Response::Response(const Response& from)
+VisionResponse::VisionResponse(const VisionResponse& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  count_ = from.count_;
-  // @@protoc_insertion_point(copy_constructor:Response)
+  imageid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_imageid().empty()) {
+    imageid_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_imageid(), 
+      GetArenaForAllocation());
+  }
+  status_ = from.status_;
+  // @@protoc_insertion_point(copy_constructor:VisionResponse)
 }
 
-void Response::SharedCtor() {
-count_ = 0;
+void VisionResponse::SharedCtor() {
+imageid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+status_ = 0;
 }
 
-Response::~Response() {
-  // @@protoc_insertion_point(destructor:Response)
+VisionResponse::~VisionResponse() {
+  // @@protoc_insertion_point(destructor:VisionResponse)
   if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-inline void Response::SharedDtor() {
+inline void VisionResponse::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  imageid_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
-void Response::ArenaDtor(void* object) {
-  Response* _this = reinterpret_cast< Response* >(object);
+void VisionResponse::ArenaDtor(void* object) {
+  VisionResponse* _this = reinterpret_cast< VisionResponse* >(object);
   (void)_this;
 }
-void Response::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void VisionResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void Response::SetCachedSize(int size) const {
+void VisionResponse::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
 
-void Response::Clear() {
-// @@protoc_insertion_point(message_clear_start:Response)
+void VisionResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:VisionResponse)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  count_ = 0;
+  imageid_.ClearToEmpty();
+  status_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* Response::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* VisionResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // int32 count = 1;
+      // int32 status = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
-          count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          status_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string imageid = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_imageid();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "VisionResponse.imageid"));
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -523,85 +544,112 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* Response::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* VisionResponse::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Response)
+  // @@protoc_insertion_point(serialize_to_array_start:VisionResponse)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int32 count = 1;
-  if (this->_internal_count() != 0) {
+  // int32 status = 1;
+  if (this->_internal_status() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_count(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_status(), target);
+  }
+
+  // string imageid = 2;
+  if (!this->_internal_imageid().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_imageid().data(), static_cast<int>(this->_internal_imageid().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "VisionResponse.imageid");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_imageid(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Response)
+  // @@protoc_insertion_point(serialize_to_array_end:VisionResponse)
   return target;
 }
 
-size_t Response::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Response)
+size_t VisionResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:VisionResponse)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // int32 count = 1;
-  if (this->_internal_count() != 0) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_count());
+  // string imageid = 2;
+  if (!this->_internal_imageid().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_imageid());
+  }
+
+  // int32 status = 1;
+  if (this->_internal_status() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_status());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Response::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData VisionResponse::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
-    Response::MergeImpl
+    VisionResponse::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Response::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*VisionResponse::GetClassData() const { return &_class_data_; }
 
-void Response::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+void VisionResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
                       const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-  static_cast<Response *>(to)->MergeFrom(
-      static_cast<const Response &>(from));
+  static_cast<VisionResponse *>(to)->MergeFrom(
+      static_cast<const VisionResponse &>(from));
 }
 
 
-void Response::MergeFrom(const Response& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:Response)
+void VisionResponse::MergeFrom(const VisionResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:VisionResponse)
   GOOGLE_DCHECK_NE(&from, this);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_count() != 0) {
-    _internal_set_count(from._internal_count());
+  if (!from._internal_imageid().empty()) {
+    _internal_set_imageid(from._internal_imageid());
+  }
+  if (from._internal_status() != 0) {
+    _internal_set_status(from._internal_status());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void Response::CopyFrom(const Response& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Response)
+void VisionResponse::CopyFrom(const VisionResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:VisionResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool Response::IsInitialized() const {
+bool VisionResponse::IsInitialized() const {
   return true;
 }
 
-void Response::InternalSwap(Response* other) {
+void VisionResponse::InternalSwap(VisionResponse* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(count_, other->count_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &imageid_, lhs_arena,
+      &other->imageid_, rhs_arena
+  );
+  swap(status_, other->status_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata Response::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata VisionResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_vision_2eproto_getter, &descriptor_table_vision_2eproto_once,
       file_level_metadata_vision_2eproto[2]);
@@ -612,11 +660,11 @@ PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::Empty* Arena::CreateMaybeMessage< ::Empty >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Empty >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Request* Arena::CreateMaybeMessage< ::Request >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Request >(arena);
+template<> PROTOBUF_NOINLINE ::VisionRequest* Arena::CreateMaybeMessage< ::VisionRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::VisionRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Response* Arena::CreateMaybeMessage< ::Response >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Response >(arena);
+template<> PROTOBUF_NOINLINE ::VisionResponse* Arena::CreateMaybeMessage< ::VisionResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::VisionResponse >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

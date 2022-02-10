@@ -33,41 +33,41 @@ class VisionService final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status SendFrame(::grpc::ClientContext* context, const ::Request& request, ::Response* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>> AsyncSendFrame(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>>(AsyncSendFrameRaw(context, request, cq));
+    virtual ::grpc::Status SendFrame(::grpc::ClientContext* context, const ::VisionRequest& request, ::VisionResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::VisionResponse>> AsyncSendFrame(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::VisionResponse>>(AsyncSendFrameRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>> PrepareAsyncSendFrame(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::Response>>(PrepareAsyncSendFrameRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::VisionResponse>> PrepareAsyncSendFrame(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::VisionResponse>>(PrepareAsyncSendFrameRaw(context, request, cq));
     }
     class async_interface {
      public:
       virtual ~async_interface() {}
-      virtual void SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      virtual void SendFrame(::grpc::ClientContext* context, const ::VisionRequest* request, ::VisionResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void SendFrame(::grpc::ClientContext* context, const ::VisionRequest* request, ::VisionResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
     class async_interface* experimental_async() { return async(); }
    private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Response>* AsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::Response>* PrepareAsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::VisionResponse>* AsyncSendFrameRaw(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::VisionResponse>* PrepareAsyncSendFrameRaw(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
-    ::grpc::Status SendFrame(::grpc::ClientContext* context, const ::Request& request, ::Response* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>> AsyncSendFrame(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>>(AsyncSendFrameRaw(context, request, cq));
+    ::grpc::Status SendFrame(::grpc::ClientContext* context, const ::VisionRequest& request, ::VisionResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::VisionResponse>> AsyncSendFrame(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::VisionResponse>>(AsyncSendFrameRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>> PrepareAsyncSendFrame(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::Response>>(PrepareAsyncSendFrameRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::VisionResponse>> PrepareAsyncSendFrame(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::VisionResponse>>(PrepareAsyncSendFrameRaw(context, request, cq));
     }
     class async final :
       public StubInterface::async_interface {
      public:
-      void SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, std::function<void(::grpc::Status)>) override;
-      void SendFrame(::grpc::ClientContext* context, const ::Request* request, ::Response* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void SendFrame(::grpc::ClientContext* context, const ::VisionRequest* request, ::VisionResponse* response, std::function<void(::grpc::Status)>) override;
+      void SendFrame(::grpc::ClientContext* context, const ::VisionRequest* request, ::VisionResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -79,8 +79,8 @@ class VisionService final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::Response>* AsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::Response>* PrepareAsyncSendFrameRaw(::grpc::ClientContext* context, const ::Request& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::VisionResponse>* AsyncSendFrameRaw(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::VisionResponse>* PrepareAsyncSendFrameRaw(::grpc::ClientContext* context, const ::VisionRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_SendFrame_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
@@ -89,7 +89,7 @@ class VisionService final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status SendFrame(::grpc::ServerContext* context, const ::Request* request, ::Response* response);
+    virtual ::grpc::Status SendFrame(::grpc::ServerContext* context, const ::VisionRequest* request, ::VisionResponse* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_SendFrame : public BaseClass {
@@ -103,11 +103,11 @@ class VisionService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::VisionRequest* /*request*/, ::VisionResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestSendFrame(::grpc::ServerContext* context, ::Request* request, ::grpc::ServerAsyncResponseWriter< ::Response>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestSendFrame(::grpc::ServerContext* context, ::VisionRequest* request, ::grpc::ServerAsyncResponseWriter< ::VisionResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
@@ -119,25 +119,25 @@ class VisionService final {
    public:
     WithCallbackMethod_SendFrame() {
       ::grpc::Service::MarkMethodCallback(0,
-          new ::grpc::internal::CallbackUnaryHandler< ::Request, ::Response>(
+          new ::grpc::internal::CallbackUnaryHandler< ::VisionRequest, ::VisionResponse>(
             [this](
-                   ::grpc::CallbackServerContext* context, const ::Request* request, ::Response* response) { return this->SendFrame(context, request, response); }));}
+                   ::grpc::CallbackServerContext* context, const ::VisionRequest* request, ::VisionResponse* response) { return this->SendFrame(context, request, response); }));}
     void SetMessageAllocatorFor_SendFrame(
-        ::grpc::MessageAllocator< ::Request, ::Response>* allocator) {
+        ::grpc::MessageAllocator< ::VisionRequest, ::VisionResponse>* allocator) {
       ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(0);
-      static_cast<::grpc::internal::CallbackUnaryHandler< ::Request, ::Response>*>(handler)
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::VisionRequest, ::VisionResponse>*>(handler)
               ->SetMessageAllocator(allocator);
     }
     ~WithCallbackMethod_SendFrame() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::VisionRequest* /*request*/, ::VisionResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     virtual ::grpc::ServerUnaryReactor* SendFrame(
-      ::grpc::CallbackServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/)  { return nullptr; }
+      ::grpc::CallbackServerContext* /*context*/, const ::VisionRequest* /*request*/, ::VisionResponse* /*response*/)  { return nullptr; }
   };
   typedef WithCallbackMethod_SendFrame<Service > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
@@ -153,7 +153,7 @@ class VisionService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::VisionRequest* /*request*/, ::VisionResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -170,7 +170,7 @@ class VisionService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::VisionRequest* /*request*/, ::VisionResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -193,7 +193,7 @@ class VisionService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::VisionRequest* /*request*/, ::VisionResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -208,10 +208,10 @@ class VisionService final {
     WithStreamedUnaryMethod_SendFrame() {
       ::grpc::Service::MarkMethodStreamed(0,
         new ::grpc::internal::StreamedUnaryHandler<
-          ::Request, ::Response>(
+          ::VisionRequest, ::VisionResponse>(
             [this](::grpc::ServerContext* context,
                    ::grpc::ServerUnaryStreamer<
-                     ::Request, ::Response>* streamer) {
+                     ::VisionRequest, ::VisionResponse>* streamer) {
                        return this->StreamedSendFrame(context,
                          streamer);
                   }));
@@ -220,12 +220,12 @@ class VisionService final {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::Request* /*request*/, ::Response* /*response*/) override {
+    ::grpc::Status SendFrame(::grpc::ServerContext* /*context*/, const ::VisionRequest* /*request*/, ::VisionResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedSendFrame(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::Request,::Response>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedSendFrame(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::VisionRequest,::VisionResponse>* server_unary_streamer) = 0;
   };
   typedef WithStreamedUnaryMethod_SendFrame<Service > StreamedUnaryService;
   typedef Service SplitStreamedService;

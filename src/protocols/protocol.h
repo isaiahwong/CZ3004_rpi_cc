@@ -31,6 +31,12 @@ class Protocol {
     typedef void (*SubActionCallback)(void* proto, Action*);
 
     /**
+     * @brief void pointer to allow Actions
+     *
+     */
+    typedef void (*SubResponseCallback)(void* proto, Response*);
+
+    /**
      * @brief Construct a new Protocol object
      *
      */
@@ -55,6 +61,16 @@ class Protocol {
     void join();
 
     /**
+     * @brief
+     *
+     * @param proto
+     * @param channel
+     * @param callback
+     */
+    void registerSub(Protocol* proto, std::string channel,
+                     SubResponseCallback callback);
+
+    /**
      * @brief Registers a protocol to be subscribed to a channel
      *
      * @param proto
@@ -68,6 +84,8 @@ class Protocol {
                      SubActionCallback callback);
 
     void publish(std::string channel, Action* a);
+
+    void publish(std::string channel, Response* a);
 
     void publish(std::string channel, char* buffer, int bufflen);
 
@@ -98,6 +116,11 @@ class Protocol {
 
     PubSub* getPub(std::string);
 
+    void pushThread(std::thread*);
+
+    void _registerSub(Protocol* proto, std::string channel, PubSub* sub,
+                      SubResponseCallback callback);
+
     void _registerSub(Protocol* proto, std::string channel, PubSub* sub,
                       SubActionCallback callback);
 
@@ -112,6 +135,10 @@ class Protocol {
     // callback function to run thread instance
     static void subexecA(Protocol* proto, PubSub* sub,
                          SubActionCallback callback);
+
+    // callback function to run thread instance
+    static void subexecR(Protocol* proto, PubSub* sub,
+                         SubResponseCallback callback);
 };
 
 #endif

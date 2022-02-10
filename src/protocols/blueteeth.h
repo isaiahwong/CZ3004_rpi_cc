@@ -10,8 +10,8 @@ class Blueteeth final : public Protocol {
     int channel = 1;
 
     // RFCOMM socket address
-    struct sockaddr_rc *clientAddr;
-    struct sockaddr_rc *localAddr;
+    struct sockaddr_rc* clientAddr;
+    struct sockaddr_rc* localAddr;
 
     // bluetooth socket
     int bluetoothSocket = -1;
@@ -27,10 +27,18 @@ class Blueteeth final : public Protocol {
    public:
     // Channels
     inline static const std::string BT_MAIN_READ = "BT_MAIN_READ";
-
     inline static const std::string BT_CAMERA_CAPTURE = "BT_CAMERA_CAPTURE";
-
     inline static const std::string BT_MOVEMENT = "BT_MOVEMENT";
+
+    /**
+     * @brief Forwarder static function to access Cereal onAction
+     *
+     * @param c
+     * @param msg
+     */
+    static void onResponse(void* c, Response* res);
+
+    void onResponse(Response* res);
 
     ~Blueteeth();
     Blueteeth();

@@ -119,10 +119,30 @@ void Blueteeth::connect() {
     memset(buf, 0, sizeof(buf));
 }
 
+/**
+ * @brief disconnect function
+ *
+ */
 void Blueteeth::disconnect() {
     if (!close(client) && !close(bluetoothSocket))
         fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
                    "BT closed\n");
+}
+
+void Blueteeth::onResponse(void *b, Response *res) {
+    static_cast<Blueteeth *>(b)->onResponse(res);
+}
+
+void Blueteeth::onResponse(Response *res) {
+    if (res == nullptr) return;
+    json j;
+    res->to_json(j);
+    std::string payload = j.dump();
+
+    int size = payload.size();
+
+    // Write back to client
+    write(client, payload.c_str(), size);
 }
 
 /**
@@ -146,7 +166,7 @@ void Blueteeth::readClient() {
 
         // Parse char to string
         std::string message(buf, bufflen);
-        
+
         // Parse action
         Action a;
 
@@ -172,7 +192,7 @@ void Blueteeth::readClient() {
         }
 
         // map to different channels
-        if (a.type.compare(Action::TYPE_MOVE) == 0) 
+        if (a.type.compare(Action::TYPE_MOVE) == 0)
             this->publish(Blueteeth::BT_MOVEMENT, &a);
         else if (a.type.compare(Action::TYPE_CAPTURE) == 0)
             this->publish(Blueteeth::BT_CAMERA_CAPTURE, &a);
@@ -184,7 +204,6 @@ void Blueteeth::readClient() {
         continue;
     }
 }
-
 
 Blueteeth::~Blueteeth() {
     close(client);

@@ -27,6 +27,9 @@ class Camera final : public Protocol {
     Queue *q;
 
    public:
+    // Channels
+    inline static const std::string CAM_CAPTURE_RESULT = "CAM_CAPTURE_RESULT";
+
     Camera(std::string _addr);
     ~Camera();
 
@@ -38,7 +41,7 @@ class Camera final : public Protocol {
      * @param c
      * @param msg
      */
-    static void onCapture(void *c, Action* action);
+    static void onCapture(void *c, Action *action);
 
     void onCapture(Action *action);
 
