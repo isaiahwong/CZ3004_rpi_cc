@@ -6,28 +6,26 @@
 #include <chrono>
 #include <iostream>
 
-Camera::Camera(std::string addr) {
+Camera::Camera(std::string addr, int open) {
     this->addr = addr;
     this->visionClient = new VisionClient(addr);
     this->videoCap = new cv::VideoCapture();
     this->q = new Queue();
+    this->open = open;
 }
 
 void Camera::run() {
+    // Keep camera thread running
+    open == 1 ? onReadFrame() : nooploop();
+}
+
+void Camera::openCamera() {
     int deviceID = 0;         // 0 = open default camera
     int apiID = cv::CAP_ANY;  // 0 = autodetect default API
 
     // Open selected camera using selected API
     this->videoCap->open(deviceID, apiID);
-
-    // TODO handle error. Move to function
-    if (!this->videoCap->isOpened()) {
-        printRed("Unable to open camera");
-        return;
-    }
-
-    // Keep camera thread running
-    onReadFrame();
+    print("Camera: Camera opened");
 }
 
 /**
@@ -37,8 +35,17 @@ void Camera::run() {
 void Camera::onReadFrame() {
     cv::Mat frame;
     cv::Mat noopFrame;
-    print("Camera::onReadFrame");
+
+    openCamera();
     while (true) {
+        // TODO handle error. Move to function
+        if (!this->videoCap->isOpened()) {
+            printRed("Camera not opened. Opening...");
+            // Opens camera
+            openCamera();
+            continue;
+        }
+
         this->videoCap->read(frame);
 
         // check if we succeeded

@@ -91,6 +91,10 @@ class Protocol {
 
     void publish(std::string channel, std::string message);
 
+    /**
+     * @brief function to override
+     *
+     */
     virtual void run() = 0;
 
    protected:
@@ -102,6 +106,12 @@ class Protocol {
     void print(std::string msg);
 
     void printRed(std::string msg);
+
+    /**
+     * @brief no op loop to keep "main" protocol thread running
+     *
+     */
+    void nooploop();
 
    private:
     UniquePtr mainThread;

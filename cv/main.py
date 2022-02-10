@@ -1,6 +1,7 @@
 
 import grpc
 import numpy as np
+import os 
 
 import cv2
 from tfmodel import TF
@@ -25,6 +26,7 @@ class ImageServer(VisionServiceServicer):
         self.count = 0
         # self.model = YoloV5()
         self.model = TF()
+        self.pwd = os.path.dirname(__file__)
 
     def SendFrame(self, req, ctx):
         print("Receive")
@@ -32,7 +34,7 @@ class ImageServer(VisionServiceServicer):
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
         # label = self.model.predict(frame, req.width)
         frame, label = self.model.predict(frame, req.width, req.height)
-        cv2.imwrite('out/frame{}.jpg'.format(self.count),frame)
+        cv2.imwrite('{}/out/frame{}.jpg'.format(self.pwd, self.count),frame)
         status = 0 if str(label) == '-1' else 1
         return VisionResponse(imageid=str(label), status=status)
 

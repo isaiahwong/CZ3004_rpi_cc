@@ -9,12 +9,16 @@ default:
 	cmake -S . -B ./build
 	make -C build 
 	cp ./build/RPi ./bin
-	make run
-	
+	make run_rpi
 
-run:
+
+run_rpi:
 	./bin/RPi --serial="/dev/ttyUSB0 /dev/tty37"\
-		--vision=localhost:50051
+		--vision=localhost:50051\
+		--cameraopen=1 
+
+run_camera:
+	python cv/main.py
 
 gen-protos:
 	make -C protos

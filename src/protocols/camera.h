@@ -20,20 +20,27 @@ class Camera final : public Protocol {
    private:
     std::string name = "camera";
     std::string addr;
+    int open;
 
     VisionClient *visionClient;
     cv::VideoCapture *videoCap;
 
     Queue *q;
 
+    /**
+     * @brief Opens the front camera of rpi
+     *
+     */
+    void openCamera();
+
+    void onReadFrame();
+
    public:
     // Channels
     inline static const std::string CAM_CAPTURE_RESULT = "CAM_CAPTURE_RESULT";
 
-    Camera(std::string _addr);
+    Camera(std::string _addr, int open);
     ~Camera();
-
-    void onReadFrame();
 
     /**
      * @brief Forwarder static function to access camera
@@ -42,9 +49,12 @@ class Camera final : public Protocol {
      * @param msg
      */
     static void onCapture(void *c, Action *action);
-
     void onCapture(Action *action);
 
+    /**
+     * @brief Runs Camera main functionality
+     *
+     */
     void run();
 };
 

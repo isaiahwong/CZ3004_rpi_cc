@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
     // 5th argument is default value  (optional. it used when mandatory is
     // false)
     p.add<std::string>("serial", 's', "serial port", true, "/dev/tty1");
+    p.add<int>("cameraopen", 'c', "camera should open", false, 1);
     p.add<std::string>("vision", 'v', "vision address", true,
                        "localhost:50051");
 
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]) {
 
     Blueteeth bt;
     Cereal c(p.get<std::string>("serial"), 115200);
-    Camera cam(p.get<std::string>("vision"));
+    Camera cam(p.get<std::string>("vision"), p.get<int>("cameraopen"));
 
     // Register cereal to listen for movement requests
     bt.registerSub(&c, Blueteeth::BT_MOVEMENT, Cereal::onAction);
@@ -52,10 +53,12 @@ int main(int argc, char *argv[]) {
     // c.registerSub(&cam, Cereal::SERIAL_MAIN_READ, Camera::onCapture);
     // c.registerSub(&c, Cereal::SERIAL_MAIN_READ, Cereal::onAction);
 
+    // Start the respective protocols
     bt.start();
     c.start();
     cam.start();
 
+    // Blocking wait
     c.join();
     bt.join();
     cam.join();

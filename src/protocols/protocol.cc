@@ -272,3 +272,8 @@ void Protocol::printRed(std::string msg) {
 void Protocol::print(std::string msg) {
     fmt::print(fmt::emphasis::bold | fg(fmt::color::turquoise), msg + "\n");
 }
+
+void Protocol::nooploop() {
+    while (true) {
+    }
+}

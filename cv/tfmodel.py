@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 import importlib.util
-
+import os
 
 class TF:
     def __init__(self,
@@ -24,7 +24,7 @@ class TF:
         else:
             from tensorflow.lite.python.interpreter import Interpreter
 
-        CWD_PATH = os.getcwd()
+        CWD_PATH = os.path.dirname(__file__)
 
         # Path to .tflite file, which contains the model that is used for object detection
         PATH_TO_MODEL = os.path.join(CWD_PATH, self.modeldir, self.graph)
