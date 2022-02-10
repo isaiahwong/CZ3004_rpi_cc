@@ -37,7 +37,7 @@ void Camera::run() {
 void Camera::onReadFrame() {
     cv::Mat frame;
     cv::Mat noopFrame;
-
+    print("Camera::onReadFrame");
     while (true) {
         this->videoCap->read(frame);
 

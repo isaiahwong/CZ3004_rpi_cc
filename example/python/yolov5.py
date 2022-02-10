@@ -6,12 +6,12 @@ import cv2
 # Model
 start = time.time()
 model = torch.hub.load('./yolov5', 'custom',
-                       path='./yolov5s_16b_40ep.pt', source='local')  # local repo
+                       path='./model/yolov5s_16b_40ep.pt', source='local')  # local repo
 end = time.time()
 print("Model load: {}".format(end - start))
 
 # # Images
-img = cv2.imread('./18.jpg')
+img = cv2.imread('./model/18.jpg')
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
@@ -21,10 +21,9 @@ def infer(img):
     results = model(img, size=416)  # includes NMS
     end = time.time()
     print("Model infer: {}".format(end - start))
-    results.save()
+    results.save("./out")
 
-
-for _ in range(10):
+for _ in range(1):
     infer(img)
 # Results
 # results.show()  # or .show()

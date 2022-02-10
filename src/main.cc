@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
 
     // Register cereal to listen for movement calls
     bt.registerSub(&c, Blueteeth::BT_MOVEMENT, Cereal::onAction);
+    bt.registerSub(&cam, Blueteeth::BT_CAMERA_CAPTURE, Camera::onCapture);
 
     // Register cereal to listen for movement calls
     // c.registerSub(&cam, Cereal::SERIAL_MAIN_READ, Camera::onCapture);

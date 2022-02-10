@@ -4,6 +4,7 @@ import numpy as np
 
 import cv2
 from tfmodel import TF
+from yolov5model import YoloV5
 
 from concurrent import futures
 
@@ -22,15 +23,17 @@ def fast_reshape(byteStr, width, height, channels):
 class ImageServer(VisionServiceServicer):
     def __init__(self):
         self.count = 0
-        self.model = TF()
+        self.model = YoloV5()
+        # self.model = TF()
 
     def SendFrame(self, req, ctx):
         print("Receive")
         # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
-        cv2.imwrite('out/frame{}.jpg'.format(self.count),
-                    self.model.predict(frame, req.width, req.height, ))
-        self.count += 1
+        print(self.model.predict(frame, req.width))
+        # cv2.imwrite('out/frame{}.jpg'.format(self.count),
+        #             self.model.predict(frame, req.width, req.height, ))
+        # self.count += 1
         return Response(count=self.count)
 
 
