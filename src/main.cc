@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
     // 5th argument is default value  (optional. it used when mandatory is
     // false)
     p.add<std::string>("serial", 's', "serial port", true, "/dev/tty1");
+    p.add<int>("serialretry", 'sr', "serial retry", false, 1);
     p.add<int>("cameraopen", 'c', "camera should open", false, 1);
     p.add<std::string>("vision", 'v', "vision address", true,
                        "localhost:50051");

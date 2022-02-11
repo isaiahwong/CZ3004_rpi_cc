@@ -13,9 +13,9 @@ default:
 
 
 run_rpi:
-	./bin/RPi --serial="/dev/ttyUSB0 /dev/tty37"\
+	./bin/RPi --serial="/dev/ttyUSB0 /dev/ttyUSB1 /dev/ttyUSB2 /dev/ttyUSB3"\
 		--vision=localhost:50051\
-		--cameraopen=1 
+		--cameraopen=1
 
 run_camera:
 	python cv/main.py

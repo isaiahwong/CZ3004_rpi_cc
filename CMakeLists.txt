@@ -66,7 +66,6 @@ find_package(OpenCV REQUIRED)
 find_library(BLUEZ_LIB bluetooth)
 find_library(WIRINGPI_LIB NAMES wiringPi)
 
-message(STATUS "hello")
 message(STATUS ${OpenCV_INCLUDE_DIRS})
 
 # Include generated *.pb.h files

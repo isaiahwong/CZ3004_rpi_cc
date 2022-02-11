@@ -39,7 +39,7 @@ class Action {
     std::string type;
     std::string action;
     int angle;
-    int distance;
+    std::string distance;
 
     inline static const std::string TYPE_MOVE = "move";
 

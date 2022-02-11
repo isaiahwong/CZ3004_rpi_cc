@@ -51,6 +51,8 @@ void Cereal::onAction(Action* action) {
             movement.backRight(a, this, writeClient);
         else if (a.action.compare(Movement::STOP) == 0)
             movement.stop(a, this, writeClient);
+        else if (a.action.compare(Movement::CENTER) == 0)
+            movement.center(a, this, writeClient);
     } catch (...) {
     }
 }
@@ -73,11 +75,17 @@ void Cereal::writeClient(void* c, std::string msg) {
 void Cereal::writeClient(std::string msg) {
     const int LEN = 5;
     char buf[LEN];
-    // Truncates till 4
-    strncpy(buf, msg.c_str(), LEN);
-    buf[LEN - 1] = '\0';
-    std::cout << buf << std::endl;
-    serialPuts(serial, buf);
+
+    try {
+        // Truncates till 4
+        strncpy(buf, msg.c_str(), LEN);
+        buf[LEN - 1] = '0';
+        // buf[LEN - 1] = '\0';
+        std::cout << buf << std::endl;
+        serialPuts(serial, buf);
+    } catch (std::exception& e) {
+        std::cout << "Exception caught : " << e.what() << std::endl;
+    }
 }
 
 void Cereal::run() {
@@ -86,7 +94,7 @@ void Cereal::run() {
         if (connect()) {
             fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
                        "Retrying in 5 seconds\n");
-            std::this_thread::sleep_for(std::chrono::seconds(5));
+            std::this_thread::sleep_for(std::chrono::seconds(2));
             continue;
         }
         this->readClient();
@@ -135,17 +143,22 @@ void Cereal::readClient() {
 
         // Possible character termination
         if (c == '\n' || c == '\r' || c == '\0') {
-            // Overflow from buffer
-            if (sLen >= 1024) sLen = 1023;
-            buf[sLen] = '\0';
-            // TODO: map SERIAL RESPONSE AND SEND TO ANDROID
+            try {
+                // Overflow from buffer
+                if (sLen >= 1024) sLen = 1023;
+                buf[sLen] = '\0';
+                // TODO: map SERIAL RESPONSE AND SEND TO ANDROID
+                std::cout << buf << sLen << std::endl;
+                // Publish Serial in
+                // this->publish(Cereal::SERIAL_MAIN_READ, buf, sLen);
+                // Clear buffer
+                memset(buf, 0, sizeof(buf));
+                // Reset length
+                sLen = 0;
+            } catch (std::exception& e) {
+                std::cout << "Exception caught : " << e.what() << std::endl;
+            }
 
-            // Publish Serial in
-            this->publish(Cereal::SERIAL_MAIN_READ, buf, sLen);
-            // Clear buffer
-            memset(buf, 0, sizeof(buf));
-            // Reset length
-            sLen = 0;
         } else {
             // Build String and it into serial_buf
             buf[sLen++] = c;

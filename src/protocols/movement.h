@@ -5,7 +5,9 @@
 
 #include <fmt/core.h>
 
+#include <chrono>
 #include <string>
+#include <thread>
 
 #include "action.h"
 
@@ -43,6 +45,7 @@ class Movement {
    public:
     inline static const char CMD_FORWARD = 'W';
     inline static const char CMD_STOP = 'S';
+    inline static const char CMD_CENTER = 'C';
     inline static const char CMD_BACK = 'R';
     inline static const char CMD_LEFT = 'A';
     inline static const char CMD_RIGHT = 'D';
@@ -51,11 +54,17 @@ class Movement {
     inline static const std::string FORWARD_LEFT = "forward_left";
     inline static const std::string FORWARD_RIGHT = "forward_right";
     inline static const std::string STOP = "stop";
+    inline static const std::string CENTER = "center";
     inline static const std::string BACK = "back";
     inline static const std::string BACK_LEFT = "back_left";
     inline static const std::string BACK_RIGHT = "back_right";
 
     typedef void (*WriteCallback)(void* o, std::string);
+
+    void center(Action a, void* o, WriteCallback fn) {
+        auto cmd = fmt::format("{}000", CMD_CENTER);
+        fn(o, cmd);
+    }
 
     void forward(Action a, void* o, WriteCallback fn) {
         auto cmd = fmt::format("{}{}", CMD_FORWARD, a.distance);
@@ -76,6 +85,7 @@ class Movement {
         auto cmd = fmt::format("{}{}", direction, angle);
         // Turn car wheel left
         fn(o, fmt::format("{}000", CMD_LEFT));
+        std::this_thread::sleep_for(std::chrono::milliseconds(110));
         fn(o, cmd);
     }
 
@@ -84,6 +94,7 @@ class Movement {
         auto cmd = fmt::format("{}{}", direction, angle);
         // Turn car wheel left
         fn(o, fmt::format("{}000", CMD_RIGHT));
+        std::this_thread::sleep_for(std::chrono::milliseconds(110));
         fn(o, cmd);
     }
 
