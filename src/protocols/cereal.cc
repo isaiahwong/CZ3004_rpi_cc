@@ -73,7 +73,7 @@ void Cereal::writeClient(void* c, std::string msg) {
  * @param msg
  */
 void Cereal::writeClient(std::string msg) {
-    const int LEN = 5;
+    const int LEN = 6;
     char buf[LEN];
 
     try {

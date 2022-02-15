@@ -43,12 +43,12 @@ class Movement {
     }
 
    public:
-    inline static const char CMD_FORWARD = 'W';
+    inline static const char CMD_FORWARD = 'F';
     inline static const char CMD_STOP = 'S';
     inline static const char CMD_CENTER = 'C';
-    inline static const char CMD_BACK = 'R';
-    inline static const char CMD_LEFT = 'A';
-    inline static const char CMD_RIGHT = 'D';
+    inline static const char CMD_BACK = 'B';
+    inline static const char CMD_LEFT = 'L';
+    inline static const char CMD_RIGHT = 'R';
 
     inline static const std::string FORWARD = "forward";
     inline static const std::string FORWARD_LEFT = "forward_left";
@@ -62,39 +62,36 @@ class Movement {
     typedef void (*WriteCallback)(void* o, std::string);
 
     void center(Action a, void* o, WriteCallback fn) {
-        auto cmd = fmt::format("{}000", CMD_CENTER);
+        auto cmd = fmt::format("{}{}000", CMD_CENTER, CMD_CENTER);
         fn(o, cmd);
     }
 
     void forward(Action a, void* o, WriteCallback fn) {
-        auto cmd = fmt::format("{}{}", CMD_FORWARD, a.distance);
+        // FF = Forward
+        auto cmd = fmt::format("{}{}{}", CMD_FORWARD, CMD_FORWARD, a.distance);
         fn(o, cmd);
     }
 
     void back(Action a, void* o, WriteCallback fn) {
-        auto cmd = fmt::format("{}{}", CMD_BACK, a.distance);
+        auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_BACK, a.distance);
         fn(o, cmd);
     }
 
     void stop(Action a, void* o, WriteCallback fn) {
-        fn(o, fmt::format("{}000", CMD_STOP));
+        fn(o, fmt::format("{}{}000", CMD_STOP, CMD_STOP));
     }
 
     void left(Action a, char direction, void* o, WriteCallback fn) {
-        std::string angle = getAngleLeft(a);
-        auto cmd = fmt::format("{}{}", direction, angle);
         // Turn car wheel left
-        fn(o, fmt::format("{}000", CMD_LEFT));
-        std::this_thread::sleep_for(std::chrono::milliseconds(110));
+        std::string angle = getAngleLeft(a);
+        auto cmd = fmt::format("{}{}{}", direction, CMD_LEFT, angle);
         fn(o, cmd);
     }
 
     void right(Action a, char direction, void* o, WriteCallback fn) {
+        // Turn car wheel right
         std::string angle = getAngleRight(a);
-        auto cmd = fmt::format("{}{}", direction, angle);
-        // Turn car wheel left
-        fn(o, fmt::format("{}000", CMD_RIGHT));
-        std::this_thread::sleep_for(std::chrono::milliseconds(110));
+        auto cmd = fmt::format("{}{}{}", direction, CMD_RIGHT, angle);
         fn(o, cmd);
     }
 
