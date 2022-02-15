@@ -2,7 +2,7 @@
 
 #ifndef ACTION_H
 #define ACTION_H
-
+#include <iostream>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -59,6 +59,7 @@ class Action {
         j.at("action").get_to(a.action);
         j.at("angle").get_to(a.angle);
         j.at("distance").get_to(a.distance);
+        std::cout << j.at("data").size() << std::endl;
     }
 };
 

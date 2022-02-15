@@ -179,6 +179,9 @@ void Blueteeth::readClient() {
             // Issues with fmt::format
             std::cout << e.what() << std::endl;
             continue;
+        } catch (...) {
+            printRed("Bluetooth Read: Unexpected error occurred");
+            continue;
         }
 
         if (a.type.empty()) {

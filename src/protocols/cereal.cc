@@ -79,8 +79,7 @@ void Cereal::writeClient(std::string msg) {
     try {
         // Truncates till 4
         strncpy(buf, msg.c_str(), LEN);
-        buf[LEN - 1] = '0';
-        // buf[LEN - 1] = '\0';
+        buf[LEN - 1] = '\0';
         std::cout << buf << std::endl;
         serialPuts(serial, buf);
     } catch (std::exception& e) {
