@@ -62,8 +62,8 @@ Protocol::~Protocol() {
 
 Protocol::Protocol() {
     // Reserve 10 pub sub mem slots
-    pubThreads.reserve(3);
-    subThreads.reserve(3);
+    pubThreads.reserve(4);
+    subThreads.reserve(4);
 }
 
 void Protocol::start() {
@@ -183,7 +183,7 @@ void Protocol::_registerSub(Protocol* proto, std::string channel, PubSub* sub,
  * @param t
  */
 void Protocol::pushThread(std::thread* t) {
-    std::unique_ptr<std::thread> subThread;
+    UniqueThreadPtr subThread;
     subThread.reset(t);
     subThreads.push_back(std::move(subThread));
 }

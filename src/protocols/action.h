@@ -2,6 +2,7 @@
 
 #ifndef ACTION_H
 #define ACTION_H
+
 #include <iostream>
 #include <nlohmann/json.hpp>
 
@@ -36,31 +37,43 @@ class Response {
 
 class Action {
    public:
+    using SharedPtrAction = std::shared_ptr<Action>;
+    using VectorAction = std::vector<SharedPtrAction>;
+
     std::string type;
     std::string action;
     int angle;
     std::string distance;
 
+    /**
+     * @brief check if action should read list of data
+     *
+     */
+    bool chunk;
+
+    /**
+     * @brief List of actions
+     *
+     */
+    VectorAction data;
+
+    Action() {}
+
+    /**
+     * @brief Destroy the Action object
+     *
+     */
+    ~Action();
+
     inline static const std::string TYPE_MOVE = "move";
 
     inline static const std::string TYPE_CAPTURE = "capture";
 
-    void to_json(json& j, const Action& a) {
-        j = json{
-            {"type", a.type},
-            {"action", a.action},
-            {"angle", a.angle},
-            {"distance", a.distance},
-        };
-    }
+    void to_json(json& j, const Action& a);
 
-    static void from_json(const json& j, Action& a) {
-        j.at("type").get_to(a.type);
-        j.at("action").get_to(a.action);
-        j.at("angle").get_to(a.angle);
-        j.at("distance").get_to(a.distance);
-        std::cout << j.at("data").size() << std::endl;
-    }
+    static void _from_json(const json& j, Action& a);
+
+    static void from_json(const json& j, Action& a);
 };
 
 #endif

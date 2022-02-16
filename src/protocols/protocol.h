@@ -12,8 +12,8 @@
 #include "action.h"
 
 using PubSub = PubSubQueue<1024>;
-using UniquePtr = std::unique_ptr<std::thread>;
-using VectorThread = std::vector<UniquePtr>;
+using UniqueThreadPtr = std::unique_ptr<std::thread>;
+using VectorThread = std::vector<UniqueThreadPtr>;
 
 class Protocol {
    public:
@@ -114,7 +114,7 @@ class Protocol {
     void nooploop();
 
    private:
-    UniquePtr mainThread;
+    UniqueThreadPtr mainThread;
     // Pub Sub queue for inter protocol comms
     std::map<std::string, PubSub*> publishers;
     std::map<std::string, PubSub*> subscriptions;

@@ -24,7 +24,7 @@ class Movement {
     inline static const std::string LEFT_90 = "028";
     inline static const std::string LEFT_180 = "059";
 
-    std::string getAngleLeft(Action a) {
+    std::string getAngleLeft(Action& a) {
         std::string angle = DEFAULT_ANGLE;
         if (a.angle == 90)
             angle = LEFT_90;
@@ -33,7 +33,7 @@ class Movement {
         return angle;
     }
 
-    std::string getAngleRight(Action a) {
+    std::string getAngleRight(Action& a) {
         std::string angle = DEFAULT_ANGLE;
         if (a.angle == 90)
             angle = RIGHT_90;
@@ -61,53 +61,53 @@ class Movement {
 
     typedef void (*WriteCallback)(void* o, std::string);
 
-    void center(Action a, void* o, WriteCallback fn) {
+    void center(Action& a, void* o, WriteCallback fn) {
         auto cmd = fmt::format("{}{}000", CMD_CENTER, CMD_CENTER);
         fn(o, cmd);
     }
 
-    void forward(Action a, void* o, WriteCallback fn) {
+    void forward(Action& a, void* o, WriteCallback fn) {
         // FF = Forward
         auto cmd = fmt::format("{}{}{}", CMD_FORWARD, CMD_FORWARD, a.distance);
         fn(o, cmd);
     }
 
-    void back(Action a, void* o, WriteCallback fn) {
+    void back(Action& a, void* o, WriteCallback fn) {
         auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_BACK, a.distance);
         fn(o, cmd);
     }
 
-    void stop(Action a, void* o, WriteCallback fn) {
+    void stop(Action& a, void* o, WriteCallback fn) {
         fn(o, fmt::format("{}{}000", CMD_STOP, CMD_STOP));
     }
 
-    void left(Action a, char direction, void* o, WriteCallback fn) {
+    void left(Action& a, char direction, void* o, WriteCallback fn) {
         // Turn car wheel left
         std::string angle = getAngleLeft(a);
         auto cmd = fmt::format("{}{}{}", direction, CMD_LEFT, angle);
         fn(o, cmd);
     }
 
-    void right(Action a, char direction, void* o, WriteCallback fn) {
+    void right(Action& a, char direction, void* o, WriteCallback fn) {
         // Turn car wheel right
         std::string angle = getAngleRight(a);
         auto cmd = fmt::format("{}{}{}", direction, CMD_RIGHT, angle);
         fn(o, cmd);
     }
 
-    void forwardLeft(Action a, void* o, WriteCallback fn) {
+    void forwardLeft(Action& a, void* o, WriteCallback fn) {
         left(a, CMD_FORWARD, o, fn);
     }
 
-    void forwardRight(Action a, void* o, WriteCallback fn) {
+    void forwardRight(Action& a, void* o, WriteCallback fn) {
         right(a, CMD_FORWARD, o, fn);
     }
 
-    void backLeft(Action a, void* o, WriteCallback fn) {
+    void backLeft(Action& a, void* o, WriteCallback fn) {
         left(a, CMD_BACK, o, fn);
     }
 
-    void backRight(Action a, void* o, WriteCallback fn) {
+    void backRight(Action& a, void* o, WriteCallback fn) {
         right(a, CMD_BACK, o, fn);
     }
 };

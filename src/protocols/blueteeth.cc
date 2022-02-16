@@ -194,6 +194,9 @@ void Blueteeth::readClient() {
             continue;
         }
 
+        if (a.data.size()) {
+                }
+
         // map to different channels
         if (a.type.compare(Action::TYPE_MOVE) == 0)
             this->publish(Blueteeth::BT_MOVEMENT, &a);
