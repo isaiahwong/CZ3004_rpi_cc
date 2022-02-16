@@ -87,7 +87,24 @@ void Cereal::writeClient(std::string msg) {
     }
 }
 
-void Cereal::run() {
+void Cereal::run() { init(); }
+
+void Cereal::init() {
+    // Create connection Read Thread
+    std::thread* connThread = new std::thread(Cereal::onConnectionRead, this);
+    std::thread* receiveActionsThread =
+        new std::thread(Cereal::onReceiveActions, this);
+
+    // Push to protocol subthreads
+    subThreads.push_back(UniqueThreadPtr(connThread));
+    subThreads.push_back(UniqueThreadPtr(receiveActionsThread));
+}
+
+void Cereal::onConnectionRead(void* c) {
+    static_cast<Cereal*>(c)->onConnectionRead();
+}
+
+void Cereal::onConnectionRead() {
     while (true) {
         // if connect fails
         if (connect()) {
@@ -100,7 +117,14 @@ void Cereal::run() {
     }
 }
 
-void Cereal::init() {}
+void Cereal::onReceiveActions(void* c) {
+    static_cast<Cereal*>(c)->onConnectionRead();
+}
+
+void Cereal::onReceiveActions() {
+    while (true) {
+        }
+}
 
 int Cereal::connect() {
     // Get the current host pointer and atttempt to connect

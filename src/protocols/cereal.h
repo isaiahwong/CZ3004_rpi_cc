@@ -3,6 +3,8 @@
 #ifndef CEREAL_H_
 #define CEREAL_H_
 
+#include <blockingconcurrentqueue.h>
+
 #include <string>
 #include <vector>
 
@@ -10,6 +12,8 @@
 #include "iostream"
 #include "movement.h"
 #include "protocol.h"
+
+using Queue = moodycamel::BlockingConcurrentQueue<Action&>;
 
 class Cereal : public Protocol {
    private:
@@ -19,7 +23,19 @@ class Cereal : public Protocol {
 
     int baudrate;
 
+    /**
+     * @brief Movement helper class for STM movements
+     *
+     */
     Movement movement;
+
+    /**
+     * @brief Blocking queue of commands
+     *
+     */
+    Queue commands;
+
+    std::atomic<bool> write = false;
 
     /**
      * @brief
@@ -30,7 +46,9 @@ class Cereal : public Protocol {
     int hostPointer = 0;
 
     void runWrite();
+
     void init();
+
     int connect();
 
    public:
@@ -40,6 +58,16 @@ class Cereal : public Protocol {
     Cereal(std::string _port, int _baudrate);
 
     ~Cereal();
+
+    /**
+     * @brief Forwarder static function to access Cereal onAction
+     *
+     * @param c
+     * @param msg
+     */
+    static void onConnectionRead(void* c);
+
+    void onConnectionRead();
 
     /**
      * @brief Forwarder static function to access Cereal onAction

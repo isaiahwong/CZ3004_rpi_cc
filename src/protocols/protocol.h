@@ -14,7 +14,6 @@
 using PubSub = PubSubQueue<1024>;
 using UniqueThreadPtr = std::unique_ptr<std::thread>;
 using VectorThread = std::vector<UniqueThreadPtr>;
-
 class Protocol {
    public:
     /**
@@ -101,6 +100,9 @@ class Protocol {
     virtual void run() = 0;
 
    protected:
+    // Pointers to the sub threads within a protocol
+    VectorThread subThreads;
+
     // Utility
     std::string genFnName(std::string _class, std::string fn);
     std::string genError(std::string prefix, std::string msg);
@@ -118,14 +120,9 @@ class Protocol {
 
    private:
     UniqueThreadPtr mainThread;
-    // Pub Sub queue for inter protocol comms
-    std::map<std::string, PubSub*> publishers;
-    std::map<std::string, PubSub*> subscriptions;
 
-    // Pointers to the publisher thread
-    VectorThread pubThreads;
-    // Pointers to the subscription threads
-    VectorThread subThreads;
+    // Pub Sub queue for inter protocol comms
+    std::map<std::string, PubSub*> pubsub;
 
     PubSub* getPub(std::string);
 

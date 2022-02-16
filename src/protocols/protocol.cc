@@ -54,15 +54,14 @@ void Protocol::subexecR(Protocol* proto, PubSub* sub,
 }
 
 Protocol::~Protocol() {
-    for (auto it = subscriptions.begin(); it != subscriptions.end(); it++) {
+    for (auto it = pubsub.begin(); it != pubsub.end(); it++) {
         delete it->second;
-        subscriptions.erase(it);
+        pubsub.erase(it);
     }
 }
 
 Protocol::Protocol() {
-    // Reserve 10 pub sub mem slots
-    pubThreads.reserve(4);
+    // Reserve 4 pub sub mem slots
     subThreads.reserve(4);
 }
 
@@ -73,14 +72,6 @@ void Protocol::start() {
 
 void Protocol::join() {
     for (auto& t : subThreads) {
-        if (t != nullptr) {
-            t->join();
-            t.reset();
-        }
-        t = nullptr;
-    }
-
-    for (auto& t : pubThreads) {
         if (t != nullptr) {
             t->join();
             t.reset();
@@ -197,11 +188,11 @@ void Protocol::pushThread(std::thread* t) {
 PubSub* Protocol::getPub(std::string channel) {
     PubSub* pub;
     // Check if channel exists
-    auto i = subscriptions.find(channel);
+    auto i = pubsub.find(channel);
     // Create channel if not found
-    if (i == subscriptions.end()) {
+    if (i == pubsub.end()) {
         pub = new PubSub();
-        subscriptions.emplace(channel, pub);
+        pubsub.emplace(channel, pub);
     } else {
         // found publisher
         pub = i->second;
