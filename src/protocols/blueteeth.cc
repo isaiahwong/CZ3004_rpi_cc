@@ -194,8 +194,10 @@ void Blueteeth::readClient() {
             continue;
         }
 
+        // If there's size
         if (a.data.size()) {
-                }
+        } else {
+        }
 
         // map to different channels
         if (a.type.compare(Action::TYPE_MOVE) == 0)

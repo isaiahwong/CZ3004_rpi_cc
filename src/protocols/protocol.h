@@ -83,6 +83,9 @@ class Protocol {
     void registerSub(Protocol* proto, std::string channel,
                      SubActionCallback callback);
 
+    // template<class T>
+    // void publish(std::string channel, Action* a);
+
     void publish(std::string channel, Action* a);
 
     void publish(std::string channel, Response* a);

@@ -220,8 +220,9 @@ void Protocol::publish(std::string channel, Action* action) {
     // Check if channel exists
     PubSub* pub = getPub(channel);
     PubSub::MsgHeader* header = pub->alloc(sizeof(Action));
-    *(Action*)(header + 1) = *action;
-    pub->pub();
+    Action* a = (Action*)(header + 1);
+    *a = *action;
+    pub->pub(true);
 }
 
 /**
