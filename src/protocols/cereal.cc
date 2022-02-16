@@ -67,15 +67,17 @@ void Cereal::onAction(Action* action) {
 }
 
 void Cereal::onActions(Action* action) {
-    if (action == nullptr || action->data.size() < 0) return;
+    if (action == nullptr || action->data.size() < 1) return;
     Action remove;
     // Override existing queue
     // Empty queue
     while (commands.try_dequeue(remove))
         ;
-
+    print("dequeued");
     // Enqueue
-    for (Action a : action->data) commands.enqueue(a);
+    for (Action a : action->data) {
+        commands.enqueue(a);
+    }
 }
 
 /**
@@ -149,19 +151,24 @@ void Cereal::onExecuteActions(void* c) {
  */
 void Cereal::onExecuteActions() {
     Action a;
-    int status;
+    int status, retries = 0, MAX_RETRIES = 3;
     while (true) {
         commands.wait_dequeue(a);
+        print("Done waiting");
 
         while (true) {
             onAction(&a);
-            // Blocking
-            statuses.wait_dequeue(status);
-            if (status != 1) continue;
+
+            bool didReceive =
+                statuses.wait_dequeue_timed(status, std::chrono::seconds(2));
+
+            // retry loop if failed
+            if (!didReceive || status != 1) continue;
             // Break queue if successful
             break;
         }
 
+        print("Success");
         // send action to android to notify success
         Response response("", status, a.coordinate);
         this->publish(SERIAL_MAIN_WRITE_SUCCESS, response);
@@ -205,7 +212,8 @@ void Cereal::readClient() {
         c = serialGetchar(serial);
 
         // No message
-        if (c == -1) {
+        if (c == -1 || c >= 255) {
+            serialFlush(serial);
             continue;
         }
 
@@ -215,7 +223,7 @@ void Cereal::readClient() {
                 // Overflow from buffer
                 if (sLen >= MAX_BUFFER) sLen = MAX_BUFFER - 1;
                 buf[sLen] = '\0';
-                std::cout << buf << sLen << std::endl;
+                std::cout << buf << std::endl;
                 int status = buf[0] - '0';
 
                 // Notify status of message

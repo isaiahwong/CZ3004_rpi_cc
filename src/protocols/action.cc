@@ -28,11 +28,12 @@ void Action::from_json(const json& j, Action& a) {
         auto arr = j.at("data");
 
         for (auto it : arr) {
-            Action a;
-            _from_json(it, a);
-            a.data.push_back(a);
+            Action subaction;
+            _from_json(it, subaction);
+            a.data.push_back(subaction);
             // a.data.push_back(Action::SharedPtrAction(action));
         }
-    } catch (...) {
+    } catch (const std::exception& exc) {
+        std::cout << exc.what() << std::endl;
     }
 }

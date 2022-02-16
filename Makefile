@@ -13,7 +13,7 @@ default:
 
 
 run_rpi:
-	./bin/RPi --serial="/dev/pts/2 /dev/ttyUSB1 /dev/ttyUSB2 /dev/ttyUSB3"\
+	./bin/RPi --serial="/dev/pts/5 /dev/ttyUSB1 /dev/ttyUSB2 /dev/ttyUSB3"\
 		--vision=localhost:50051\
 		--cameraopen=1
 
