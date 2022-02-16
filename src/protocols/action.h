@@ -17,6 +17,8 @@ class Response {
     inline static const int OK = 1;
     inline static const int ERROR = 0;
 
+    inline static std::string EMPTY = "____";
+
     Response(std::string result, int status, std::string coordinate) {
         this->result = result;
         this->status = status;
@@ -27,6 +29,22 @@ class Response {
         this->result = result;
         this->status = status;
         this->coordinate = " ";
+    }
+
+    std::string emptyToFill(std::string s) { return s.empty() ? EMPTY : s; }
+
+    std::string fillToEmpty(std::string s) {
+        return s.compare(EMPTY) == 0 ? "" : s;
+    }
+
+    void serialiseEmpty() {
+        result = emptyToFill(result);
+        coordinate = emptyToFill(coordinate);
+    }
+
+    void deserialiseEmpty() {
+        result = fillToEmpty(result);
+        coordinate = fillToEmpty(coordinate);
     }
 
     void to_json(json& j) {
@@ -55,6 +73,8 @@ class Action {
     std::string distance;
     std::string coordinate;
 
+    inline static std::string EMPTY = "____";
+
     /**
      * @brief check if action should read list of data
      *
@@ -73,6 +93,26 @@ class Action {
         angle = 0;
         distance = "";
         coordinate = "";
+    }
+
+    std::string emptyToFill(std::string s) { return s.empty() ? EMPTY : s; }
+
+    std::string fillToEmpty(std::string s) {
+        return s.compare(EMPTY) == 0 ? "" : s;
+    }
+
+    void serialiseEmpty() {
+        type = emptyToFill(type);
+        action = emptyToFill(action);
+        distance = emptyToFill(distance);
+        coordinate = emptyToFill(coordinate);
+    }
+
+    void deserialiseEmpty() {
+        type = fillToEmpty(type);
+        action = fillToEmpty(action);
+        distance = fillToEmpty(distance);
+        coordinate = fillToEmpty(coordinate);
     }
 
     /**

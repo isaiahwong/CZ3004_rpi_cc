@@ -34,6 +34,8 @@ void Protocol::subexecA(Protocol* proto, PubSub* sub,
         if (res == PubSub::ReadOK) {
             PubSub::MsgHeader* header = (PubSub::MsgHeader*)buf;
             Action* action = (Action*)(header + 1);
+            // Known bug that string attributes cannot be empty
+            action->deserialiseEmpty();
             callback(proto, action);
         }
     }
@@ -48,6 +50,8 @@ void Protocol::subexecR(Protocol* proto, PubSub* sub,
         if (res == PubSub::ReadOK) {
             PubSub::MsgHeader* header = (PubSub::MsgHeader*)buf;
             Response* res = (Response*)(header + 1);
+            // Known bug that string attributes cannot be empty
+            res->deserialiseEmpty();
             callback(proto, res);
         }
     }
@@ -208,6 +212,8 @@ PubSub* Protocol::getPub(std::string channel) {
  * @param action
  */
 void Protocol::publish(std::string channel, Action& action) {
+    // Known bug that string attributes cannot be empty
+    action.serialiseEmpty();
     // Check if channel exists
     PubSub* pub = getPub(channel);
     PubSub::MsgHeader* header = pub->alloc(sizeof(Action));
@@ -222,6 +228,8 @@ void Protocol::publish(std::string channel, Action& action) {
  * @param action
  */
 void Protocol::publish(std::string channel, Response& res) {
+    // Known bug that string attributes cannot be empty
+    res.serialiseEmpty();
     // Check if channel exists
     PubSub* pub = getPub(channel);
     PubSub::MsgHeader* header = pub->alloc(sizeof(Response));
