@@ -194,16 +194,11 @@ void Blueteeth::readClient() {
             continue;
         }
 
-        // If there's size
-        if (a.data.size()) {
-        } else {
-        }
-
         // map to different channels
         if (a.type.compare(Action::TYPE_MOVE) == 0)
-            this->publish(Blueteeth::BT_MOVEMENT, &a);
+            this->publish(Blueteeth::BT_MOVEMENT, a);
         else if (a.type.compare(Action::TYPE_CAPTURE) == 0)
-            this->publish(Blueteeth::BT_CAMERA_CAPTURE, &a);
+            this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);
 
         // Publish to generic main read for debug
         // this->publish(Blueteeth::BT_MAIN_READ, buf, bufflen);

@@ -8,6 +8,7 @@ void Action::to_json(json& j, const Action& a) {
         {"action", a.action},
         {"angle", a.angle},
         {"distance", a.distance},
+        {"coordinate", a.coordinate},
     };
 }
 
@@ -16,6 +17,7 @@ void Action::_from_json(const json& j, Action& a) {
     j.at("action").get_to(a.action);
     j.at("angle").get_to(a.angle);
     j.at("distance").get_to(a.distance);
+    j.at("coordinate").get_to(a.coordinate);
 }
 
 void Action::from_json(const json& j, Action& a) {
@@ -26,9 +28,10 @@ void Action::from_json(const json& j, Action& a) {
         auto arr = j.at("data");
 
         for (auto it : arr) {
-            Action* action = new Action();
-            _from_json(it, *action);
-            a.data.push_back(Action::SharedPtrAction(action));
+            Action a;
+            _from_json(it, a);
+            a.data.push_back(a);
+            // a.data.push_back(Action::SharedPtrAction(action));
         }
     } catch (...) {
     }

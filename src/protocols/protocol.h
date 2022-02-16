@@ -85,9 +85,9 @@ class Protocol {
     // template<class T>
     // void publish(std::string channel, Action* a);
 
-    void publish(std::string channel, Action* a);
+    void publish(std::string channel, Action& a);
 
-    void publish(std::string channel, Response* a);
+    void publish(std::string channel, Response& a);
 
     void publish(std::string channel, char* buffer, int bufflen);
 

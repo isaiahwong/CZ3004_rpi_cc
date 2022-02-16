@@ -13,7 +13,8 @@
 #include "movement.h"
 #include "protocol.h"
 
-using Queue = moodycamel::BlockingConcurrentQueue<Action&>;
+using BlockingQueueAction = moodycamel::BlockingConcurrentQueue<Action>;
+using BlockingQueueStatus = moodycamel::BlockingConcurrentQueue<int>;
 
 class Cereal : public Protocol {
    private:
@@ -33,9 +34,11 @@ class Cereal : public Protocol {
      * @brief Blocking queue of commands
      *
      */
-    Queue commands;
+    BlockingQueueAction commands;
 
-    std::atomic<bool> write = false;
+    BlockingQueueStatus statuses;
+
+    std::atomic<bool> write;
 
     /**
      * @brief
@@ -54,6 +57,8 @@ class Cereal : public Protocol {
    public:
     // Channels
     inline static const std::string SERIAL_MAIN_READ = "SERIAL_MAIN_READ";
+    inline static const std::string SERIAL_MAIN_WRITE_SUCCESS =
+        "SERIAL_MAIN_WRITE_SUCCESS";
 
     Cereal(std::string _port, int _baudrate);
 
@@ -75,9 +80,29 @@ class Cereal : public Protocol {
      * @param c
      * @param msg
      */
+    static void onExecuteActions(void* c);
+
+    void onExecuteActions();
+
+    /**
+     * @brief Function to determine if write to stm is allowed
+     *
+     * @return true
+     * @return false
+     */
+    bool canWrite();
+
+    /**
+     * @brief Forwarder static function to access Cereal onAction
+     *
+     * @param c
+     * @param msg
+     */
     static void onAction(void* c, Action* action);
 
     void onAction(Action* action);
+
+    void onActions(Action* action);
 
     void run();
 

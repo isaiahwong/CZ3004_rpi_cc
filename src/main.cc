@@ -51,7 +51,8 @@ int main(int argc, char *argv[]) {
     cam.registerSub(&bt, Camera::CAM_CAPTURE_RESULT, Blueteeth::onResponse);
 
     // Register cereal to listen for movement calls
-    // c.registerSub(&cam, Cereal::SERIAL_MAIN_READ, Camera::onCapture);
+    c.registerSub(&cam, Cereal::SERIAL_MAIN_WRITE_SUCCESS,
+                  Blueteeth::onResponse);
     // c.registerSub(&c, Cereal::SERIAL_MAIN_READ, Cereal::onAction);
 
     // Start the respective protocols

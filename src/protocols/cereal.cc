@@ -13,11 +13,14 @@
 #include <thread>
 
 Cereal::Cereal(std::string _port, int _baudrate = 115200) {
+    write = false;
     port = _port;
     baudrate = _baudrate;
     // split strings
     std::stringstream ss(_port);
     std::string word;
+    commands = BlockingQueueAction();
+    statuses = BlockingQueueStatus();
     while (ss >> word) hosts.push_back(word);
 }
 
@@ -34,7 +37,13 @@ void Cereal::onAction(void* c, Action* action) {
 }
 
 void Cereal::onAction(Action* action) {
+    if (action == nullptr) return;
     Action a = *action;
+    // Process multiple actions
+    if (a.data.size() > 0) {
+        onActions(action);
+        return;
+    }
     try {
         // Switch cases
         if (a.action.compare(Movement::FORWARD) == 0)
@@ -55,6 +64,18 @@ void Cereal::onAction(Action* action) {
             movement.center(a, this, writeClient);
     } catch (...) {
     }
+}
+
+void Cereal::onActions(Action* action) {
+    if (action == nullptr || action->data.size() < 0) return;
+    Action remove;
+    // Override existing queue
+    // Empty queue
+    while (commands.try_dequeue(remove))
+        ;
+
+    // Enqueue
+    for (Action a : action->data) commands.enqueue(a);
 }
 
 /**
@@ -91,9 +112,10 @@ void Cereal::run() { init(); }
 
 void Cereal::init() {
     // Create connection Read Thread
-    std::thread* connThread = new std::thread(Cereal::onConnectionRead, this);
-    std::thread* receiveActionsThread =
-        new std::thread(Cereal::onReceiveActions, this);
+    std::thread* connThread = new std::thread(
+        static_cast<void (*)(void* c)>(Cereal::onConnectionRead), this);
+    std::thread* receiveActionsThread = new std::thread(
+        static_cast<void (*)(void* c)>(Cereal::onExecuteActions), this);
 
     // Push to protocol subthreads
     subThreads.push_back(UniqueThreadPtr(connThread));
@@ -117,14 +139,36 @@ void Cereal::onConnectionRead() {
     }
 }
 
-void Cereal::onReceiveActions(void* c) {
-    static_cast<Cereal*>(c)->onConnectionRead();
+void Cereal::onExecuteActions(void* c) {
+    static_cast<Cereal*>(c)->onExecuteActions();
 }
 
-void Cereal::onReceiveActions() {
+/**
+ * @brief Waits for commands queue
+ *
+ */
+void Cereal::onExecuteActions() {
+    Action a;
+    int status;
     while (true) {
+        commands.wait_dequeue(a);
+
+        while (true) {
+            onAction(&a);
+            // Blocking
+            statuses.wait_dequeue(status);
+            if (status != 1) continue;
+            // Break queue if successful
+            break;
         }
+
+        // send action to android to notify success
+        Response response("", status, a.coordinate);
+        this->publish(SERIAL_MAIN_WRITE_SUCCESS, response);
+    }
 }
+
+bool Cereal::canWrite() { return true; }
 
 int Cereal::connect() {
     // Get the current host pointer and atttempt to connect
@@ -145,7 +189,8 @@ void Cereal::readClient() {
     // Clear
     char c;
     int sLen = 0;
-    char buf[1024];
+    int MAX_BUFFER = 2;
+    char buf[MAX_BUFFER];
 
     serialFlush(serial);
 
@@ -168,10 +213,13 @@ void Cereal::readClient() {
         if (c == '\n' || c == '\r' || c == '\0') {
             try {
                 // Overflow from buffer
-                if (sLen >= 1024) sLen = 1023;
+                if (sLen >= MAX_BUFFER) sLen = MAX_BUFFER - 1;
                 buf[sLen] = '\0';
-                // TODO: map SERIAL RESPONSE AND SEND TO ANDROID
                 std::cout << buf << sLen << std::endl;
+                int status = buf[0] - '0';
+
+                // Notify status of message
+                statuses.enqueue(status);
                 // Publish Serial in
                 // this->publish(Cereal::SERIAL_MAIN_READ, buf, sLen);
                 // Clear buffer

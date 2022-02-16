@@ -207,13 +207,12 @@ PubSub* Protocol::getPub(std::string channel) {
  * @param channel
  * @param action
  */
-void Protocol::publish(std::string channel, Action* action) {
+void Protocol::publish(std::string channel, Action& action) {
     // Check if channel exists
     PubSub* pub = getPub(channel);
     PubSub::MsgHeader* header = pub->alloc(sizeof(Action));
-    Action* a = (Action*)(header + 1);
-    *a = *action;
-    pub->pub(true);
+    *(Action*)(header + 1) = action;
+    pub->pub();
 }
 
 /**
@@ -222,11 +221,11 @@ void Protocol::publish(std::string channel, Action* action) {
  * @param channel
  * @param action
  */
-void Protocol::publish(std::string channel, Response* res) {
+void Protocol::publish(std::string channel, Response& res) {
     // Check if channel exists
     PubSub* pub = getPub(channel);
-    PubSub::MsgHeader* header = pub->alloc(sizeof(Action));
-    *(Response*)(header + 1) = *res;
+    PubSub::MsgHeader* header = pub->alloc(sizeof(Response));
+    *(Response*)(header + 1) = res;
     pub->pub();
 }
 
