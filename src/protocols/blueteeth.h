@@ -2,7 +2,12 @@
 #ifndef BLUETEETH_H_
 #define BLUETEETH_H_
 
+#include <blockingconcurrentqueue.h>
+
 #include "protocol.h"
+
+using BlockingQueueAction = moodycamel::BlockingConcurrentQueue<Action>;
+using BlockingQueueRes = moodycamel::BlockingConcurrentQueue<Response>;
 
 class Blueteeth final : public Protocol {
    private:
@@ -18,6 +23,14 @@ class Blueteeth final : public Protocol {
 
     // bluetooth client
     int client = -1;
+
+    /**
+     * @brief Blocking queue of commands
+     *
+     */
+    BlockingQueueAction commands;
+
+    BlockingQueueRes statuses;
 
     void init();
     void connect();
@@ -36,9 +49,33 @@ class Blueteeth final : public Protocol {
      * @param c
      * @param msg
      */
-    static void onResponse(void* c, Response* res);
+    static void onResponse(void* c, Response* response);
 
-    void onResponse(Response* res);
+    void onResponse(Response* response);
+
+    /**
+     * @brief Forwarder static function to access Cereal onAction
+     *
+     * @param c
+     * @param msg
+     */
+    static void onExecuteActions(void* c);
+
+    void onExecuteActions();
+
+    void onActions(Action& action);
+
+    void onAction(Action& action);
+
+    /**
+     * @brief Forwarder static function to access Cereal onAction
+     *
+     * @param c
+     * @param msg
+     */
+    static void onConnectionRead(void* c);
+
+    void onConnectionRead();
 
     ~Blueteeth();
     Blueteeth();

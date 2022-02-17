@@ -19,96 +19,12 @@ Cereal::Cereal(std::string _port, int _baudrate = 115200) {
     // split strings
     std::stringstream ss(_port);
     std::string word;
-    commands = BlockingQueueAction();
-    statuses = BlockingQueueStatus();
+    // commands = BlockingQueueAction();
+    // statuses = BlockingQueueStatus();
     while (ss >> word) hosts.push_back(word);
 }
 
 Cereal::~Cereal() { close(serial); }
-
-/**
- * @brief static function to forward
- *
- * @param c
- * @param msg
- */
-void Cereal::onAction(void* c, Action* action) {
-    static_cast<Cereal*>(c)->onAction(action);
-}
-
-void Cereal::onAction(Action* action) {
-    if (action == nullptr) return;
-    Action a = *action;
-    // Process multiple actions
-    if (a.data.size() > 0) {
-        onActions(action);
-        return;
-    }
-    try {
-        // Switch cases
-        if (a.action.compare(Movement::FORWARD) == 0)
-            movement.forward(a, this, writeClient);
-        else if (a.action.compare(Movement::BACK) == 0)
-            movement.back(a, this, writeClient);
-        else if (a.action.compare(Movement::FORWARD_LEFT) == 0)
-            movement.forwardLeft(a, this, writeClient);
-        else if (a.action.compare(Movement::FORWARD_RIGHT) == 0)
-            movement.forwardRight(a, this, writeClient);
-        else if (a.action.compare(Movement::BACK_LEFT) == 0)
-            movement.backLeft(a, this, writeClient);
-        else if (a.action.compare(Movement::BACK_RIGHT) == 0)
-            movement.backRight(a, this, writeClient);
-        else if (a.action.compare(Movement::STOP) == 0)
-            movement.stop(a, this, writeClient);
-        else if (a.action.compare(Movement::CENTER) == 0)
-            movement.center(a, this, writeClient);
-    } catch (...) {
-    }
-}
-
-void Cereal::onActions(Action* action) {
-    if (action == nullptr || action->data.size() < 1) return;
-    Action remove;
-    // Override existing queue
-    // Empty queue
-    while (commands.try_dequeue(remove))
-        ;
-    print("dequeued");
-    // Enqueue
-    for (Action a : action->data) {
-        commands.enqueue(a);
-    }
-}
-
-/**
- * @brief static function to forward
- *
- * @param c
- * @param msg
- */
-void Cereal::writeClient(void* c, std::string msg) {
-    static_cast<Cereal*>(c)->writeClient(msg);
-}
-
-/**
- * @brief Write to STM
- *
- * @param msg
- */
-void Cereal::writeClient(std::string msg) {
-    const int LEN = 6;
-    char buf[LEN];
-
-    try {
-        // Truncates till 4
-        strncpy(buf, msg.c_str(), LEN);
-        buf[LEN - 1] = '\0';
-        std::cout << buf << std::endl;
-        serialPuts(serial, buf);
-    } catch (std::exception& e) {
-        std::cout << "Exception caught : " << e.what() << std::endl;
-    }
-}
 
 void Cereal::run() { init(); }
 
@@ -116,12 +32,12 @@ void Cereal::init() {
     // Create connection Read Thread
     std::thread* connThread = new std::thread(
         static_cast<void (*)(void* c)>(Cereal::onConnectionRead), this);
-    std::thread* receiveActionsThread = new std::thread(
-        static_cast<void (*)(void* c)>(Cereal::onExecuteActions), this);
+    // std::thread* receiveActionsThread = new std::thread(
+    //     static_cast<void (*)(void* c)>(Cereal::onExecuteActions), this);
 
     // Push to protocol subthreads
     subThreads.push_back(UniqueThreadPtr(connThread));
-    subThreads.push_back(UniqueThreadPtr(receiveActionsThread));
+    // subThreads.push_back(UniqueThreadPtr(receiveActionsThread));
 }
 
 void Cereal::onConnectionRead(void* c) {
@@ -150,28 +66,107 @@ void Cereal::onExecuteActions(void* c) {
  *
  */
 void Cereal::onExecuteActions() {
-    Action a;
-    int status, retries = 0, MAX_RETRIES = 3;
-    while (true) {
-        commands.wait_dequeue(a);
-        print("Done waiting");
+    // Action a;
+    // int status, retries = 0, MAX_RETRIES = 3;
+    // while (true) {
+    //     commands.wait_dequeue(a);
+    //     print("Done waiting");
 
-        while (true) {
-            onAction(&a);
+    //     while (true) {
+    //         onAction(&a);
 
-            bool didReceive =
-                statuses.wait_dequeue_timed(status, std::chrono::seconds(2));
+    //         bool didReceive =
+    //             statuses.wait_dequeue_timed(status, std::chrono::seconds(5));
 
-            // retry loop if failed
-            if (!didReceive || status != 1) continue;
-            // Break queue if successful
-            break;
-        }
+    //         // retry loop if failed
+    //         if (!didReceive || status != 1) continue;
+    //         // Break queue if successful
+    //         break;
+    //     }
 
-        print("Success");
-        // send action to android to notify success
-        Response response("", status, a.coordinate);
-        this->publish(SERIAL_MAIN_WRITE_SUCCESS, response);
+    //     print("Success");
+    //     // send action to android to notify success
+    //     Response response("", status, a.coordinate);
+    //     this->publish(SERIAL_MAIN_WRITE_SUCCESS, response);
+    // }
+}
+
+/**
+ * @brief static function to forward
+ *
+ * @param c
+ * @param msg
+ */
+void Cereal::onAction(void* c, Action* action) {
+    static_cast<Cereal*>(c)->onAction(action);
+}
+
+void Cereal::onAction(Action* action) {
+    if (action == nullptr) return;
+    Action a = *action;
+
+    try {
+        // Switch cases
+        if (a.action.compare(Movement::FORWARD) == 0)
+            movement.forward(a, this, writeClient);
+        else if (a.action.compare(Movement::BACK) == 0)
+            movement.back(a, this, writeClient);
+        else if (a.action.compare(Movement::FORWARD_LEFT) == 0)
+            movement.forwardLeft(a, this, writeClient);
+        else if (a.action.compare(Movement::FORWARD_RIGHT) == 0)
+            movement.forwardRight(a, this, writeClient);
+        else if (a.action.compare(Movement::BACK_LEFT) == 0)
+            movement.backLeft(a, this, writeClient);
+        else if (a.action.compare(Movement::BACK_RIGHT) == 0)
+            movement.backRight(a, this, writeClient);
+        else if (a.action.compare(Movement::STOP) == 0)
+            movement.stop(a, this, writeClient);
+        else if (a.action.compare(Movement::CENTER) == 0)
+            movement.center(a, this, writeClient);
+    } catch (...) {
+    }
+}
+
+// void Cereal::onActions(Action* action) {
+//     if (action == nullptr || action->data.size() < 1) return;
+//     Action remove;
+//     // Override existing queue
+//     // Empty queue
+//     while (commands.try_dequeue(remove))
+//         ;
+//     // Enqueue
+//     for (Action a : action->data) {
+//         commands.enqueue(a);
+//     }
+// }
+
+/**
+ * @brief static function to forward
+ *
+ * @param c
+ * @param msg
+ */
+void Cereal::writeClient(void* c, std::string msg) {
+    static_cast<Cereal*>(c)->writeClient(msg);
+}
+
+/**
+ * @brief Write to STM
+ *
+ * @param msg
+ */
+void Cereal::writeClient(std::string msg) {
+    const int LEN = 6;
+    char buf[LEN];
+
+    try {
+        // Truncates till 4
+        strncpy(buf, msg.c_str(), LEN);
+        buf[LEN - 1] = '\0';
+        std::cout << buf << std::endl;
+        serialPuts(serial, buf);
+    } catch (std::exception& e) {
+        std::cout << "Exception caught : " << e.what() << std::endl;
     }
 }
 
@@ -223,13 +218,16 @@ void Cereal::readClient() {
                 // Overflow from buffer
                 if (sLen >= MAX_BUFFER) sLen = MAX_BUFFER - 1;
                 buf[sLen] = '\0';
-                std::cout << buf << std::endl;
+                print("");
+                std::cout << "STM: " << buf << std::endl;
                 int status = buf[0] - '0';
 
+                // Fill with filler messages
+                Response res("", status, "");
                 // Notify status of message
-                statuses.enqueue(status);
+                // statuses.enqueue(status);
                 // Publish Serial in
-                // this->publish(Cereal::SERIAL_MAIN_READ, buf, sLen);
+                this->publish(Cereal::SERIAL_MAIN_WRITE_SUCCESS, res);
                 // Clear buffer
                 memset(buf, 0, sizeof(buf));
                 // Reset length

@@ -19,6 +19,14 @@ class Response {
 
     inline static std::string EMPTY = "____";
 
+    ~Response(){};
+
+    Response() {
+        result = "";
+        coordinate = "";
+        status = 0;
+    }
+
     Response(std::string result, int status, std::string coordinate) {
         this->result = result;
         this->status = status;
@@ -70,6 +78,7 @@ class Action {
     std::string type;
     std::string action;
     int angle;
+    int length;
     std::string distance;
     std::string coordinate;
 
@@ -91,6 +100,7 @@ class Action {
         type = "";
         action = "";
         angle = 0;
+        length = 0;
         distance = "";
         coordinate = "";
     }
@@ -120,6 +130,8 @@ class Action {
      *
      */
     ~Action();
+
+    inline static const std::string TYPE_SERIES = "series";
 
     inline static const std::string TYPE_MOVE = "move";
 

@@ -34,9 +34,9 @@ class Cereal : public Protocol {
      * @brief Blocking queue of commands
      *
      */
-    BlockingQueueAction commands;
+    // BlockingQueueAction commands;
 
-    BlockingQueueStatus statuses;
+    // BlockingQueueStatus statuses;
 
     std::atomic<bool> write;
 
@@ -102,7 +102,7 @@ class Cereal : public Protocol {
 
     void onAction(Action* action);
 
-    void onActions(Action* action);
+    // void onActions(Action* action);
 
     void run();
 

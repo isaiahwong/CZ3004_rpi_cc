@@ -37,6 +37,8 @@ Blueteeth::Blueteeth() {
     this->channel = 1;
     this->clientAddr = new sockaddr_rc();
     this->localAddr = new sockaddr_rc();
+    this->commands = BlockingQueueAction();
+    this->statuses = BlockingQueueRes();
     this->init();
 }
 
@@ -55,10 +57,15 @@ Blueteeth::Blueteeth(int channel, std::string name) {
  *
  */
 void Blueteeth::run() {
-    while (true) {
-        connect();
-        this->readClient();
-    }
+    // Create connection Read Thread
+    std::thread *connThread = new std::thread(
+        static_cast<void (*)(void *c)>(Blueteeth::onConnectionRead), this);
+    std::thread *receiveActionsThread = new std::thread(
+        static_cast<void (*)(void *c)>(Blueteeth::onExecuteActions), this);
+
+    // Push to protocol subthreads
+    subThreads.push_back(UniqueThreadPtr(connThread));
+    subThreads.push_back(UniqueThreadPtr(receiveActionsThread));
 }
 
 void Blueteeth::init() {
@@ -87,6 +94,78 @@ void Blueteeth::init() {
     status = listen(bluetoothSocket, connections);
     if (status == -1)
         throw this->genError(fn, "Bluetooth listen failed", errno);
+}
+
+void Blueteeth::onConnectionRead(void *b) {
+    static_cast<Blueteeth *>(b)->onConnectionRead();
+}
+
+void Blueteeth::onConnectionRead() {
+    while (true) {
+        connect();
+        this->readClient();
+    }
+}
+
+void Blueteeth::onExecuteActions(void *b) {
+    static_cast<Blueteeth *>(b)->onExecuteActions();
+}
+
+/**
+ * @brief Waits for commands queue
+ *
+ */
+void Blueteeth::onExecuteActions() {
+    Action a;
+    Response statusResponse;
+
+    int retries = 0, MAX_RETRIES = 3;
+    while (true) {
+        commands.wait_dequeue(a);
+        retries = 0;
+        while (true) {
+            if (a.type.compare(Action::TYPE_MOVE) == 0)
+                this->publish(Blueteeth::BT_MOVEMENT, a);
+            else if (a.type.compare(Action::TYPE_CAPTURE) == 0)
+                this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);
+            else {
+                printRed("Unknown command in series");
+                continue;
+            }
+            try {
+                bool didReceive = statuses.wait_dequeue_timed(
+                    statusResponse, std::chrono::seconds(5));
+                // retry loop if failed
+                if (!didReceive || statusResponse.status != 1) {
+                    if (retries >= MAX_RETRIES) {
+                        printRed("Max retries, skipping command");
+                        statusResponse.status = 0;
+                        break;
+                    }
+                    retries++;
+                    continue;
+                }
+                // Break queue if successful
+                break;
+            } catch (const std::exception &exc) {
+                printRed("onExecuteActions Exeception: ");
+                std::cout << exc.what() << std::endl;
+                break;
+            }
+        }
+
+        print("Next Command");
+        // Send response to android to notify success
+        Response response(statusResponse.result, statusResponse.status,
+                          a.coordinate);
+        json j;
+        response.to_json(j);
+        std::string payload = j.dump();
+        int size = payload.size();
+
+        // Write back to client
+        write(client, payload.c_str(), size);
+    }
 }
 
 /**
@@ -129,20 +208,37 @@ void Blueteeth::disconnect() {
                    "BT closed\n");
 }
 
-void Blueteeth::onResponse(void *b, Response *res) {
-    static_cast<Blueteeth *>(b)->onResponse(res);
+void Blueteeth::onResponse(void *b, Response *response) {
+    static_cast<Blueteeth *>(b)->onResponse(response);
 }
 
-void Blueteeth::onResponse(Response *res) {
-    if (res == nullptr) return;
-    json j;
-    res->to_json(j);
-    std::string payload = j.dump();
+void Blueteeth::onResponse(Response *response) {
+    if (response == nullptr) return;
 
-    int size = payload.size();
+    // Notify status of message
+    statuses.enqueue(*response);
+}
 
-    // Write back to client
-    write(client, payload.c_str(), size);
+void Blueteeth::onAction(Action &action) {
+    Action remove;
+    // Override existing queue
+    // Empty queue
+    while (commands.try_dequeue(remove))
+        ;
+    commands.enqueue(action);
+}
+
+void Blueteeth::onActions(Action &action) {
+    if (action.data.size() < 1) return;
+    Action remove;
+    // Override existing queue
+    // Empty queue
+    while (commands.try_dequeue(remove))
+        ;
+    // Enqueue
+    for (Action a : action.data) {
+        commands.enqueue(a);
+    }
 }
 
 /**
@@ -151,24 +247,33 @@ void Blueteeth::onResponse(Response *res) {
  */
 void Blueteeth::readClient() {
     // Wait for bluetooth client to accept
-    char buf[1024] = {0};
+    int MAX_SIZE = 1000;
+    char buf[MAX_SIZE] = {0};
     fmt::print(fmt::emphasis::bold | fg(fmt::color::sea_green),
                "Reading bluetooth from client.\n");
+
+    // Buffer for series
+    Action *series = nullptr;
+    // Parse action
+    Action a;
+
     // Run blocking loop to listen for bluetooth connections
     while (true) {
         // read data from the client
-        int bufflen = read(client, buf, sizeof(buf));
+        int bufflen = read(client, buf, MAX_SIZE);
 
         // Exit function call, attempt to reconnect
         if (bufflen <= 0) {
             return;
         }
 
+        // Override
+        a = Action();
+
         // Parse char to string
         std::string message(buf, bufflen);
 
-        // Parse action
-        Action a;
+        std::cout << message << std::endl;
 
         try {
             // parse string to json
@@ -178,8 +283,14 @@ void Blueteeth::readClient() {
         } catch (const json::parse_error &e) {
             // Issues with fmt::format
             std::cout << e.what() << std::endl;
+            //  reset series if an exception is caught
+            delete series;
+            series = nullptr;
             continue;
         } catch (...) {
+            //  reset series if an exception is caught
+            delete series;
+            series = nullptr;
             printRed("Bluetooth Read: Unexpected error occurred");
             continue;
         }
@@ -189,16 +300,36 @@ void Blueteeth::readClient() {
             continue;
         }
 
-        if (a.action.empty()) {
-            printRed("Empty action received");
+        // Check if action is a series of commands
+        if (a.type.compare(Action::TYPE_SERIES) == 0) {
+            series = new Action();
+            *series = a;
+            std::cout << series->length << std::endl;
             continue;
+        }
+
+        // series on going
+        if (series != nullptr) {
+            series->data.push_back(a);
+            std::cout << series->data.size() << std::endl;
+            // TODO to handle length mismatch
+            if (series->data.size() != series->length) continue;
+
+            // Data
+            a = *series;
+            delete series;
+            series = nullptr;
+            print("");
+            std::cout << "Series size:" << a.data.size() << std::endl;
         }
 
         // map to different channels
         if (a.type.compare(Action::TYPE_MOVE) == 0)
-            this->publish(Blueteeth::BT_MOVEMENT, a);
+            onAction(a);
         else if (a.type.compare(Action::TYPE_CAPTURE) == 0)
-            this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);
+            onAction(a);
+        else if (a.type.compare(Action::TYPE_SERIES) == 0)
+            onActions(a);
 
         // Publish to generic main read for debug
         // this->publish(Blueteeth::BT_MAIN_READ, buf, bufflen);
