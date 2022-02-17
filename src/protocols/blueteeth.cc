@@ -134,7 +134,7 @@ void Blueteeth::onExecuteActions() {
             }
             try {
                 bool didReceive = statuses.wait_dequeue_timed(
-                    statusResponse, std::chrono::seconds(1));
+                    statusResponse, std::chrono::seconds(3));
                 // retry loop if failed
                 if (!didReceive || statusResponse.status != 1) {
                     if (retries >= MAX_RETRIES) {
@@ -143,7 +143,7 @@ void Blueteeth::onExecuteActions() {
                         break;
                     }
                     retries++;
-                    std::this_thread::sleep_for(std::chrono::seconds(2));
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
                     continue;
                 }
                 // Break queue if successful
