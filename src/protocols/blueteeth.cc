@@ -130,7 +130,7 @@ void Blueteeth::onExecuteActions() {
                 this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);
             else {
                 printRed("Unknown command in series");
-                continue;
+                break;
             }
             try {
                 bool didReceive = statuses.wait_dequeue_timed(
