@@ -134,7 +134,7 @@ void Blueteeth::onExecuteActions() {
             }
             try {
                 bool didReceive = statuses.wait_dequeue_timed(
-                    statusResponse, std::chrono::seconds(5));
+                    statusResponse, std::chrono::seconds(1));
                 // retry loop if failed
                 if (!didReceive || statusResponse.status != 1) {
                     if (retries >= MAX_RETRIES) {
@@ -143,6 +143,7 @@ void Blueteeth::onExecuteActions() {
                         break;
                     }
                     retries++;
+                    std::this_thread::sleep_for(std::chrono::seconds(2));
                     continue;
                 }
                 // Break queue if successful
@@ -272,8 +273,6 @@ void Blueteeth::readClient() {
 
         // Parse char to string
         std::string message(buf, bufflen);
-
-        std::cout << message << std::endl;
 
         try {
             // parse string to json

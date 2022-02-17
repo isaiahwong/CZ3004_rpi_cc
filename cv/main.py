@@ -34,7 +34,7 @@ class ImageServer(VisionServiceServicer):
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
         # label = self.model.predict(frame, req.width)
         frame, label = self.model.predict(frame, req.width, req.height)
-        cv2.imwrite('{}/out/frame{}.jpg'.format(self.pwd, self.count),frame)
+        cv2.imwrite('{}/out/image-{}.jpg'.format(self.pwd, label),frame)
         status = 0 if str(label) == '-1' else 1
         return VisionResponse(imageid=str(label), status=status)
 
