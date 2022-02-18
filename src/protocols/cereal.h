@@ -4,6 +4,7 @@
 #define CEREAL_H_
 
 #include <blockingconcurrentqueue.h>
+#include <grpcpp/grpcpp.h>
 
 #include <string>
 #include <vector>
@@ -12,12 +13,21 @@
 #include "iostream"
 #include "movement.h"
 #include "protocol.h"
+#include "vision.grpc.pb.h"
+
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::ClientReader;
+using grpc::Status;
 
 using BlockingQueueAction = moodycamel::BlockingConcurrentQueue<Action>;
 using BlockingQueueStatus = moodycamel::BlockingConcurrentQueue<int>;
 
 class Cereal : public Protocol {
    private:
+    std::unique_ptr<SerialService::Stub> stub_;
+    std::unique_ptr<ClientReader<SerialResponse>> reader;
+
     std::string port;
 
     int serial = -1;

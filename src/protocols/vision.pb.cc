@@ -27,6 +27,30 @@ struct EmptyDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT EmptyDefaultTypeInternal _Empty_default_instance_;
+constexpr SerialMessage::SerialMessage(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : message_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct SerialMessageDefaultTypeInternal {
+  constexpr SerialMessageDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SerialMessageDefaultTypeInternal() {}
+  union {
+    SerialMessage _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SerialMessageDefaultTypeInternal _SerialMessage_default_instance_;
+constexpr SerialResponse::SerialResponse(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : status_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
+struct SerialResponseDefaultTypeInternal {
+  constexpr SerialResponseDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~SerialResponseDefaultTypeInternal() {}
+  union {
+    SerialResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT SerialResponseDefaultTypeInternal _SerialResponse_default_instance_;
 constexpr VisionRequest::VisionRequest(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : image_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
@@ -55,7 +79,7 @@ struct VisionResponseDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VisionResponseDefaultTypeInternal _VisionResponse_default_instance_;
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_vision_2eproto[3];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_vision_2eproto[5];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_vision_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_vision_2eproto = nullptr;
 
@@ -66,6 +90,20 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_vision_2eproto::offsets[] PROT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::SerialMessage, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::SerialMessage, message_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::SerialResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::SerialResponse, status_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::VisionRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -87,28 +125,36 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_vision_2eproto::offsets[] PROT
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Empty)},
-  { 6, -1, -1, sizeof(::VisionRequest)},
-  { 16, -1, -1, sizeof(::VisionResponse)},
+  { 6, -1, -1, sizeof(::SerialMessage)},
+  { 13, -1, -1, sizeof(::SerialResponse)},
+  { 20, -1, -1, sizeof(::VisionRequest)},
+  { 30, -1, -1, sizeof(::VisionResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_Empty_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_SerialMessage_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_SerialResponse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_VisionRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::_VisionResponse_default_instance_),
 };
 
 const char descriptor_table_protodef_vision_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\014vision.proto\"\007\n\005Empty\"O\n\rVisionRequest"
-  "\022\r\n\005image\030\001 \001(\014\022\r\n\005width\030\002 \001(\005\022\016\n\006height"
-  "\030\003 \001(\005\022\020\n\010channels\030\004 \001(\005\"1\n\016VisionRespon"
-  "se\022\016\n\006status\030\001 \001(\005\022\017\n\007imageid\030\002 \001(\t2=\n\rV"
-  "isionService\022,\n\tSendFrame\022\016.VisionReques"
-  "t\032\017.VisionResponseb\006proto3"
+  "\n\014vision.proto\"\007\n\005Empty\" \n\rSerialMessage"
+  "\022\017\n\007message\030\001 \001(\t\" \n\016SerialResponse\022\016\n\006s"
+  "tatus\030\001 \001(\t\"O\n\rVisionRequest\022\r\n\005image\030\001 "
+  "\001(\014\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 \001(\005\022\020\n\010ch"
+  "annels\030\004 \001(\005\"1\n\016VisionResponse\022\016\n\006status"
+  "\030\001 \001(\005\022\017\n\007imageid\030\002 \001(\t2=\n\rVisionService"
+  "\022,\n\tSendFrame\022\016.VisionRequest\032\017.VisionRe"
+  "sponse2a\n\rSerialService\022%\n\013SendMessage\022\016"
+  ".SerialMessage\032\006.Empty\022)\n\014SendResponse\022\006"
+  ".Empty\032\017.SerialResponse0\001b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_vision_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_vision_2eproto = {
-  false, false, 226, descriptor_table_protodef_vision_2eproto, "vision.proto", 
-  &descriptor_table_vision_2eproto_once, nullptr, 0, 3,
+  false, false, 393, descriptor_table_protodef_vision_2eproto, "vision.proto", 
+  &descriptor_table_vision_2eproto_once, nullptr, 0, 5,
   schemas, file_default_instances, TableStruct_vision_2eproto::offsets,
   file_level_metadata_vision_2eproto, file_level_enum_descriptors_vision_2eproto, file_level_service_descriptors_vision_2eproto,
 };
@@ -156,6 +202,400 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Empty::GetClassData() const { 
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_vision_2eproto_getter, &descriptor_table_vision_2eproto_once,
       file_level_metadata_vision_2eproto[0]);
+}
+
+// ===================================================================
+
+class SerialMessage::_Internal {
+ public:
+};
+
+SerialMessage::SerialMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:SerialMessage)
+}
+SerialMessage::SerialMessage(const SerialMessage& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_message().empty()) {
+    message_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_message(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:SerialMessage)
+}
+
+void SerialMessage::SharedCtor() {
+message_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+SerialMessage::~SerialMessage() {
+  // @@protoc_insertion_point(destructor:SerialMessage)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SerialMessage::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  message_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void SerialMessage::ArenaDtor(void* object) {
+  SerialMessage* _this = reinterpret_cast< SerialMessage* >(object);
+  (void)_this;
+}
+void SerialMessage::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SerialMessage::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SerialMessage::Clear() {
+// @@protoc_insertion_point(message_clear_start:SerialMessage)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  message_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SerialMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string message = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_message();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "SerialMessage.message"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SerialMessage::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:SerialMessage)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string message = 1;
+  if (!this->_internal_message().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_message().data(), static_cast<int>(this->_internal_message().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "SerialMessage.message");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_message(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:SerialMessage)
+  return target;
+}
+
+size_t SerialMessage::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:SerialMessage)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string message = 1;
+  if (!this->_internal_message().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_message());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SerialMessage::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SerialMessage::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SerialMessage::GetClassData() const { return &_class_data_; }
+
+void SerialMessage::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SerialMessage *>(to)->MergeFrom(
+      static_cast<const SerialMessage &>(from));
+}
+
+
+void SerialMessage::MergeFrom(const SerialMessage& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:SerialMessage)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_message().empty()) {
+    _internal_set_message(from._internal_message());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SerialMessage::CopyFrom(const SerialMessage& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:SerialMessage)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerialMessage::IsInitialized() const {
+  return true;
+}
+
+void SerialMessage::InternalSwap(SerialMessage* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &message_, lhs_arena,
+      &other->message_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SerialMessage::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_vision_2eproto_getter, &descriptor_table_vision_2eproto_once,
+      file_level_metadata_vision_2eproto[1]);
+}
+
+// ===================================================================
+
+class SerialResponse::_Internal {
+ public:
+};
+
+SerialResponse::SerialResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor();
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
+  // @@protoc_insertion_point(arena_constructor:SerialResponse)
+}
+SerialResponse::SerialResponse(const SerialResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  status_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_status().empty()) {
+    status_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_status(), 
+      GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:SerialResponse)
+}
+
+void SerialResponse::SharedCtor() {
+status_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+SerialResponse::~SerialResponse() {
+  // @@protoc_insertion_point(destructor:SerialResponse)
+  if (GetArenaForAllocation() != nullptr) return;
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+inline void SerialResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  status_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void SerialResponse::ArenaDtor(void* object) {
+  SerialResponse* _this = reinterpret_cast< SerialResponse* >(object);
+  (void)_this;
+}
+void SerialResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SerialResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void SerialResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:SerialResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  status_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SerialResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string status = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_status();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "SerialResponse.status"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SerialResponse::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:SerialResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string status = 1;
+  if (!this->_internal_status().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_status().data(), static_cast<int>(this->_internal_status().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "SerialResponse.status");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_status(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:SerialResponse)
+  return target;
+}
+
+size_t SerialResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:SerialResponse)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string status = 1;
+  if (!this->_internal_status().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_status());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData SerialResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    SerialResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*SerialResponse::GetClassData() const { return &_class_data_; }
+
+void SerialResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<SerialResponse *>(to)->MergeFrom(
+      static_cast<const SerialResponse &>(from));
+}
+
+
+void SerialResponse::MergeFrom(const SerialResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:SerialResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_status().empty()) {
+    _internal_set_status(from._internal_status());
+  }
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void SerialResponse::CopyFrom(const SerialResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:SerialResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerialResponse::IsInitialized() const {
+  return true;
+}
+
+void SerialResponse::InternalSwap(SerialResponse* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &status_, lhs_arena,
+      &other->status_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SerialResponse::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_vision_2eproto_getter, &descriptor_table_vision_2eproto_once,
+      file_level_metadata_vision_2eproto[2]);
 }
 
 // ===================================================================
@@ -429,7 +869,7 @@ void VisionRequest::InternalSwap(VisionRequest* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata VisionRequest::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_vision_2eproto_getter, &descriptor_table_vision_2eproto_once,
-      file_level_metadata_vision_2eproto[1]);
+      file_level_metadata_vision_2eproto[3]);
 }
 
 // ===================================================================
@@ -652,13 +1092,19 @@ void VisionResponse::InternalSwap(VisionResponse* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata VisionResponse::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_vision_2eproto_getter, &descriptor_table_vision_2eproto_once,
-      file_level_metadata_vision_2eproto[2]);
+      file_level_metadata_vision_2eproto[4]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::Empty* Arena::CreateMaybeMessage< ::Empty >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Empty >(arena);
+}
+template<> PROTOBUF_NOINLINE ::SerialMessage* Arena::CreateMaybeMessage< ::SerialMessage >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::SerialMessage >(arena);
+}
+template<> PROTOBUF_NOINLINE ::SerialResponse* Arena::CreateMaybeMessage< ::SerialResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::SerialResponse >(arena);
 }
 template<> PROTOBUF_NOINLINE ::VisionRequest* Arena::CreateMaybeMessage< ::VisionRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::VisionRequest >(arena);

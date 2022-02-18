@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cvision.proto\"\x07\n\x05\x45mpty\"O\n\rVisionRequest\x12\r\n\x05image\x18\x01 \x01(\x0c\x12\r\n\x05width\x18\x02 \x01(\x05\x12\x0e\n\x06height\x18\x03 \x01(\x05\x12\x10\n\x08\x63hannels\x18\x04 \x01(\x05\"1\n\x0eVisionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0f\n\x07imageid\x18\x02 \x01(\t2=\n\rVisionService\x12,\n\tSendFrame\x12\x0e.VisionRequest\x1a\x0f.VisionResponseb\x06proto3'
+  serialized_pb=b'\n\x0cvision.proto\"\x07\n\x05\x45mpty\" \n\rSerialMessage\x12\x0f\n\x07message\x18\x01 \x01(\t\" \n\x0eSerialResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"O\n\rVisionRequest\x12\r\n\x05image\x18\x01 \x01(\x0c\x12\r\n\x05width\x18\x02 \x01(\x05\x12\x0e\n\x06height\x18\x03 \x01(\x05\x12\x10\n\x08\x63hannels\x18\x04 \x01(\x05\"1\n\x0eVisionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0f\n\x07imageid\x18\x02 \x01(\t2=\n\rVisionService\x12,\n\tSendFrame\x12\x0e.VisionRequest\x1a\x0f.VisionResponse2a\n\rSerialService\x12%\n\x0bSendMessage\x12\x0e.SerialMessage\x1a\x06.Empty\x12)\n\x0cSendResponse\x12\x06.Empty\x1a\x0f.SerialResponse0\x01\x62\x06proto3'
 )
 
 
@@ -47,6 +47,70 @@ _EMPTY = _descriptor.Descriptor(
   ],
   serialized_start=16,
   serialized_end=23,
+)
+
+
+_SERIALMESSAGE = _descriptor.Descriptor(
+  name='SerialMessage',
+  full_name='SerialMessage',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='message', full_name='SerialMessage.message', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=25,
+  serialized_end=57,
+)
+
+
+_SERIALRESPONSE = _descriptor.Descriptor(
+  name='SerialResponse',
+  full_name='SerialResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='SerialResponse.status', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=59,
+  serialized_end=91,
 )
 
 
@@ -98,8 +162,8 @@ _VISIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=25,
-  serialized_end=104,
+  serialized_start=93,
+  serialized_end=172,
 )
 
 
@@ -137,11 +201,13 @@ _VISIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=106,
-  serialized_end=155,
+  serialized_start=174,
+  serialized_end=223,
 )
 
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
+DESCRIPTOR.message_types_by_name['SerialMessage'] = _SERIALMESSAGE
+DESCRIPTOR.message_types_by_name['SerialResponse'] = _SERIALRESPONSE
 DESCRIPTOR.message_types_by_name['VisionRequest'] = _VISIONREQUEST
 DESCRIPTOR.message_types_by_name['VisionResponse'] = _VISIONRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -152,6 +218,20 @@ Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
   # @@protoc_insertion_point(class_scope:Empty)
   })
 _sym_db.RegisterMessage(Empty)
+
+SerialMessage = _reflection.GeneratedProtocolMessageType('SerialMessage', (_message.Message,), {
+  'DESCRIPTOR' : _SERIALMESSAGE,
+  '__module__' : 'vision_pb2'
+  # @@protoc_insertion_point(class_scope:SerialMessage)
+  })
+_sym_db.RegisterMessage(SerialMessage)
+
+SerialResponse = _reflection.GeneratedProtocolMessageType('SerialResponse', (_message.Message,), {
+  'DESCRIPTOR' : _SERIALRESPONSE,
+  '__module__' : 'vision_pb2'
+  # @@protoc_insertion_point(class_scope:SerialResponse)
+  })
+_sym_db.RegisterMessage(SerialResponse)
 
 VisionRequest = _reflection.GeneratedProtocolMessageType('VisionRequest', (_message.Message,), {
   'DESCRIPTOR' : _VISIONREQUEST,
@@ -176,8 +256,8 @@ _VISIONSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=157,
-  serialized_end=218,
+  serialized_start=225,
+  serialized_end=286,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendFrame',
@@ -193,5 +273,41 @@ _VISIONSERVICE = _descriptor.ServiceDescriptor(
 _sym_db.RegisterServiceDescriptor(_VISIONSERVICE)
 
 DESCRIPTOR.services_by_name['VisionService'] = _VISIONSERVICE
+
+
+_SERIALSERVICE = _descriptor.ServiceDescriptor(
+  name='SerialService',
+  full_name='SerialService',
+  file=DESCRIPTOR,
+  index=1,
+  serialized_options=None,
+  create_key=_descriptor._internal_create_key,
+  serialized_start=288,
+  serialized_end=385,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='SendMessage',
+    full_name='SerialService.SendMessage',
+    index=0,
+    containing_service=None,
+    input_type=_SERIALMESSAGE,
+    output_type=_EMPTY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SendResponse',
+    full_name='SerialService.SendResponse',
+    index=1,
+    containing_service=None,
+    input_type=_EMPTY,
+    output_type=_SERIALRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_SERIALSERVICE)
+
+DESCRIPTOR.services_by_name['SerialService'] = _SERIALSERVICE
 
 # @@protoc_insertion_point(module_scope)

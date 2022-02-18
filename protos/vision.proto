@@ -4,7 +4,21 @@ service VisionService {
     rpc SendFrame (VisionRequest) returns (VisionResponse);
 }
 
-message Empty{}
+service SerialService {
+    rpc SendMessage (SerialMessage) returns (Empty);
+    rpc SendResponse  (Empty) returns (stream SerialResponse);
+}
+
+
+message Empty {}
+
+message SerialMessage {
+    string message = 1;
+}
+
+message SerialResponse {
+    string status = 1;
+}
 
 message VisionRequest {
     bytes image = 1;

@@ -64,3 +64,97 @@ class VisionService(object):
             vision__pb2.VisionResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class SerialServiceStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.SendMessage = channel.unary_unary(
+                '/SerialService/SendMessage',
+                request_serializer=vision__pb2.SerialMessage.SerializeToString,
+                response_deserializer=vision__pb2.Empty.FromString,
+                )
+        self.SendResponse = channel.unary_stream(
+                '/SerialService/SendResponse',
+                request_serializer=vision__pb2.Empty.SerializeToString,
+                response_deserializer=vision__pb2.SerialResponse.FromString,
+                )
+
+
+class SerialServiceServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def SendMessage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendResponse(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_SerialServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'SendMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendMessage,
+                    request_deserializer=vision__pb2.SerialMessage.FromString,
+                    response_serializer=vision__pb2.Empty.SerializeToString,
+            ),
+            'SendResponse': grpc.unary_stream_rpc_method_handler(
+                    servicer.SendResponse,
+                    request_deserializer=vision__pb2.Empty.FromString,
+                    response_serializer=vision__pb2.SerialResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'SerialService', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class SerialService(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def SendMessage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/SerialService/SendMessage',
+            vision__pb2.SerialMessage.SerializeToString,
+            vision__pb2.Empty.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SendResponse(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/SerialService/SendResponse',
+            vision__pb2.Empty.SerializeToString,
+            vision__pb2.SerialResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -3,6 +3,7 @@
 #include <bits/stdc++.h>
 #include <fmt/color.h>
 #include <fmt/core.h>
+#include <termios.h>
 #include <unistd.h>
 #include <wiringPi.h>
 #include <wiringSerial.h>
@@ -19,6 +20,8 @@ Cereal::Cereal(std::string _port, int _baudrate = 115200) {
     // split strings
     std::stringstream ss(_port);
     std::string word;
+    // stub_ = SerialService::NewStub(grpc::CreateChannel(
+    //     "localhost:50052", grpc::InsecureChannelCredentials()));
     // commands = BlockingQueueAction();
     // statuses = BlockingQueueStatus();
     while (ss >> word) hosts.push_back(word);
@@ -45,6 +48,12 @@ void Cereal::onConnectionRead(void* c) {
 }
 
 void Cereal::onConnectionRead() {
+    // ClientContext context;
+
+    // Create reader
+    // reader = std::unique_ptr<ClientReader<SerialResponse> >(
+    //     stub_->SendResponse(&context, Empty()));
+
     while (true) {
         // if connect fails
         if (connect()) {
@@ -53,6 +62,7 @@ void Cereal::onConnectionRead() {
             std::this_thread::sleep_for(std::chrono::seconds(2));
             continue;
         }
+
         this->readClient();
     }
 }
@@ -104,7 +114,7 @@ void Cereal::onAction(void* c, Action* action) {
 void Cereal::onAction(Action* action) {
     if (action == nullptr) return;
     Action a = *action;
-
+    print(a.coordinate);
     try {
         // Switch cases
         if (a.action.compare(Movement::FORWARD) == 0)
@@ -158,12 +168,20 @@ void Cereal::writeClient(void* c, std::string msg) {
 void Cereal::writeClient(std::string msg) {
     const int LEN = 6;
     char buf[LEN];
+    // ClientContext context;
 
     try {
-        // Truncates till 4
+        // Truncates till LEN
         strncpy(buf, msg.c_str(), LEN);
-        buf[LEN - 1] = '\0';
         std::cout << buf << std::endl;
+        buf[LEN - 1] = '\0';
+        // SerialMessage s;
+        // Empty e;
+        // s.mutable_message()->assign(msg);
+        // print(msg);
+        // Status status = stub_->SendMessage(&context, s, &e);
+
+        // print("done");
         serialPuts(serial, buf);
     } catch (std::exception& e) {
         std::cout << "Exception caught : " << e.what() << std::endl;
@@ -173,7 +191,7 @@ void Cereal::writeClient(std::string msg) {
 bool Cereal::canWrite() { return true; }
 
 int Cereal::connect() {
-    // Get the current host pointer and atttempt to connect
+    // Get the current host pointer and atttempt to con nect
     if ((serial = serialOpen(hosts[hostPointer].c_str(), baudrate)) < 0) {
         printRed(fmt::format("Unable to open serial device {}: {} \n",
                              hosts[hostPointer], strerror(errno)));
@@ -181,6 +199,15 @@ int Cereal::connect() {
         hostPointer = (hostPointer + 1) % hosts.size();
         return 1;
     }
+
+    // struct termios options;
+
+    // tcgetattr(serial, &options);     // Read current options
+    // options.c_cflag &= ~CSIZE;       // Mask out size
+    // options.c_cflag |= CS8;          // Or in 7-bits
+    // options.c_cflag |= PARENB;       // Enable Parity - even by default
+    // tcsetattr(serial, 0, &options);  // Set new options
+
     return 0;
 }
 
@@ -194,7 +221,19 @@ void Cereal::readClient() {
     int MAX_BUFFER = 2;
     char buf[MAX_BUFFER];
 
+    SerialResponse response;
+    Response res;
+
     serialFlush(serial);
+
+    // Grpc
+    // while (reader->Read(&response)) {
+    //     std::string strStatus = response.status();
+    //     std::cout << strStatus << std::endl;
+    //     char status = strStatus[0] - '0';
+    //     res = Response("", status, "");
+    //     this->publish(Cereal::SERIAL_MAIN_WRITE_SUCCESS, res);
+    // }
 
     while (true) {
         // Checks if serial
@@ -223,7 +262,7 @@ void Cereal::readClient() {
                 int status = buf[0] - '0';
 
                 // Fill with filler messages
-                Response res("", status, "");
+                Response res("", 1, "");
                 // Notify status of message
                 // statuses.enqueue(status);
                 // Publish Serial in

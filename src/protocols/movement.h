@@ -21,8 +21,8 @@ class Movement {
     // Predefined turning angles
     inline static const std::string RIGHT_90 = "057";
     inline static const std::string RIGHT_180 = "114";
-    inline static const std::string LEFT_90 = "028";
-    inline static const std::string LEFT_180 = "059";
+    inline static const std::string LEFT_90 = "038";
+    inline static const std::string LEFT_180 = "076";
 
     std::string getAngleLeft(Action& a) {
         std::string angle = DEFAULT_ANGLE;

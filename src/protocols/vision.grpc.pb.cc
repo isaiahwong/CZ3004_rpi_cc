@@ -81,3 +81,99 @@ VisionService::Service::~Service() {
 }
 
 
+static const char* SerialService_method_names[] = {
+  "/SerialService/SendMessage",
+  "/SerialService/SendResponse",
+};
+
+std::unique_ptr< SerialService::Stub> SerialService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
+  (void)options;
+  std::unique_ptr< SerialService::Stub> stub(new SerialService::Stub(channel, options));
+  return stub;
+}
+
+SerialService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
+  : channel_(channel), rpcmethod_SendMessage_(SerialService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_SendResponse_(SerialService_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  {}
+
+::grpc::Status SerialService::Stub::SendMessage(::grpc::ClientContext* context, const ::SerialMessage& request, ::Empty* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::SerialMessage, ::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_SendMessage_, context, request, response);
+}
+
+void SerialService::Stub::async::SendMessage(::grpc::ClientContext* context, const ::SerialMessage* request, ::Empty* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::SerialMessage, ::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SendMessage_, context, request, response, std::move(f));
+}
+
+void SerialService::Stub::async::SendMessage(::grpc::ClientContext* context, const ::SerialMessage* request, ::Empty* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_SendMessage_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::Empty>* SerialService::Stub::PrepareAsyncSendMessageRaw(::grpc::ClientContext* context, const ::SerialMessage& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::Empty, ::SerialMessage, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_SendMessage_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::Empty>* SerialService::Stub::AsyncSendMessageRaw(::grpc::ClientContext* context, const ::SerialMessage& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncSendMessageRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::ClientReader< ::SerialResponse>* SerialService::Stub::SendResponseRaw(::grpc::ClientContext* context, const ::Empty& request) {
+  return ::grpc::internal::ClientReaderFactory< ::SerialResponse>::Create(channel_.get(), rpcmethod_SendResponse_, context, request);
+}
+
+void SerialService::Stub::async::SendResponse(::grpc::ClientContext* context, const ::Empty* request, ::grpc::ClientReadReactor< ::SerialResponse>* reactor) {
+  ::grpc::internal::ClientCallbackReaderFactory< ::SerialResponse>::Create(stub_->channel_.get(), stub_->rpcmethod_SendResponse_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::SerialResponse>* SerialService::Stub::AsyncSendResponseRaw(::grpc::ClientContext* context, const ::Empty& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::SerialResponse>::Create(channel_.get(), cq, rpcmethod_SendResponse_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::SerialResponse>* SerialService::Stub::PrepareAsyncSendResponseRaw(::grpc::ClientContext* context, const ::Empty& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::SerialResponse>::Create(channel_.get(), cq, rpcmethod_SendResponse_, context, request, false, nullptr);
+}
+
+SerialService::Service::Service() {
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      SerialService_method_names[0],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< SerialService::Service, ::SerialMessage, ::Empty, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](SerialService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::SerialMessage* req,
+             ::Empty* resp) {
+               return service->SendMessage(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      SerialService_method_names[1],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< SerialService::Service, ::Empty, ::SerialResponse>(
+          [](SerialService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::Empty* req,
+             ::grpc::ServerWriter<::SerialResponse>* writer) {
+               return service->SendResponse(ctx, req, writer);
+             }, this)));
+}
+
+SerialService::Service::~Service() {
+}
+
+::grpc::Status SerialService::Service::SendMessage(::grpc::ServerContext* context, const ::SerialMessage* request, ::Empty* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status SerialService::Service::SendResponse(::grpc::ServerContext* context, const ::Empty* request, ::grpc::ServerWriter< ::SerialResponse>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+
