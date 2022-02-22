@@ -12,6 +12,7 @@ class Response {
    public:
     std::string result;
     std::string coordinate;
+    std::string type;
     int status;
 
     inline static const int OK = 1;
@@ -24,10 +25,13 @@ class Response {
     Response() {
         result = "";
         coordinate = "";
+        type = "";
         status = 0;
     }
 
-    Response(std::string result, int status, std::string coordinate) {
+    Response(std::string type, std::string result, int status,
+             std::string coordinate) {
+        this->type = type;
         this->result = result;
         this->status = status;
         this->coordinate = coordinate;
@@ -46,6 +50,7 @@ class Response {
     }
 
     void serialiseEmpty() {
+        type = emptyToFill(type);
         result = emptyToFill(result);
         coordinate = emptyToFill(coordinate);
     }
@@ -57,6 +62,7 @@ class Response {
 
     void to_json(json& j) {
         j = json{
+            {"type", type},
             {"status", status},
             {"result", result},
             {"coordinate", coordinate},
@@ -64,6 +70,7 @@ class Response {
     }
 
     static void from_json(const json& j, Response& a) {
+        j.at("type").get_to(a.type);
         j.at("status").get_to(a.status);
         j.at("result").get_to(a.result);
         j.at("coordinate").get_to(a.coordinate);

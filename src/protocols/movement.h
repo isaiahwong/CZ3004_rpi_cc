@@ -19,28 +19,10 @@ class Movement {
    private:
     inline static const std::string DEFAULT_ANGLE = "000";
     // Predefined turning angles
-    inline static const std::string RIGHT_90 = "057";
-    inline static const std::string RIGHT_180 = "114";
-    inline static const std::string LEFT_90 = "038";
-    inline static const std::string LEFT_180 = "076";
-
-    std::string getAngleLeft(Action& a) {
-        std::string angle = DEFAULT_ANGLE;
-        if (a.angle == 90)
-            angle = LEFT_90;
-        else if (a.angle == 180)
-            angle = LEFT_180;
-        return angle;
-    }
-
-    std::string getAngleRight(Action& a) {
-        std::string angle = DEFAULT_ANGLE;
-        if (a.angle == 90)
-            angle = RIGHT_90;
-        else if (a.angle == 180)
-            angle = RIGHT_180;
-        return angle;
-    }
+    inline static const std::string FORWARD_RIGHT_90 = "280";
+    inline static const std::string BACK_RIGHT_90 = "250";
+    inline static const std::string FORWARD_LEFT_90 = "062";
+    inline static const std::string BACK_LEFT_90 = "078";
 
    public:
     inline static const char CMD_FORWARD = 'F';
@@ -81,34 +63,26 @@ class Movement {
         fn(o, fmt::format("{}{}000", CMD_STOP, CMD_STOP));
     }
 
-    void left(Action& a, char direction, void* o, WriteCallback fn) {
-        // Turn car wheel left
-        std::string angle = getAngleLeft(a);
-        auto cmd = fmt::format("{}{}{}", direction, CMD_LEFT, angle);
-        fn(o, cmd);
-    }
-
-    void right(Action& a, char direction, void* o, WriteCallback fn) {
-        // Turn car wheel right
-        std::string angle = getAngleRight(a);
-        auto cmd = fmt::format("{}{}{}", direction, CMD_RIGHT, angle);
-        fn(o, cmd);
-    }
-
     void forwardLeft(Action& a, void* o, WriteCallback fn) {
-        left(a, CMD_FORWARD, o, fn);
+        auto cmd =
+            fmt::format("{}{}{}", CMD_FORWARD, CMD_LEFT, FORWARD_LEFT_90);
+        fn(o, cmd);
     }
 
     void forwardRight(Action& a, void* o, WriteCallback fn) {
-        right(a, CMD_FORWARD, o, fn);
+        auto cmd =
+            fmt::format("{}{}{}", CMD_FORWARD, CMD_RIGHT, FORWARD_RIGHT_90);
+        fn(o, cmd);
     }
 
     void backLeft(Action& a, void* o, WriteCallback fn) {
-        left(a, CMD_BACK, o, fn);
+        auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_LEFT, BACK_LEFT_90);
+        fn(o, cmd);
     }
 
     void backRight(Action& a, void* o, WriteCallback fn) {
-        right(a, CMD_BACK, o, fn);
+        auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_RIGHT, BACK_RIGHT_90);
+        fn(o, cmd);
     }
 };
 

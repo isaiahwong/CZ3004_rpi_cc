@@ -119,7 +119,7 @@ void Blueteeth::onExecuteActions() {
     Action a;
     Response statusResponse;
 
-    int retries = 0, MAX_RETRIES;
+    int retries = 0, MAX_RETRIES = 5;
     while (true) {
     queue:
         commands.wait_dequeue(a);
@@ -137,6 +137,9 @@ void Blueteeth::onExecuteActions() {
             try {
                 bool didReceive = statuses.wait_dequeue_timed(
                     statusResponse, std::chrono::seconds(6));
+                // Retry only for Image Rec
+                if (a.type.compare(Action::TYPE_CAPTURE) != 0) break;
+
                 // retry loop if failed
                 if (!didReceive || statusResponse.status != 1) {
                     if (retries >= MAX_RETRIES) {
@@ -157,17 +160,24 @@ void Blueteeth::onExecuteActions() {
             }
         }
 
-        print("Next Command");
-        // Send response to android to notify success
-        Response response(statusResponse.result, statusResponse.status,
-                          a.coordinate);
-        json j;
-        response.to_json(j);
-        std::string payload = j.dump();
-        int size = payload.size();
+        try {
+            // Send response to android to notify success
+            // Echo back the coordinate given
+            Response response(a.type, statusResponse.result,
+                              statusResponse.status, a.coordinate);
+            json j;
+            response.to_json(j);
+            std::string payload = j.dump();
+            int size = payload.size();
 
-        // Write back to client
-        write(client, payload.c_str(), size);
+            // Write back to client
+            write(client, payload.c_str(), size);
+            print("Command Executed");
+        } catch (const std::exception &exc) {
+            printRed("onExecuteActions Exeception: ");
+            std::cout << exc.what() << std::endl;
+            break;
+        }
     }
 }
 
