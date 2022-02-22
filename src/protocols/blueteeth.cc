@@ -137,11 +137,13 @@ void Blueteeth::onExecuteActions() {
             try {
                 bool didReceive = statuses.wait_dequeue_timed(
                     statusResponse, std::chrono::seconds(6));
-                // Retry only for Image Rec
-                if (a.type.compare(Action::TYPE_CAPTURE) != 0) break;
 
                 // retry loop if failed
                 if (!didReceive || statusResponse.status != 1) {
+                    printRed("No Response");
+                    // Retry only for Image Rec
+                    if (a.type.compare(Action::TYPE_CAPTURE) != 0) break;
+
                     if (retries >= MAX_RETRIES) {
                         printRed("Max retries, skipping command");
                         statusResponse.status = 0;
@@ -172,7 +174,7 @@ void Blueteeth::onExecuteActions() {
 
             // Write back to client
             write(client, payload.c_str(), size);
-            print("Command Executed");
+            print("Command Executed\n\n");
         } catch (const std::exception &exc) {
             printRed("onExecuteActions Exeception: ");
             std::cout << exc.what() << std::endl;
