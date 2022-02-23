@@ -276,7 +276,7 @@ void Cereal::readClient() {
                 int status = buf[0] - '0';
 
                 // Fill with filler messages
-                Response res("", "", status, "");
+                Response res("", "", status, "", 0);
                 // Notify status of message
                 // statuses.enqueue(status);
                 // Publish Serial in

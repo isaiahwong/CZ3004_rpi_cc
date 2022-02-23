@@ -126,7 +126,7 @@ void Blueteeth::onExecuteActions() {
         retries = 0;
         while (true) {
             if (a.type.compare(Action::TYPE_MOVE) == 0) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 this->publish(Blueteeth::BT_MOVEMENT, a);
             } else if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
                 this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);
@@ -164,10 +164,13 @@ void Blueteeth::onExecuteActions() {
         }
 
         try {
+            print(fmt::format("ImageID: {}, Distance: {}",
+                              statusResponse.result, statusResponse.distance));
             // Send response to android to notify success
             // Echo back the coordinate given
             Response response(a.type, statusResponse.result,
-                              statusResponse.status, a.coordinate);
+                              statusResponse.status, a.coordinate,
+                              statusResponse.distance);
             json j;
             response.to_json(j);
             std::string payload = j.dump();

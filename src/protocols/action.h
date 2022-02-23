@@ -13,6 +13,7 @@ class Response {
     std::string result;
     std::string coordinate;
     std::string type;
+    int distance;
     int status;
 
     inline static const int OK = 1;
@@ -27,20 +28,23 @@ class Response {
         coordinate = "";
         type = "";
         status = 0;
+        distance = 0;
     }
 
     Response(std::string type, std::string result, int status,
-             std::string coordinate) {
+             std::string coordinate, int distance) {
         this->type = type;
         this->result = result;
         this->status = status;
         this->coordinate = coordinate;
+        this->distance = distance;
     }
 
-    Response(std::string result, int status) {
+    Response(std::string result, int status, int distance) {
         this->result = result;
         this->status = status;
-        this->coordinate = " ";
+        this->coordinate = "";
+        this->distance = distance;
     }
 
     std::string emptyToFill(std::string s) { return s.empty() ? EMPTY : s; }
@@ -61,12 +65,11 @@ class Response {
     }
 
     void to_json(json& j) {
-        j = json{
-            {"type", type},
-            {"status", status},
-            {"result", result},
-            {"coordinate", coordinate},
-        };
+        j = json{{"type", type},
+                 {"status", status},
+                 {"result", result},
+                 {"coordinate", coordinate},
+                 {"distance", distance}};
     }
 
     static void from_json(const json& j, Response& a) {
@@ -74,6 +77,7 @@ class Response {
         j.at("status").get_to(a.status);
         j.at("result").get_to(a.result);
         j.at("coordinate").get_to(a.coordinate);
+        j.at("distance").get_to(a.distance);
     }
 };
 

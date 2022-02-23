@@ -86,17 +86,18 @@ class TF:
             scores = self.interpreter.get_tensor(
                 self.output_details[0]['index'])[0]
 
-            frame, label = self.draw(frame=frame, scores=scores,
+            frame, label, dist = self.draw(frame=frame, scores=scores,
                               boxes=boxes, classes=classes)
             # Resize back to camera resolution
             frame = cv2.resize(frame, (imageWidth, imageHeight))
-            return frame, label
+            return frame, label, dist
         except Exception as e:
             print(e)
-            return
+            return None, None, -1
 
     def draw(self, frame=None, scores=[], boxes=[[]], classes=[]):
         object_name = '-1'
+        dist = -1
         # Loop over all detections and draw detection box if confidence is above minimum threshold
         for i in range(len(scores)):
             if ((scores[i] > self.threshold) and (scores[i] <= 1.0)):
@@ -134,7 +135,41 @@ class TF:
                 cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (
                     xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED)
 
+                # print estimated distance in the top left corner
+                dist = int(self.distanceestimate(ymax, ymin))
+                
                 cv2.putText(frame, label, (xmin, label_ymin-7),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw label text
 
-        return frame, object_name
+                distance = '%s: %d %s' % (object_name, dist, ' mm')
+                cv2.putText(frame, distance, (20, (20+i*30)),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+        
+
+        return frame, object_name, ymax - ymin
+
+    def distanceestimate(self, k2, k1):
+        height = k2-k1
+        if (height > 504):
+            return (150)
+        elif (352 < height <= 504):
+            return ((height-352)/152*-50+200-50)
+            # keep or remove the -50
+        elif (208 < height <= 352):
+            return ((height-208)/144*-100+300-50)
+        elif (154 < height <= 208):
+            return ((height-154)/54*-100+400-50)
+        elif (119 < height <= 154):
+            return ((height-119)/35*-100+500-50)
+        elif (103 < height <= 119):
+            return ((height-103)/16*-100+600-50)
+        elif (85 < height <= 103):
+            return ((height-85)/18*-100+700-50)
+        elif (73 < height <= 85):
+            return ((height-73)/12*-100+800-50)
+        elif (66 < height <= 73):
+            return ((height-66)/7*-100+900-50)
+        elif (61 < height <= 66):
+            return ((height-61)/5*-100+1000-50)
+        else:
+            return (-1)

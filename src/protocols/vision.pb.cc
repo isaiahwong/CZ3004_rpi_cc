@@ -69,7 +69,8 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT VisionRequestDefaultTypeInterna
 constexpr VisionResponse::VisionResponse(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : imageid_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
-  , status_(0){}
+  , status_(0)
+  , distance_(0){}
 struct VisionResponseDefaultTypeInternal {
   constexpr VisionResponseDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -122,6 +123,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_vision_2eproto::offsets[] PROT
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::VisionResponse, status_),
   PROTOBUF_FIELD_OFFSET(::VisionResponse, imageid_),
+  PROTOBUF_FIELD_OFFSET(::VisionResponse, distance_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Empty)},
@@ -144,16 +146,17 @@ const char descriptor_table_protodef_vision_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "\022\017\n\007message\030\001 \001(\t\" \n\016SerialResponse\022\016\n\006s"
   "tatus\030\001 \001(\t\"O\n\rVisionRequest\022\r\n\005image\030\001 "
   "\001(\014\022\r\n\005width\030\002 \001(\005\022\016\n\006height\030\003 \001(\005\022\020\n\010ch"
-  "annels\030\004 \001(\005\"1\n\016VisionResponse\022\016\n\006status"
-  "\030\001 \001(\005\022\017\n\007imageid\030\002 \001(\t2=\n\rVisionService"
-  "\022,\n\tSendFrame\022\016.VisionRequest\032\017.VisionRe"
-  "sponse2a\n\rSerialService\022%\n\013SendMessage\022\016"
-  ".SerialMessage\032\006.Empty\022)\n\014SendResponse\022\006"
-  ".Empty\032\017.SerialResponse0\001b\006proto3"
+  "annels\030\004 \001(\005\"C\n\016VisionResponse\022\016\n\006status"
+  "\030\001 \001(\005\022\017\n\007imageid\030\002 \001(\t\022\020\n\010distance\030\003 \001("
+  "\0052=\n\rVisionService\022,\n\tSendFrame\022\016.Vision"
+  "Request\032\017.VisionResponse2a\n\rSerialServic"
+  "e\022%\n\013SendMessage\022\016.SerialMessage\032\006.Empty"
+  "\022)\n\014SendResponse\022\006.Empty\032\017.SerialRespons"
+  "e0\001b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_vision_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_vision_2eproto = {
-  false, false, 393, descriptor_table_protodef_vision_2eproto, "vision.proto", 
+  false, false, 411, descriptor_table_protodef_vision_2eproto, "vision.proto", 
   &descriptor_table_vision_2eproto_once, nullptr, 0, 5,
   schemas, file_default_instances, TableStruct_vision_2eproto::offsets,
   file_level_metadata_vision_2eproto, file_level_enum_descriptors_vision_2eproto, file_level_service_descriptors_vision_2eproto,
@@ -895,13 +898,18 @@ VisionResponse::VisionResponse(const VisionResponse& from)
     imageid_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_imageid(), 
       GetArenaForAllocation());
   }
-  status_ = from.status_;
+  ::memcpy(&status_, &from.status_,
+    static_cast<size_t>(reinterpret_cast<char*>(&distance_) -
+    reinterpret_cast<char*>(&status_)) + sizeof(distance_));
   // @@protoc_insertion_point(copy_constructor:VisionResponse)
 }
 
 void VisionResponse::SharedCtor() {
 imageid_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-status_ = 0;
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&status_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&distance_) -
+    reinterpret_cast<char*>(&status_)) + sizeof(distance_));
 }
 
 VisionResponse::~VisionResponse() {
@@ -933,7 +941,9 @@ void VisionResponse::Clear() {
   (void) cached_has_bits;
 
   imageid_.ClearToEmpty();
-  status_ = 0;
+  ::memset(&status_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&distance_) -
+      reinterpret_cast<char*>(&status_)) + sizeof(distance_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -957,6 +967,14 @@ const char* VisionResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE
           auto str = _internal_mutable_imageid();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "VisionResponse.imageid"));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 distance = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          distance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1006,6 +1024,12 @@ failure:
         2, this->_internal_imageid(), target);
   }
 
+  // int32 distance = 3;
+  if (this->_internal_distance() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_distance(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1032,6 +1056,11 @@ size_t VisionResponse::ByteSizeLong() const {
   // int32 status = 1;
   if (this->_internal_status() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_status());
+  }
+
+  // int32 distance = 3;
+  if (this->_internal_distance() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_distance());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
@@ -1062,6 +1091,9 @@ void VisionResponse::MergeFrom(const VisionResponse& from) {
   if (from._internal_status() != 0) {
     _internal_set_status(from._internal_status());
   }
+  if (from._internal_distance() != 0) {
+    _internal_set_distance(from._internal_distance());
+  }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1086,7 +1118,12 @@ void VisionResponse::InternalSwap(VisionResponse* other) {
       &imageid_, lhs_arena,
       &other->imageid_, rhs_arena
   );
-  swap(status_, other->status_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(VisionResponse, distance_)
+      + sizeof(VisionResponse::distance_)
+      - PROTOBUF_FIELD_OFFSET(VisionResponse, status_)>(
+          reinterpret_cast<char*>(&status_),
+          reinterpret_cast<char*>(&other->status_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata VisionResponse::GetMetadata() const {

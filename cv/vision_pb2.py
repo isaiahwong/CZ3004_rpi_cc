@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cvision.proto\"\x07\n\x05\x45mpty\" \n\rSerialMessage\x12\x0f\n\x07message\x18\x01 \x01(\t\" \n\x0eSerialResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"O\n\rVisionRequest\x12\r\n\x05image\x18\x01 \x01(\x0c\x12\r\n\x05width\x18\x02 \x01(\x05\x12\x0e\n\x06height\x18\x03 \x01(\x05\x12\x10\n\x08\x63hannels\x18\x04 \x01(\x05\"1\n\x0eVisionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0f\n\x07imageid\x18\x02 \x01(\t2=\n\rVisionService\x12,\n\tSendFrame\x12\x0e.VisionRequest\x1a\x0f.VisionResponse2a\n\rSerialService\x12%\n\x0bSendMessage\x12\x0e.SerialMessage\x1a\x06.Empty\x12)\n\x0cSendResponse\x12\x06.Empty\x1a\x0f.SerialResponse0\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0cvision.proto\"\x07\n\x05\x45mpty\" \n\rSerialMessage\x12\x0f\n\x07message\x18\x01 \x01(\t\" \n\x0eSerialResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"O\n\rVisionRequest\x12\r\n\x05image\x18\x01 \x01(\x0c\x12\r\n\x05width\x18\x02 \x01(\x05\x12\x0e\n\x06height\x18\x03 \x01(\x05\x12\x10\n\x08\x63hannels\x18\x04 \x01(\x05\"C\n\x0eVisionResponse\x12\x0e\n\x06status\x18\x01 \x01(\x05\x12\x0f\n\x07imageid\x18\x02 \x01(\t\x12\x10\n\x08\x64istance\x18\x03 \x01(\x05\x32=\n\rVisionService\x12,\n\tSendFrame\x12\x0e.VisionRequest\x1a\x0f.VisionResponse2a\n\rSerialService\x12%\n\x0bSendMessage\x12\x0e.SerialMessage\x1a\x06.Empty\x12)\n\x0cSendResponse\x12\x06.Empty\x1a\x0f.SerialResponse0\x01\x62\x06proto3'
 )
 
 
@@ -189,6 +189,13 @@ _VISIONRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='distance', full_name='VisionResponse.distance', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -202,7 +209,7 @@ _VISIONRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=174,
-  serialized_end=223,
+  serialized_end=241,
 )
 
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
@@ -256,8 +263,8 @@ _VISIONSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=225,
-  serialized_end=286,
+  serialized_start=243,
+  serialized_end=304,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendFrame',
@@ -282,8 +289,8 @@ _SERIALSERVICE = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=288,
-  serialized_end=385,
+  serialized_start=306,
+  serialized_end=403,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendMessage',

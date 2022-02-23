@@ -97,8 +97,8 @@ void Camera::onCapture(Action* action) {
         VisionResponse* vres =
             visionClient->SendFrame(byteStr, width, height, channels);
 
-        Response res(vres->imageid(), vres->status());
-        print(fmt::format("ImageID: {}", vres->imageid()));
+        Response res(vres->imageid(), vres->status(), vres->distance());
+
         this->publish(Camera::CAM_CAPTURE_RESULT, res);
     } catch (std::string e) {
         printRed(e);

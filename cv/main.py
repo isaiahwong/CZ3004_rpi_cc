@@ -29,14 +29,14 @@ class ImageServer(VisionServiceServicer):
         self.pwd = os.path.dirname(__file__)
 
     def SendFrame(self, req, ctx):
-        print("Receive")
         # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
         # label = self.model.predict(frame, req.width)
-        frame, label = self.model.predict(frame, req.width, req.height)
+        frame, label, dist = self.model.predict(frame, req.width, req.height)
         cv2.imwrite('{}/out/image-{}.jpg'.format(self.pwd, label),frame)
         status = 0 if str(label) == '-1' else 1
-        return VisionResponse(imageid=str(label), status=status)
+        print(dist)
+        return VisionResponse(imageid=str(label), status=status, distance=dist)
 
 
 def main():

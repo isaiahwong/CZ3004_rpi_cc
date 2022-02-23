@@ -792,6 +792,7 @@ class VisionResponse final :
   enum : int {
     kImageidFieldNumber = 2,
     kStatusFieldNumber = 1,
+    kDistanceFieldNumber = 3,
   };
   // string imageid = 2;
   void clear_imageid();
@@ -816,6 +817,15 @@ class VisionResponse final :
   void _internal_set_status(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
+  // int32 distance = 3;
+  void clear_distance();
+  ::PROTOBUF_NAMESPACE_ID::int32 distance() const;
+  void set_distance(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_distance() const;
+  void _internal_set_distance(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:VisionResponse)
  private:
   class _Internal;
@@ -825,6 +835,7 @@ class VisionResponse final :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr imageid_;
   ::PROTOBUF_NAMESPACE_ID::int32 status_;
+  ::PROTOBUF_NAMESPACE_ID::int32 distance_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_vision_2eproto;
 };
@@ -1117,6 +1128,26 @@ inline void VisionResponse::set_allocated_imageid(std::string* imageid) {
   imageid_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), imageid,
       GetArenaForAllocation());
   // @@protoc_insertion_point(field_set_allocated:VisionResponse.imageid)
+}
+
+// int32 distance = 3;
+inline void VisionResponse::clear_distance() {
+  distance_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionResponse::_internal_distance() const {
+  return distance_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 VisionResponse::distance() const {
+  // @@protoc_insertion_point(field_get:VisionResponse.distance)
+  return _internal_distance();
+}
+inline void VisionResponse::_internal_set_distance(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  distance_ = value;
+}
+inline void VisionResponse::set_distance(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_distance(value);
+  // @@protoc_insertion_point(field_set:VisionResponse.distance)
 }
 
 #ifdef __GNUC__

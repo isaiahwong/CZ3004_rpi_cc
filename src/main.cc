@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 
     Blueteeth bt;
     Cereal c(p.get<std::string>("serial"), 115200, p.get<std::string>("movefr"),
-             p.get<std::string>("movefl"), p.get<std::string>("movefl"),
+             p.get<std::string>("movebr"), p.get<std::string>("movefl"),
              p.get<std::string>("movebl"));
     Camera cam(p.get<std::string>("vision"), p.get<int>("cameraopen"));
 
