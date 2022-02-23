@@ -122,22 +122,22 @@ void Cereal::onAction(Action* action) {
         else if (a.action.compare(Movement::BACK) == 0)
             movement.back(a, this, writeClient);
         else if (a.action.compare(Movement::FORWARD_LEFT) == 0)
-            movement.forwardLeft(a, this, writeClient);
+            movement.forwardLeft(this, writeClient);
         else if (a.action.compare(Movement::FORWARD_RIGHT) == 0)
-            movement.forwardRight(a, this, writeClient);
+            movement.forwardRight(this, writeClient);
         else if (a.action.compare(Movement::BACK_LEFT) == 0)
-            movement.backLeft(a, this, writeClient);
+            movement.backLeft(this, writeClient);
         else if (a.action.compare(Movement::BACK_RIGHT) == 0)
-            movement.backRight(a, this, writeClient);
+            movement.backRight(this, writeClient);
         else if (a.action.compare(Movement::STOP) == 0)
-            movement.stop(a, this, writeClient);
+            movement.stop(this, writeClient);
         else if (a.action.compare(Movement::CENTER) == 0)
-            movement.center(a, this, writeClient);
+            movement.center(this, writeClient);
     } catch (...) {
     }
 }
 
-// void Cereal::onActions(Action* action) {
+// void Cereal::onSeriesActions(Action* action) {
 //     if (action == nullptr || action->data.size() < 1) return;
 //     Action remove;
 //     // Override existing queue
@@ -200,14 +200,13 @@ int Cereal::connect() {
         return 1;
     }
 
-    // struct termios options;
-
-    // tcgetattr(serial, &options);     // Read current options
-    // options.c_cflag &= ~CSIZE;       // Mask out size
-    // options.c_cflag |= CS8;          // Or in 7-bits
-    // options.c_cflag |= PARENB;       // Enable Parity - even by default
-    // tcsetattr(serial, 0, &options);  // Set new options
-
+    struct termios options;
+    tcgetattr(serial, &options);     // Read current options
+    options.c_cflag &= ~CSIZE;       // Mask out size
+    options.c_cflag &= ~CSTOPB;      // 1 stop bit
+    options.c_cflag |= CS8;          // Or in 8-bits
+    options.c_cflag |= PARENB;       // Enable Parity - even by default
+    tcsetattr(serial, 0, &options);  // Set new options
     return 0;
 }
 

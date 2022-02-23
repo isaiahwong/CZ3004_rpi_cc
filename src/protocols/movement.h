@@ -43,7 +43,7 @@ class Movement {
 
     typedef void (*WriteCallback)(void* o, std::string);
 
-    void center(Action& a, void* o, WriteCallback fn) {
+    void center(void* o, WriteCallback fn) {
         auto cmd = fmt::format("{}{}000", CMD_CENTER, CMD_CENTER);
         fn(o, cmd);
     }
@@ -59,28 +59,28 @@ class Movement {
         fn(o, cmd);
     }
 
-    void stop(Action& a, void* o, WriteCallback fn) {
+    void stop(void* o, WriteCallback fn) {
         fn(o, fmt::format("{}{}000", CMD_STOP, CMD_STOP));
     }
 
-    void forwardLeft(Action& a, void* o, WriteCallback fn) {
+    void forwardLeft(void* o, WriteCallback fn) {
         auto cmd =
             fmt::format("{}{}{}", CMD_FORWARD, CMD_LEFT, FORWARD_LEFT_90);
         fn(o, cmd);
     }
 
-    void forwardRight(Action& a, void* o, WriteCallback fn) {
+    void forwardRight(void* o, WriteCallback fn) {
         auto cmd =
             fmt::format("{}{}{}", CMD_FORWARD, CMD_RIGHT, FORWARD_RIGHT_90);
         fn(o, cmd);
     }
 
-    void backLeft(Action& a, void* o, WriteCallback fn) {
+    void backLeft(void* o, WriteCallback fn) {
         auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_LEFT, BACK_LEFT_90);
         fn(o, cmd);
     }
 
-    void backRight(Action& a, void* o, WriteCallback fn) {
+    void backRight(void* o, WriteCallback fn) {
         auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_RIGHT, BACK_RIGHT_90);
         fn(o, cmd);
     }

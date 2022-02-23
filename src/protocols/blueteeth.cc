@@ -223,6 +223,18 @@ void Blueteeth::disconnect() {
                    "BT closed\n");
 }
 
+/**
+ * @brief Clear command queue
+ *
+ */
+void Blueteeth::emptyCommands() {
+    Action remove;
+    // Override existing queue
+    // Empty queue
+    while (commands.try_dequeue(remove))
+        ;
+}
+
 void Blueteeth::onResponse(void *b, Response *response) {
     static_cast<Blueteeth *>(b)->onResponse(response);
 }
@@ -235,25 +247,22 @@ void Blueteeth::onResponse(Response *response) {
 }
 
 void Blueteeth::onAction(Action &action) {
-    Action remove;
-    // Override existing queue
-    // Empty queue
-    while (commands.try_dequeue(remove))
-        ;
+    emptyCommands();
     commands.enqueue(action);
 }
 
-void Blueteeth::onActions(Action &action) {
+void Blueteeth::onSeriesActions(Action &action) {
     if (action.data.size() < 1) return;
-    Action remove;
-    // Override existing queue
-    // Empty queue
-    while (commands.try_dequeue(remove))
-        ;
+    emptyCommands();
     // Enqueue
     for (Action a : action.data) {
         commands.enqueue(a);
     }
+}
+
+void Blueteeth::onBullseye() {
+    emptyCommands();
+    // To fill tomorrow
 }
 
 /**
@@ -342,8 +351,9 @@ void Blueteeth::readClient() {
         else if (a.type.compare(Action::TYPE_CAPTURE) == 0)
             onAction(a);
         else if (a.type.compare(Action::TYPE_SERIES) == 0)
-            onActions(a);
-
+            onSeriesActions(a);
+        else if (a.type.compare(Action::TYPE_BULLSEYE) == 0)
+            onBullseye();
         // Publish to generic main read for debug
         // this->publish(Blueteeth::BT_MAIN_READ, buf, bufflen);
         // Clear buffer

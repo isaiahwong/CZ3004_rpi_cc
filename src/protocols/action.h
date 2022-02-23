@@ -138,6 +138,8 @@ class Action {
      */
     ~Action();
 
+    inline static const std::string TYPE_BULLSEYE = "bullseye";
+
     inline static const std::string TYPE_SERIES = "series";
 
     inline static const std::string TYPE_MOVE = "move";

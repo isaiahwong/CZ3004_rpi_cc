@@ -36,6 +36,8 @@ class Blueteeth final : public Protocol {
     void connect();
     void disconnect();
     void readClient();
+    void onBullseye();
+    void emptyCommands();
 
    public:
     // Channels
@@ -63,7 +65,7 @@ class Blueteeth final : public Protocol {
 
     void onExecuteActions();
 
-    void onActions(Action& action);
+    void onSeriesActions(Action& action);
 
     void onAction(Action& action);
 

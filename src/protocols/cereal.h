@@ -112,7 +112,7 @@ class Cereal : public Protocol {
 
     void onAction(Action* action);
 
-    // void onActions(Action* action);
+    // void onSeriesActions(Action* action);
 
     void run();
 
