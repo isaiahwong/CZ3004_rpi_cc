@@ -27,6 +27,19 @@ Cereal::Cereal(std::string _port, int _baudrate = 115200) {
     while (ss >> word) hosts.push_back(word);
 }
 
+Cereal::Cereal(std::string _port, int _baudrate, std::string fr, std::string br,
+               std::string fl, std::string bl) {
+    write = false;
+    port = _port;
+    baudrate = _baudrate;
+    movement = Movement(fr, br, fl, bl);
+
+    // split strings
+    std::stringstream ss(_port);
+    std::string word;
+    while (ss >> word) hosts.push_back(word);
+}
+
 Cereal::~Cereal() { close(serial); }
 
 void Cereal::run() { init(); }
@@ -133,7 +146,9 @@ void Cereal::onAction(Action* action) {
             movement.stop(this, writeClient);
         else if (a.action.compare(Movement::CENTER) == 0)
             movement.center(this, writeClient);
-    } catch (...) {
+    } catch (const std::exception& exc) {
+        printRed("onAction: ");
+        std::cout << exc.what() << std::endl;
     }
 }
 

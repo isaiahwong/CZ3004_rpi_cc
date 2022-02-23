@@ -9,13 +9,13 @@ default:
 	cmake -S . -B ./build
 	make -C build 
 	cp ./build/RPi ./bin
-	make run_rpi
 
 
 run_rpi:
-	./bin/RPi --serial="/dev/pts/2 /dev/ttyUSB4 /dev/ttyUSB0 /dev/ttyUSB1 /dev/ttyUSB2 /dev/ttyUSB3 /dev/ttyUSB5 /dev/ttyUSB6"\
+	./bin/RPi --serial="/dev/ttyUSB0 /dev/ttyUSB4 /dev/ttyUSB0 /dev/ttyUSB1 /dev/ttyUSB2 /dev/ttyUSB3 /dev/ttyUSB5 /dev/ttyUSB6"\
 		--vision=localhost:50051\
-		--cameraopen=1
+		--cameraopen=1\
+	
 
 run_camera:
 	python cv/main.py

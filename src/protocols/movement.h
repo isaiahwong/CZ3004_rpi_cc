@@ -19,10 +19,15 @@ class Movement {
    private:
     inline static const std::string DEFAULT_ANGLE = "000";
     // Predefined turning angles
-    inline static const std::string FORWARD_RIGHT_90 = "280";
-    inline static const std::string BACK_RIGHT_90 = "250";
-    inline static const std::string FORWARD_LEFT_90 = "062";
-    inline static const std::string BACK_LEFT_90 = "078";
+    inline static const std::string _FORWARD_RIGHT_90 = "280";
+    inline static const std::string _BACK_RIGHT_90 = "180";
+    inline static const std::string _FORWARD_LEFT_90 = "065";
+    inline static const std::string _BACK_LEFT_90 = "070";
+
+    std::string FORWARD_RIGHT_90;
+    std::string BACK_RIGHT_90;
+    std::string FORWARD_LEFT_90;
+    std::string BACK_LEFT_90;
 
    public:
     inline static const char CMD_FORWARD = 'F';
@@ -40,6 +45,20 @@ class Movement {
     inline static const std::string BACK = "back";
     inline static const std::string BACK_LEFT = "back_left";
     inline static const std::string BACK_RIGHT = "back_right";
+
+    Movement() {
+        FORWARD_RIGHT_90 = _FORWARD_RIGHT_90;
+        BACK_RIGHT_90 = _BACK_RIGHT_90;
+        FORWARD_LEFT_90 = _FORWARD_LEFT_90;
+        BACK_LEFT_90 = _BACK_LEFT_90;
+    }
+
+    Movement(std::string fr, std::string br, std::string fl, std::string bl) {
+        FORWARD_RIGHT_90 = fr;
+        BACK_RIGHT_90 = br;
+        FORWARD_LEFT_90 = fl;
+        BACK_LEFT_90 = bl;
+    }
 
     typedef void (*WriteCallback)(void* o, std::string);
 

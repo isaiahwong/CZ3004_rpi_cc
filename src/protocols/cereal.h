@@ -72,6 +72,9 @@ class Cereal : public Protocol {
 
     Cereal(std::string _port, int _baudrate);
 
+    Cereal(std::string _port, int _baudrate, std::string fr, std::string br,
+           std::string fl, std::string bl);
+
     ~Cereal();
 
     /**

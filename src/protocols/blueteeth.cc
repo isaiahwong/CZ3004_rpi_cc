@@ -125,9 +125,10 @@ void Blueteeth::onExecuteActions() {
         commands.wait_dequeue(a);
         retries = 0;
         while (true) {
-            if (a.type.compare(Action::TYPE_MOVE) == 0)
+            if (a.type.compare(Action::TYPE_MOVE) == 0) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 this->publish(Blueteeth::BT_MOVEMENT, a);
-            else if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
+            } else if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
                 this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);
             } else {
                 printRed("Unknown command in series");
