@@ -52,6 +52,16 @@ Blueteeth::Blueteeth(int channel, std::string name) {
     this->init();
 }
 
+Blueteeth::Blueteeth(int channel, std::string name, int instructionDelay) {
+    this->name = name;
+    this->channel = channel;
+    this->instructionDelay = instructionDelay;
+    // RFCOMM socket address
+    this->clientAddr = new sockaddr_rc();
+    this->localAddr = new sockaddr_rc();
+    this->init();
+}
+
 /**
  * @brief Invokes function to run on thread
  *
@@ -126,7 +136,8 @@ void Blueteeth::onExecuteActions() {
         retries = 0;
         while (true) {
             if (a.type.compare(Action::TYPE_MOVE) == 0) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(instructionDelay));
                 this->publish(Blueteeth::BT_MOVEMENT, a);
             } else if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
                 this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);

@@ -24,6 +24,8 @@ class Blueteeth final : public Protocol {
     // bluetooth client
     int client = -1;
 
+    int instructionDelay = 200;
+
     /**
      * @brief Blocking queue of commands
      *
@@ -68,6 +70,10 @@ class Blueteeth final : public Protocol {
 
     void onAction(Action& action);
 
+    void setDelay(int instructiondelay) {
+        this->instructionDelay = instructionDelay;
+    }
+
     /**
      * @brief Forwarder static function to access Cereal onAction
      *
@@ -80,8 +86,9 @@ class Blueteeth final : public Protocol {
 
     ~Blueteeth();
     Blueteeth();
-    void run();
     Blueteeth(int channel, std::string name);
+    Blueteeth(int channel, std::string name, int instructionDelay);
+    void run();
 };
 
 #endif
