@@ -135,13 +135,13 @@ void Cereal::onAction(Action* action) {
         else if (a.action.compare(Movement::BACK) == 0)
             movement.back(a, this, writeClient);
         else if (a.action.compare(Movement::FORWARD_LEFT) == 0)
-            movement.forwardLeft(this, writeClient);
+            movement.forwardLeft(a, this, writeClient);
         else if (a.action.compare(Movement::FORWARD_RIGHT) == 0)
-            movement.forwardRight(this, writeClient);
+            movement.forwardRight(a, this, writeClient);
         else if (a.action.compare(Movement::BACK_LEFT) == 0)
-            movement.backLeft(this, writeClient);
+            movement.backLeft(a, this, writeClient);
         else if (a.action.compare(Movement::BACK_RIGHT) == 0)
-            movement.backRight(this, writeClient);
+            movement.backRight(a, this, writeClient);
         else if (a.action.compare(Movement::STOP) == 0)
             movement.stop(this, writeClient);
         else if (a.action.compare(Movement::CENTER) == 0)

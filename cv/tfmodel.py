@@ -98,6 +98,7 @@ class TF:
     def draw(self, frame=None, scores=[], boxes=[[]], classes=[]):
         object_name = '-1'
         dist = -1
+        xmax, xmin = 0, 0
         # Loop over all detections and draw detection box if confidence is above minimum threshold
         for i in range(len(scores)):
             if ((scores[i] > self.threshold) and (scores[i] <= 1.0)):
@@ -146,7 +147,7 @@ class TF:
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
         
 
-        return frame, object_name, ymax - ymin
+        return frame, object_name, xmax - xmin
 
     def distanceestimate(self, k2, k1):
         height = k2-k1

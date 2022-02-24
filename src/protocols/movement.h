@@ -78,30 +78,28 @@ class Movement {
         fn(o, cmd);
     }
 
+    void forwardLeft(Action& a, void* o, WriteCallback fn) {
+        auto cmd = fmt::format("{}{}{}", CMD_FORWARD, CMD_LEFT, a.distance);
+        fn(o, cmd);
+    }
+
+    void forwardRight(Action& a, void* o, WriteCallback fn) {
+        auto cmd = fmt::format("{}{}{}", CMD_FORWARD, CMD_RIGHT, a.distance);
+        fn(o, cmd);
+    }
+
+    void backLeft(Action& a, void* o, WriteCallback fn) {
+        auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_LEFT, a.distance);
+        fn(o, cmd);
+    }
+
+    void backRight(Action& a, void* o, WriteCallback fn) {
+        auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_RIGHT, a.distance);
+        fn(o, cmd);
+    }
+
     void stop(void* o, WriteCallback fn) {
         fn(o, fmt::format("{}{}000", CMD_STOP, CMD_STOP));
-    }
-
-    void forwardLeft(void* o, WriteCallback fn) {
-        auto cmd =
-            fmt::format("{}{}{}", CMD_FORWARD, CMD_LEFT, FORWARD_LEFT_90);
-        fn(o, cmd);
-    }
-
-    void forwardRight(void* o, WriteCallback fn) {
-        auto cmd =
-            fmt::format("{}{}{}", CMD_FORWARD, CMD_RIGHT, FORWARD_RIGHT_90);
-        fn(o, cmd);
-    }
-
-    void backLeft(void* o, WriteCallback fn) {
-        auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_LEFT, BACK_LEFT_90);
-        fn(o, cmd);
-    }
-
-    void backRight(void* o, WriteCallback fn) {
-        auto cmd = fmt::format("{}{}{}", CMD_BACK, CMD_RIGHT, BACK_RIGHT_90);
-        fn(o, cmd);
     }
 };
 

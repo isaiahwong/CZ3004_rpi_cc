@@ -36,7 +36,6 @@ class Blueteeth final : public Protocol {
     void connect();
     void disconnect();
     void readClient();
-    void onBullseye();
     void emptyCommands();
 
    public:

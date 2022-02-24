@@ -140,8 +140,10 @@ void Blueteeth::onExecuteActions() {
                     statusResponse, std::chrono::seconds(6));
 
                 // retry loop if failed
-                if (!didReceive || statusResponse.status != 1) {
-                    printRed("No Response");
+                // if (!didReceive || statusResponse.status != 1) {
+                // For A5
+                if (!didReceive) {
+                    printRed("No Response from image");
                     // Retry only for Image Rec
                     if (a.type.compare(Action::TYPE_CAPTURE) != 0) break;
 
@@ -164,8 +166,6 @@ void Blueteeth::onExecuteActions() {
         }
 
         try {
-            print(fmt::format("ImageID: {}, Distance: {}",
-                              statusResponse.result, statusResponse.distance));
             // Send response to android to notify success
             // Echo back the coordinate given
             Response response(a.type, statusResponse.result,
@@ -264,11 +264,6 @@ void Blueteeth::onSeriesActions(Action &action) {
     }
 }
 
-void Blueteeth::onBullseye() {
-    emptyCommands();
-    // To fill tomorrow
-}
-
 /**
  * @brief Publishes incoming bluetooth connections
  *
@@ -356,8 +351,6 @@ void Blueteeth::readClient() {
             onAction(a);
         else if (a.type.compare(Action::TYPE_SERIES) == 0)
             onSeriesActions(a);
-        else if (a.type.compare(Action::TYPE_BULLSEYE) == 0)
-            onBullseye();
         // Publish to generic main read for debug
         // this->publish(Blueteeth::BT_MAIN_READ, buf, bufflen);
         // Clear buffer

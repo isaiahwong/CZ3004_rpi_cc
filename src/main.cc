@@ -32,21 +32,13 @@ int main(int argc, char *argv[]) {
     p.add<std::string>("vision", 'd', "vision address", true,
                        "localhost:50051");
 
-    // Parametised
-    p.add<std::string>("movefr", 'e', "movement commands", false, "280");
-    p.add<std::string>("movebr", 'f', "movement commands", false, "180");
-    p.add<std::string>("movefl", 'g', "movement commands", false, "062");
-    p.add<std::string>("movebl", 'h', "movement commands", false, "070");
-
     // Run parser.
     // It returns only if command line arguments are valid.
     // If arguments are invalid, a parser output error msgs then exit program.
     p.parse_check(argc, argv);
 
     Blueteeth bt;
-    Cereal c(p.get<std::string>("serial"), 115200, p.get<std::string>("movefr"),
-             p.get<std::string>("movebr"), p.get<std::string>("movefl"),
-             p.get<std::string>("movebl"));
+    Cereal c(p.get<std::string>("serial"), 115200);
     Camera cam(p.get<std::string>("vision"), p.get<int>("cameraopen"));
 
     // Register cereal to listen for movement requests

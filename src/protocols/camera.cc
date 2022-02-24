@@ -96,17 +96,17 @@ void Camera::onCapture(Action* action) {
     try {
         VisionResponse* vres =
             visionClient->SendFrame(byteStr, width, height, channels);
-
         Response res(vres->imageid(), vres->status(), vres->distance());
-
+        // End Timer
+        auto t3 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> ms = t3 - t1;
+        print(fmt::format("End Capture {} ms", ms.count()));
+        print(
+            fmt::format("ImageID: {}, Distance: {}", res.result, res.distance));
         this->publish(Camera::CAM_CAPTURE_RESULT, res);
     } catch (std::string e) {
         printRed(e);
     }
-    // End Timer
-    auto t3 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> ms = t3 - t1;
-    print(fmt::format("End Capture {} ms", ms.count()));
 }
 
 Camera::~Camera() {
