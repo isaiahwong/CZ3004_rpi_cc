@@ -791,8 +791,9 @@ class VisionResponse final :
 
   enum : int {
     kImageidFieldNumber = 2,
+    kNameFieldNumber = 3,
     kStatusFieldNumber = 1,
-    kDistanceFieldNumber = 3,
+    kDistanceFieldNumber = 4,
   };
   // string imageid = 2;
   void clear_imageid();
@@ -808,6 +809,20 @@ class VisionResponse final :
   std::string* _internal_mutable_imageid();
   public:
 
+  // string name = 3;
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_MUST_USE_RESULT std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
   // int32 status = 1;
   void clear_status();
   ::PROTOBUF_NAMESPACE_ID::int32 status() const;
@@ -817,7 +832,7 @@ class VisionResponse final :
   void _internal_set_status(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // int32 distance = 3;
+  // int32 distance = 4;
   void clear_distance();
   ::PROTOBUF_NAMESPACE_ID::int32 distance() const;
   void set_distance(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -834,6 +849,7 @@ class VisionResponse final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr imageid_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
   ::PROTOBUF_NAMESPACE_ID::int32 status_;
   ::PROTOBUF_NAMESPACE_ID::int32 distance_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -1130,7 +1146,53 @@ inline void VisionResponse::set_allocated_imageid(std::string* imageid) {
   // @@protoc_insertion_point(field_set_allocated:VisionResponse.imageid)
 }
 
-// int32 distance = 3;
+// string name = 3;
+inline void VisionResponse::clear_name() {
+  name_.ClearToEmpty();
+}
+inline const std::string& VisionResponse::name() const {
+  // @@protoc_insertion_point(field_get:VisionResponse.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void VisionResponse::set_name(ArgT0&& arg0, ArgT... args) {
+ 
+ name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:VisionResponse.name)
+}
+inline std::string* VisionResponse::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:VisionResponse.name)
+  return _s;
+}
+inline const std::string& VisionResponse::_internal_name() const {
+  return name_.Get();
+}
+inline void VisionResponse::_internal_set_name(const std::string& value) {
+  
+  name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* VisionResponse::_internal_mutable_name() {
+  
+  return name_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* VisionResponse::release_name() {
+  // @@protoc_insertion_point(field_release:VisionResponse.name)
+  return name_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void VisionResponse::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    
+  } else {
+    
+  }
+  name_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), name,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:VisionResponse.name)
+}
+
+// int32 distance = 4;
 inline void VisionResponse::clear_distance() {
   distance_ = 0;
 }

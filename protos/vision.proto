@@ -30,7 +30,8 @@ message VisionRequest {
 message VisionResponse {
     int32 status = 1;
     string imageid = 2;
-    int32 distance = 3;
+    string  name = 3;
+    int32 distance = 4;
 }
 
 

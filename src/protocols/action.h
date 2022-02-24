@@ -11,6 +11,7 @@ using json = nlohmann::json;
 class Response {
    public:
     std::string result;
+    std::string name;
     std::string coordinate;
     std::string type;
     int distance;
@@ -25,25 +26,38 @@ class Response {
 
     Response() {
         result = "";
+        name = "";
         coordinate = "";
         type = "";
         status = 0;
         distance = 0;
     }
 
-    Response(std::string type, std::string result, int status,
+    Response(std::string type, std::string result, std::string name, int status,
              std::string coordinate, int distance) {
         this->type = type;
         this->result = result;
+        this->name = name;
         this->status = status;
         this->coordinate = coordinate;
         this->distance = distance;
     }
 
-    Response(std::string result, int status, int distance) {
+    Response(int status) {
+        this->status = status;
+        this->result = "";
+        this->name = "";
+        this->coordinate = "";
+        this->name = "";
+        this->distance = 0;
+    }
+
+    Response(std::string result, std::string name, int status, int distance) {
         this->result = result;
+        this->name = name;
         this->status = status;
         this->coordinate = "";
+        this->name = "";
         this->distance = distance;
     }
 
@@ -55,27 +69,29 @@ class Response {
 
     void serialiseEmpty() {
         type = emptyToFill(type);
+        name = emptyToFill(name);
         result = emptyToFill(result);
         coordinate = emptyToFill(coordinate);
     }
 
     void deserialiseEmpty() {
+        type = fillToEmpty(type);
         result = fillToEmpty(result);
+        name = fillToEmpty(name);
         coordinate = fillToEmpty(coordinate);
     }
 
     void to_json(json& j) {
-        j = json{{"type", type},
-                 {"status", status},
-                 {"result", result},
-                 {"coordinate", coordinate},
-                 {"distance", distance}};
+        j = json{
+            {"type", type}, {"status", status},         {"result", result},
+            {"name", name}, {"coordinate", coordinate}, {"distance", distance}};
     }
 
     static void from_json(const json& j, Response& a) {
         j.at("type").get_to(a.type);
         j.at("status").get_to(a.status);
         j.at("result").get_to(a.result);
+        j.at("name").get_to(a.name);
         j.at("coordinate").get_to(a.coordinate);
         j.at("distance").get_to(a.distance);
     }

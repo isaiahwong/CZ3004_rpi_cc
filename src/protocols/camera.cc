@@ -96,7 +96,9 @@ void Camera::onCapture(Action* action) {
     try {
         VisionResponse* vres =
             visionClient->SendFrame(byteStr, width, height, channels);
-        Response res(vres->imageid(), vres->status(), vres->distance());
+
+        Response res(vres->imageid(), vres->name(), vres->status(),
+                     vres->distance());
         // End Timer
         auto t3 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> ms = t3 - t1;

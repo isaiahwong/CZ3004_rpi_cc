@@ -5,9 +5,10 @@ import importlib.util
 import os
 
 class Result:
-    def __init__(self, label="", distance=0, confidence=0):
-        self.label = label
+    def __init__(self, imageid="", distance=0, name="", confidence=0):
+        self.imageid = imageid
         self.distance = distance
+        self.name = name
         self.confidence = confidence
 
 class TF:
@@ -23,6 +24,41 @@ class TF:
         self.threshold = threshold
         self.init()
 
+    def getImageName(self, id):
+        return {
+            "10": "Bullseye",
+            "11": "One",
+            "12": "Two",
+            "13": "Three",
+            "14": "Four",
+            "15": "Five",
+            "16": "Six",
+            "17": "Seven",
+            "18": "Eight",
+            "19": "Nine",
+            "20": "A",
+            "21": "B",
+            "22": "C",
+            "23": "D",
+            "24": "E",
+            "25": "F",
+            "26": "G",
+            "27": "H",
+            "28": "S",
+            "29": "T",
+            "30": "U",
+            "31": "V",
+            "32": "W",
+            "33": "X",
+            "34": "Y",
+            "35": "Z",
+            "36": "Up Arrow",
+            "37": "Down Arrow",
+            "38": "Right Arrow",
+            "39": "Left Arrow",
+            "40": "Stop",
+        }[id]
+
     def init(self):
         pkg = importlib.util.find_spec('tflite_runtime')
         if pkg:
@@ -35,16 +71,16 @@ class TF:
         # Path to .tflite file, which contains the model that is used for object detection
         PATH_TO_MODEL = os.path.join(CWD_PATH, self.modeldir, self.graph)
 
-        # Path to label map file
+        # Path to imageid map file
         PATH_TO_LABELS = os.path.join(CWD_PATH, self.modeldir, self.labelmap)
 
-        # Load the label map
+        # Load the imageid map
         with open(PATH_TO_LABELS, 'r') as f:
             self.labels = [line.strip() for line in f.readlines()]
 
-        # Have to do a weird fix for label map if using the COCO "starter model" from
+        # Have to do a weird fix for imageid map if using the COCO "starter model" from
         # https://www.tensorflow.org/lite/models/object_detection/overview
-        # First label is '???', which has to be removed.
+        # First imageid is '???', which has to be removed.
         if self.labels[0] == '???':
             del(self.labels[0])
 
@@ -98,11 +134,10 @@ class TF:
             frame = cv2.resize(frame, (imageWidth, imageHeight))
             return frame, results
         except Exception as e:
-            print(e)
+            print("error: {}".format(e))
             return None, []
 
     def draw(self, frame=None, scores=[], boxes=[[]], classes=[]):
-        object_name = '-1'
         results = []
         # Loop over all detections and draw detection box if confidence is above minimum threshold
         for i in range(len(scores)):
@@ -119,40 +154,47 @@ class TF:
 
                 cv2.rectangle(frame, (xmin, ymin),
                               (xmax, ymax), (10, 255, 0), 2)
-                object_name = int(self.labels[int(classes[i])])
+                imageid = int(self.labels[int(classes[i])])
 
-                self.yminavg[object_name-10] += ymin
-                self.xminavg[object_name-10] += xmin
-                self.ymaxavg[object_name-10] += ymax
-                self.xmaxavg[object_name-10] += xmax
-                self.average[object_name-10] += 1
+                self.yminavg[imageid-10] += ymin
+                self.xminavg[imageid-10] += xmin
+                self.ymaxavg[imageid-10] += ymax
+                self.xmaxavg[imageid-10] += xmax
+                self.average[imageid-10] += 1
 
                 # Look up object name from "labels" array using class index
                 # Example: 'person: 72%'
                 confidence = int(scores[i]*100)
-                label = '%s: %d%%' % (object_name, confidence)
+                name = self.getImageName(str(imageid));
+                
+                details = '{}, {}%'.format(imageid, confidence)
 
                 # Get font size
                 labelSize, baseLine = cv2.getTextSize(
-                    label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
+                    details, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
 
-                # Make sure not to draw label too close to top of window
+                # Make sure not to draw imageid too close to top of window
                 label_ymin = max(ymin, labelSize[1] + 10)
-                # Draw white box to put label text in
+                # Draw white box to put imageid text in
                 cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (
                     xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED)
+                cv2.putText(frame, details, (xmin, label_ymin-7),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text
+
+                # Draw white box to put imageid text in
+                cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-40), (
+                    xmin+labelSize[0], label_ymin+baseLine-40), (255, 255, 255), cv2.FILLED)
+                cv2.putText(frame, name, (xmin, label_ymin-40),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text
 
                 # print estimated distance in the top left corner
-                dist = int(self.distanceestimate(ymax, ymin))
-                
-                cv2.putText(frame, label, (xmin, label_ymin-7),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw label text
-
-                distance = '%s: %d %s' % (object_name, dist, ' mm')
-                cv2.putText(frame, distance, (20, (20+i*30)),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+                # dist = int(self.distanceestimate(ymax, ymin))
+                # distance = '{} mm'.format(dist)
+                # cv2.putText(frame, distance, (20, (20+i*30)),
+                #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
                 results.append(Result(
-                    label=str(object_name), 
+                    imageid=str(imageid), 
+                    name = name,
                     distance=xmax - xmin,
                     confidence=confidence
                 ))

@@ -180,8 +180,8 @@ void Blueteeth::onExecuteActions() {
             // Send response to android to notify success
             // Echo back the coordinate given
             Response response(a.type, statusResponse.result,
-                              statusResponse.status, a.coordinate,
-                              statusResponse.distance);
+                              statusResponse.name, statusResponse.status,
+                              a.coordinate, statusResponse.distance);
             json j;
             response.to_json(j);
             std::string payload = j.dump();

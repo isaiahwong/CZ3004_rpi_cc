@@ -1,4 +1,4 @@
-
+import time
 import grpc
 import numpy as np
 import os 
@@ -6,7 +6,6 @@ import os
 import cv2
 from tfmodel import TF, Result
 from yolov5model import YoloV5
-
 from concurrent import futures
 
 from vision_pb2 import *
@@ -33,13 +32,13 @@ class ImageServer(VisionServiceServicer):
         if results == None and len(results) == 0:
             return result
         for r in results:
-            # We override label 10 - bullseye
-            if (result.label == "10" or result.label == "-1") and r.label != result.label:
+            # We override imageid 10 - bullseye
+            if (result.imageid == "10" or result.imageid == "-1") and r.imageid != result.imageid:
                 result = r
                 continue
 
             # do not override existing if the current is 10 - bullseye
-            if (r.label == "10" and result.label != "10"):
+            if (r.imageid == "10" and result.imageid != "10"):
                 continue
 
             if r.confidence > result.confidence:
@@ -50,14 +49,18 @@ class ImageServer(VisionServiceServicer):
     def SendFrame(self, req, ctx):
         # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
-        # label = self.model.predict(frame, req.width)
+        # imageid = self.model.predict(frame, req.width)
         frame, results = self.model.predict(frame, req.width, req.height)
         result = self.filterImages(results)
-
-        cv2.imwrite('{}/out/image-{}.jpg'.format(self.pwd, result.label), frame)
-        status = 0 if str(result.label) == '-1' else 1
-        print("ImageId: {}  Distance: {}".format(result.label, result.distance))
-        return VisionResponse(imageid=str(result.label), status=status, distance=result.distance)
+        cv2.imwrite('{}/out/image-{}-{}-{}.jpg'.format(self.pwd, result.name, result.imageid, time.time()), frame)
+        status = 0 if str(result.imageid) == '-1' else 1
+        print("ImageId: {}, Name: {}, Distance: {}".format(result.imageid, result.name, result.distance))
+        return VisionResponse(
+            imageid=str(result.imageid), 
+            status=status, 
+            name=result.name, 
+            distance=result.distance
+        )
 
 
 def main():
