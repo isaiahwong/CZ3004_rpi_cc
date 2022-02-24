@@ -4,6 +4,12 @@ import numpy as np
 import importlib.util
 import os
 
+class Result:
+    def __init__(self, label="", distance=0, confidence=0):
+        self.label = label
+        self.distance = distance
+        self.confidence = confidence
+
 class TF:
     def __init__(self,
                  modeldir="model",
@@ -86,19 +92,18 @@ class TF:
             scores = self.interpreter.get_tensor(
                 self.output_details[0]['index'])[0]
 
-            frame, label, dist = self.draw(frame=frame, scores=scores,
+            frame, results = self.draw(frame=frame, scores=scores,
                               boxes=boxes, classes=classes)
             # Resize back to camera resolution
             frame = cv2.resize(frame, (imageWidth, imageHeight))
-            return frame, label, dist
+            return frame, results
         except Exception as e:
             print(e)
-            return None, None, -1
+            return None, []
 
     def draw(self, frame=None, scores=[], boxes=[[]], classes=[]):
         object_name = '-1'
-        dist = -1
-        xmax, xmin = 0, 0
+        results = []
         # Loop over all detections and draw detection box if confidence is above minimum threshold
         for i in range(len(scores)):
             if ((scores[i] > self.threshold) and (scores[i] <= 1.0)):
@@ -124,7 +129,8 @@ class TF:
 
                 # Look up object name from "labels" array using class index
                 # Example: 'person: 72%'
-                label = '%s: %d%%' % (object_name, int(scores[i]*100))
+                confidence = int(scores[i]*100)
+                label = '%s: %d%%' % (object_name, confidence)
 
                 # Get font size
                 labelSize, baseLine = cv2.getTextSize(
@@ -145,9 +151,13 @@ class TF:
                 distance = '%s: %d %s' % (object_name, dist, ' mm')
                 cv2.putText(frame, distance, (20, (20+i*30)),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-        
+                results.append(Result(
+                    label=str(object_name), 
+                    distance=xmax - xmin,
+                    confidence=confidence
+                ))
 
-        return frame, object_name, xmax - xmin
+        return frame, results
 
     def distanceestimate(self, k2, k1):
         height = k2-k1
