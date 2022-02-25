@@ -134,10 +134,12 @@ void Blueteeth::onExecuteActions() {
     queue:
         commands.wait_dequeue(a);
         retries = 0;
+        print(fmt::format("wait: {}", instructionDelay));
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(instructionDelay));
+        print("after");
         while (true) {
             if (a.type.compare(Action::TYPE_MOVE) == 0) {
-                std::this_thread::sleep_for(
-                    std::chrono::milliseconds(instructionDelay));
                 this->publish(Blueteeth::BT_MOVEMENT, a);
             } else if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
                 this->publish(Blueteeth::BT_CAMERA_CAPTURE, a);
@@ -151,10 +153,9 @@ void Blueteeth::onExecuteActions() {
                     statusResponse, std::chrono::seconds(6));
 
                 // retry loop if failed
-                // if (!didReceive || statusResponse.status != 1) {
                 // For A5
-                if (!didReceive) {
-                    printRed("No Response from image");
+                if (!didReceive || statusResponse.status != 1) {
+                    printRed("No Response");
                     // Retry only for Image Rec
                     if (a.type.compare(Action::TYPE_CAPTURE) != 0) break;
 

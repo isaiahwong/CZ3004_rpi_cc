@@ -24,7 +24,7 @@ class Blueteeth final : public Protocol {
     // bluetooth client
     int client = -1;
 
-    int instructionDelay = 200;
+    int instructionDelay = 500;
 
     /**
      * @brief Blocking queue of commands
@@ -71,7 +71,7 @@ class Blueteeth final : public Protocol {
     void onAction(Action& action);
 
     void setDelay(int instructiondelay) {
-        this->instructionDelay = instructionDelay;
+        this->instructionDelay = instructiondelay;
     }
 
     /**

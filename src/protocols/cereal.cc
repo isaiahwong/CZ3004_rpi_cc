@@ -181,7 +181,7 @@ void Cereal::writeClient(void* c, std::string msg) {
  * @param msg
  */
 void Cereal::writeClient(std::string msg) {
-    const int LEN = 6;
+    const int LEN = 9;
     char buf[LEN];
     // ClientContext context;
 
@@ -189,7 +189,7 @@ void Cereal::writeClient(std::string msg) {
         // Truncates till LEN
         strncpy(buf, msg.c_str(), LEN);
         std::cout << buf << std::endl;
-        buf[LEN - 1] = '\0';
+        // buf[LEN - 1] = '\0';
         // SerialMessage s;
         // Empty e;
         // s.mutable_message()->assign(msg);

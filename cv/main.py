@@ -55,6 +55,7 @@ class ImageServer(VisionServiceServicer):
         cv2.imwrite('{}/out/image-{}-{}-{}.jpg'.format(self.pwd, result.name, result.imageid, time.time()), frame)
         status = 0 if str(result.imageid) == '-1' else 1
         print("ImageId: {}, Name: {}, Distance: {}".format(result.imageid, result.name, result.distance))
+        time.sleep(0.2)
         return VisionResponse(
             imageid=str(result.imageid), 
             status=status, 
