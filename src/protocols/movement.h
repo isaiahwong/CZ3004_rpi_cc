@@ -63,7 +63,7 @@ class Movement {
     typedef void (*WriteCallback)(void* o, std::string);
 
     void center(void* o, WriteCallback fn) {
-        auto cmd = fmt::format("{}{}000", CMD_CENTER, CMD_CENTER);
+        auto cmd = fmt::format("{}{}00000000", CMD_CENTER, CMD_CENTER);
         fn(o, cmd);
     }
 
@@ -99,7 +99,7 @@ class Movement {
     }
 
     void stop(void* o, WriteCallback fn) {
-        fn(o, fmt::format("{}{}000", CMD_STOP, CMD_STOP));
+        fn(o, fmt::format("{}{}00000000", CMD_STOP, CMD_STOP));
     }
 };
 

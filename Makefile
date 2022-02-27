@@ -12,7 +12,7 @@ default:
 
 
 run_rpi:
-	./bin/RPi --serial="/dev/ttyUSB0 /dev/ttyUSB2 /dev/ttyUSB7 /dev/ttyUSB1 /dev/ttyUSB4 /dev/ttyUSB3 /dev/ttyUSB5 /dev/ttyUSB6 /dev/ttyUSB7"\
+	./bin/RPi --serial="/dev/pts/9"\
 		--vision=localhost:50051\
 		--cameraopen=1\
 		--instructiondelay=250
@@ -23,14 +23,17 @@ run_camera:
 gen-protos:
 	make -C protos
 
-make_cv:
-	cmake -D CMAKE_BUILD_TYPE=RELEASE \
-		-D CMAKE_INSTALL_PREFIX=/usr/local \
-		-D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
-		-D ENABLE_NEON=ON \
-		-D ENABLE_VFPV3=ON \
-		-D BUILD_TESTS=OFF \
-		-D INSTALL_PYTHON_EXAMPLES=OFF \
-		-D OPENCV_ENABLE_NONFREE=ON \
-		-D CMAKE_SHARED_LINKER_FLAGS='-latomic' \
-		-D BUILD_EXAMPLES=OFF ..
+run-serial:
+	socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+# make_cv:
+# 	cmake -D CMAKE_BUILD_TYPE=RELEASE \
+# 		-D CMAKE_INSTALL_PREFIX=/usr/local \
+# 		-D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
+# 		-D ENABLE_NEON=ON \
+# 		-D ENABLE_VFPV3=ON \
+# 		-D BUILD_TESTS=OFF \
+# 		-D INSTALL_PYTHON_EXAMPLES=OFF \
+# 		-D OPENCV_ENABLE_NONFREE=ON \
+# 		-D CMAKE_SHARED_LINKER_FLAGS='-latomic' \
+# 		-D BUILD_EXAMPLES=OFF ..

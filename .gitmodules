@@ -16,3 +16,6 @@
 [submodule "external/concurrentqueue"]
 	path = external/concurrentqueue
 	url = https://github.com/cameron314/concurrentqueue.git
+[submodule "external/bluez"]
+	path = external/bluez
+	url = https://github.com/bluez/bluez.git

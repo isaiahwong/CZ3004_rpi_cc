@@ -3,6 +3,13 @@ The RPi module is writen in `C++` leveraging on its speed and one level closer t
 
 # Unix Dependencies
 
+## Serial
+```
+git clone https://github.com/WiringPi/WiringPi.git
+cd WiringPi
+./build
+```
+
 ## Bluetooth
 ```
 sudo apt-get install bluez libbluetooth-dev

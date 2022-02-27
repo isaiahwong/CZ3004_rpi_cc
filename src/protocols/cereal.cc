@@ -17,14 +17,12 @@ Cereal::Cereal(std::string _port, int _baudrate = 115200) {
     write = false;
     port = _port;
     baudrate = _baudrate;
-    // split strings
-    std::stringstream ss(_port);
-    std::string word;
+    addHost(_port);
+
     // stub_ = SerialService::NewStub(grpc::CreateChannel(
     //     "localhost:50052", grpc::InsecureChannelCredentials()));
     // commands = BlockingQueueAction();
     // statuses = BlockingQueueStatus();
-    while (ss >> word) hosts.push_back(word);
 }
 
 Cereal::Cereal(std::string _port, int _baudrate, std::string fr, std::string br,
@@ -33,14 +31,22 @@ Cereal::Cereal(std::string _port, int _baudrate, std::string fr, std::string br,
     port = _port;
     baudrate = _baudrate;
     movement = Movement(fr, br, fl, bl);
-
-    // split strings
-    std::stringstream ss(_port);
-    std::string word;
-    while (ss >> word) hosts.push_back(word);
+    addHost(_port);
 }
 
 Cereal::~Cereal() { close(serial); }
+
+void Cereal::addHost(std::string _port) {
+    if (!_port.empty()) {
+        std::stringstream ss(_port);
+        std::string word;
+        while (ss >> word) hosts.push_back(word);
+    }
+
+    // Add tty/USB hosts
+    for (int i = 0; i < host_range; i++)
+        hosts.push_back(fmt::format("/dev/ttyUSB{}", i));
+}
 
 void Cereal::run() { init(); }
 
@@ -71,8 +77,8 @@ void Cereal::onConnectionRead() {
         // if connect fails
         if (connect()) {
             fmt::print(fmt::emphasis::bold | fg(fmt::color::hot_pink),
-                       "Retrying in 5 seconds\n");
-            std::this_thread::sleep_for(std::chrono::seconds(2));
+                       "Retrying 100ms\n");
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             continue;
         }
 

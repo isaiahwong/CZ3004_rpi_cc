@@ -3,6 +3,12 @@
 #define BLUETEETH_H_
 
 #include <blockingconcurrentqueue.h>
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/l2cap.h>
+#include <bluetooth/rfcomm.h>
+#include <bluetooth/sco.h>
+#include <bluetooth/sdp.h>
+#include <bluetooth/sdp_lib.h>
 
 #include "protocol.h"
 
@@ -17,6 +23,10 @@ class Blueteeth final : public Protocol {
     // RFCOMM socket address
     struct sockaddr_rc* clientAddr;
     struct sockaddr_rc* localAddr;
+
+    // Default addresses
+    bdaddr_t ANY = {0, 0, 0, 0, 0, 0};
+    bdaddr_t LOCAL = {0, 0, 0, 0xff, 0xff, 0xff};
 
     // bluetooth socket
     int bluetoothSocket = -1;

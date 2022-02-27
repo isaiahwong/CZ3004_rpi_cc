@@ -11,12 +11,6 @@
 
 #include "blueteeth.h"
 
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/l2cap.h>
-#include <bluetooth/rfcomm.h>
-#include <bluetooth/sco.h>
-#include <bluetooth/sdp.h>
-#include <bluetooth/sdp_lib.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <fmt/color.h>
@@ -84,7 +78,7 @@ void Blueteeth::init() {
 
     (*localAddr).rc_family = AF_BLUETOOTH;
     // Allows any bluetooth address to be used
-    (*localAddr).rc_bdaddr = {0, 0, 0, 0, 0, 0};
+    (*localAddr).rc_bdaddr = LOCAL;
     // Sets RFComm channel
     (*localAddr).rc_channel = (uint8_t)channel;
 
@@ -314,6 +308,7 @@ void Blueteeth::readClient() {
             // deserialise json to Action
             Action::from_json(data, a);
         } catch (const json::parse_error &e) {
+            printRed("JSON error:");
             // Issues with fmt::format
             std::cout << e.what() << std::endl;
             //  reset series if an exception is caught
@@ -341,7 +336,7 @@ void Blueteeth::readClient() {
             continue;
         }
 
-        // series on going
+        // series ongoing
         if (series != nullptr) {
             series->data.push_back(a);
             std::cout << series->data.size() << std::endl;

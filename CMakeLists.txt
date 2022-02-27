@@ -59,14 +59,17 @@ add_subdirectory(external/concurrentqueue)
 
 # Dependencies
 find_package (Threads)
+# Upon build, it saved in /usr/local
 find_package(OpenCV REQUIRED)
+
+find_library(WIRINGPI_LIB NAMES wiringPi)
 # find_package(Protobuf REQUIRED)
 # find_package(GRPC REQUIRED)
 
-find_library(BLUEZ_LIB bluetooth)
-find_library(WIRINGPI_LIB NAMES wiringPi)
+# find_library(BLUEZ_LIB bluetooth)
 
-message(STATUS ${OpenCV_INCLUDE_DIRS})
+# message(STATUS ${OpenCV_INCLUDE_DIRS})
+# message(STATUS ${WIRINGPI_LIB})
 
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/src/protocols")
@@ -75,6 +78,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC external/fmt/include
     external/json/include
     external/concurrentqueue/include
+    external/bluez/lib
     ${OpenCV_INCLUDE_DIRS}
 )
 
@@ -91,10 +95,11 @@ target_link_libraries(${PROJECT_NAME}
     fmt::fmt-header-only
     nlohmann_json::nlohmann_json
     concurrentqueue
+    bluetooth
     GRPC_PROTO
     ${OpenCV_LIBS}
     ${WIRINGPI_LIB}
-    ${BLUEZ_LIB}
+    # ${BLUEZ_LIB}
 )
 
 # Function to check if library exists

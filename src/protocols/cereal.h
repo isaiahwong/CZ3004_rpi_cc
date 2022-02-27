@@ -34,6 +34,8 @@ class Cereal : public Protocol {
 
     int baudrate;
 
+    int host_range = 20;
+
     /**
      * @brief Movement helper class for STM movements
      *
@@ -61,6 +63,8 @@ class Cereal : public Protocol {
     void runWrite();
 
     void init();
+
+    void addHost(std::string _port);
 
     int connect();
 

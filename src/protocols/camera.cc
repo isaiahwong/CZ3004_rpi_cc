@@ -40,7 +40,8 @@ void Camera::onReadFrame() {
     while (true) {
         // TODO handle error. Move to function
         if (!this->videoCap->isOpened()) {
-            printRed("Camera not opened. Opening...");
+            printRed("Camera not opened. Opening... in 500 ms");
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
             // Opens camera
             openCamera();
             continue;
@@ -103,8 +104,8 @@ void Camera::onCapture(Action* action) {
         auto t3 = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> ms = t3 - t1;
         print(fmt::format("End Capture {} ms", ms.count()));
-        print(
-            fmt::format("ImageID: {}, Distance: {}", res.result, res.distance));
+        print(fmt::format("ImageID: {}, Name: {}, Distance: {}", res.result,
+                          res.name, res.distance));
         this->publish(Camera::CAM_CAPTURE_RESULT, res);
     } catch (std::string e) {
         printRed(e);
