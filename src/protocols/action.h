@@ -13,6 +13,8 @@ class Response {
     std::string result;
     std::string name;
     std::string coordinate;
+    std::string prev_coordinate;
+
     std::string type;
     int distance;
     int status;
@@ -28,18 +30,21 @@ class Response {
         result = "";
         name = "";
         coordinate = "";
+        prev_coordinate = "";
         type = "";
         status = 0;
         distance = 0;
     }
 
     Response(std::string type, std::string result, std::string name, int status,
-             std::string coordinate, int distance) {
+             std::string coordinate, std::string prev_coordinate,
+             int distance) {
         this->type = type;
         this->result = result;
         this->name = name;
         this->status = status;
         this->coordinate = coordinate;
+        this->prev_coordinate = prev_coordinate;
         this->distance = distance;
     }
 
@@ -48,6 +53,7 @@ class Response {
         this->result = "";
         this->name = "";
         this->coordinate = "";
+        prev_coordinate = "";
         this->name = "";
         this->distance = 0;
     }
@@ -57,7 +63,7 @@ class Response {
         this->name = name;
         this->status = status;
         this->coordinate = "";
-        this->name = "";
+        this->prev_coordinate = "";
         this->distance = distance;
     }
 
@@ -72,6 +78,7 @@ class Response {
         name = emptyToFill(name);
         result = emptyToFill(result);
         coordinate = emptyToFill(coordinate);
+        prev_coordinate = emptyToFill(prev_coordinate);
     }
 
     void deserialiseEmpty() {
@@ -79,12 +86,17 @@ class Response {
         result = fillToEmpty(result);
         name = fillToEmpty(name);
         coordinate = fillToEmpty(coordinate);
+        prev_coordinate = fillToEmpty(prev_coordinate);
     }
 
     void to_json(json& j) {
-        j = json{
-            {"type", type}, {"status", status},         {"result", result},
-            {"name", name}, {"coordinate", coordinate}, {"distance", distance}};
+        j = json{{"type", type},
+                 {"status", status},
+                 {"result", result},
+                 {"name", name},
+                 {"coordinate", coordinate},
+                 {"prev_coordinate", prev_coordinate},
+                 {"distance", distance}};
     }
 
     static void from_json(const json& j, Response& a) {
@@ -93,6 +105,7 @@ class Response {
         j.at("result").get_to(a.result);
         j.at("name").get_to(a.name);
         j.at("coordinate").get_to(a.coordinate);
+        j.at("prev_coordinate").get_to(a.prev_coordinate);
         j.at("distance").get_to(a.distance);
     }
 };
@@ -108,6 +121,7 @@ class Action {
     int length;
     std::string distance;
     std::string coordinate;
+    std::string prev_coordinate;
 
     inline static std::string EMPTY = "____";
 
@@ -130,6 +144,7 @@ class Action {
         length = 0;
         distance = "";
         coordinate = "";
+        prev_coordinate = "";
     }
 
     std::string emptyToFill(std::string s) { return s.empty() ? EMPTY : s; }
@@ -143,6 +158,7 @@ class Action {
         action = emptyToFill(action);
         distance = emptyToFill(distance);
         coordinate = emptyToFill(coordinate);
+        prev_coordinate = emptyToFill(prev_coordinate);
     }
 
     void deserialiseEmpty() {
@@ -150,6 +166,7 @@ class Action {
         action = fillToEmpty(action);
         distance = fillToEmpty(distance);
         coordinate = fillToEmpty(coordinate);
+        prev_coordinate = fillToEmpty(prev_coordinate);
     }
 
     /**
@@ -163,6 +180,8 @@ class Action {
     inline static const std::string TYPE_SERIES = "series";
 
     inline static const std::string TYPE_MOVE = "move";
+
+    inline static const std::string TYPE_RESET = "reset";
 
     inline static const std::string TYPE_CAPTURE = "capture";
 

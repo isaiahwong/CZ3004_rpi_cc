@@ -8,7 +8,8 @@ void Action::to_json(json& j, const Action& a) {
         {"action", a.action},
         {"angle", a.angle},
         {"distance", a.distance},
-        {"coordinates", a.coordinate},
+        {"coordinate", a.coordinate},
+        {"prev_coordinate", a.prev_coordinate},
         {"length", a.length},
     };
 }
@@ -19,6 +20,7 @@ void Action::_from_json(const json& j, Action& a) {
     j.at("angle").get_to(a.angle);
     j.at("distance").get_to(a.distance);
     j.at("coordinate").get_to(a.coordinate);
+    j.at("prev_coordinate").get_to(a.prev_coordinate);
     j.at("length").get_to(a.length);
 }
 

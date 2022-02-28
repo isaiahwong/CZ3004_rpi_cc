@@ -42,6 +42,12 @@ class Blueteeth final : public Protocol {
      */
     BlockingQueueAction commands;
 
+    /**
+     * @brief Store commands temporarily
+     *
+     */
+    BlockingQueueAction cached;
+
     BlockingQueueRes statuses;
 
     void init();
@@ -49,6 +55,9 @@ class Blueteeth final : public Protocol {
     void disconnect();
     void readClient();
     void emptyCommands();
+    void cameraStrategy();
+    void resetCommands();
+    void resetCache();
 
    public:
     // Channels
@@ -72,7 +81,7 @@ class Blueteeth final : public Protocol {
      * @param c
      * @param msg
      */
-    static void onExecuteActions(void* c);
+    static void onExecuteActions(void* b);
 
     void onExecuteActions();
 
@@ -90,7 +99,7 @@ class Blueteeth final : public Protocol {
      * @param c
      * @param msg
      */
-    static void onConnectionRead(void* c);
+    static void onConnectionRead(void* b);
 
     void onConnectionRead();
 

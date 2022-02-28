@@ -123,15 +123,18 @@ void Blueteeth::onExecuteActions() {
     Action a;
     Response statusResponse;
 
-    int retries = 0, MAX_RETRIES = 5;
+    // TODO return stop
+
+    int retries = 0, MAX_RETRIES = 3;
+    bool restore = true;
     while (true) {
     queue:
         commands.wait_dequeue(a);
         retries = 0;
-        print(fmt::format("wait: {}", instructionDelay));
+        restore = true;
+
         std::this_thread::sleep_for(
             std::chrono::milliseconds(instructionDelay));
-        print("after");
         while (true) {
             if (a.type.compare(Action::TYPE_MOVE) == 0) {
                 this->publish(Blueteeth::BT_MOVEMENT, a);
@@ -142,33 +145,28 @@ void Blueteeth::onExecuteActions() {
                 goto queue;
             }
 
-            try {
-                bool didReceive = statuses.wait_dequeue_timed(
-                    statusResponse, std::chrono::seconds(6));
+            bool didReceive = statuses.wait_dequeue_timed(
+                statusResponse, std::chrono::seconds(6));
 
-                // retry loop if failed
-                // For A5
-                if (!didReceive || statusResponse.status != 1) {
-                    printRed("No Response");
-                    // Retry only for Image Rec
-                    if (a.type.compare(Action::TYPE_CAPTURE) != 0) break;
+            // Break queue if successful
+            if (didReceive && statusResponse.status == 1) break;
 
-                    if (retries >= MAX_RETRIES) {
-                        printRed("Max retries, skipping command");
-                        statusResponse.status = 0;
-                        goto queue;
-                    }
-                    retries++;
-                    // std::this_thread::sleep_for(std::chrono::seconds(2));
-                    continue;
-                }
-                // Break queue if successful
-                break;
-            } catch (const std::exception &exc) {
-                printRed("onExecuteActions Exeception: ");
-                std::cout << exc.what() << std::endl;
-                break;
+            // Print notification for debug
+            printRed("No Response");
+            // Retry only for Image Rec
+            if (a.type.compare(Action::TYPE_CAPTURE) != 0) break;
+
+            if (retries++ < MAX_RETRIES) continue;
+            printRed("Max retries, skipping command");
+            statusResponse.status = 0;
+            statusResponse.result = "-1";
+            // Execute camera strategy if pass commands are not cached
+            if (cached.size_approx() == 0) {
+                cameraStrategy();
+                restore = false;
             }
+            break;
+            // goto queue;
         }
 
         try {
@@ -176,7 +174,9 @@ void Blueteeth::onExecuteActions() {
             // Echo back the coordinate given
             Response response(a.type, statusResponse.result,
                               statusResponse.name, statusResponse.status,
-                              a.coordinate, statusResponse.distance);
+                              a.coordinate, a.prev_coordinate,
+                              statusResponse.distance);
+
             json j;
             response.to_json(j);
             std::string payload = j.dump();
@@ -188,9 +188,30 @@ void Blueteeth::onExecuteActions() {
         } catch (const std::exception &exc) {
             printRed("onExecuteActions Exeception: ");
             std::cout << exc.what() << std::endl;
-            break;
+            continue;
+        }
+
+        if (!restore) continue;
+
+        // Restore commands queue on next pass if set to false
+        if (commands.size_approx() == 0 && cached.size_approx() > 0) {
+            printRed("Restoring commands");
+            Action a;
+            while (cached.try_dequeue(a)) commands.enqueue(a);
         }
     }
+}
+
+void Blueteeth::cameraStrategy() {
+    // If cached is not empty, we do not clear it
+    if (cached.size_approx() > 0) return;
+    // If commands is empty, we don't cache it
+    if (commands.size_approx() == 0) return;
+    printRed("Running camera strategy");
+    // empty commands
+    Action a;
+    while (commands.try_dequeue(a)) cached.enqueue(a);
+    printRed("Done copy commands -> cache");
 }
 
 /**
@@ -233,18 +254,6 @@ void Blueteeth::disconnect() {
                    "BT closed\n");
 }
 
-/**
- * @brief Clear command queue
- *
- */
-void Blueteeth::emptyCommands() {
-    Action remove;
-    // Override existing queue
-    // Empty queue
-    while (commands.try_dequeue(remove))
-        ;
-}
-
 void Blueteeth::onResponse(void *b, Response *response) {
     static_cast<Blueteeth *>(b)->onResponse(response);
 }
@@ -257,17 +266,32 @@ void Blueteeth::onResponse(Response *response) {
 }
 
 void Blueteeth::onAction(Action &action) {
-    emptyCommands();
+    resetCommands();
     commands.enqueue(action);
 }
 
 void Blueteeth::onSeriesActions(Action &action) {
     if (action.data.size() < 1) return;
-    emptyCommands();
+    resetCommands();
     // Enqueue
     for (Action a : action.data) {
         commands.enqueue(a);
     }
+}
+
+void Blueteeth::resetCommands() {
+    Action a;
+
+    while (commands.try_dequeue(a))
+        ;
+    printRed("Commands cleared");
+}
+
+void Blueteeth::resetCache() {
+    Action a;
+    while (cached.try_dequeue(a))
+        ;
+    printRed("Cache cleared");
 }
 
 /**
@@ -358,6 +382,10 @@ void Blueteeth::readClient() {
             onAction(a);
         else if (a.type.compare(Action::TYPE_SERIES) == 0)
             onSeriesActions(a);
+        else if (a.type.compare(Action::TYPE_RESET) == 0) {
+            resetCommands();
+            resetCache();
+        }
         // Publish to generic main read for debug
         // this->publish(Blueteeth::BT_MAIN_READ, buf, bufflen);
         // Clear buffer
