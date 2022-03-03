@@ -12,6 +12,8 @@
 #include "protocols/blueteeth.h"
 #include "protocols/camera.h"
 #include "protocols/cereal.h"
+#include "protocols/commands.h"
+#include "protocols/htttp.h"
 
 void test(std::string msg) {}
 
@@ -39,33 +41,49 @@ int main(int argc, char *argv[]) {
     p.parse_check(argc, argv);
 
     Blueteeth bt;
-    bt.setDelay(p.get<int>("instructiondelay"));
+    Htttp h;
+    Commands cmd(p.get<int>("instructiondelay"));
     Cereal c(p.get<std::string>("serial"), 115200);
     Camera cam(p.get<std::string>("vision"), p.get<int>("cameraopen"));
 
     // Register cereal to listen for movement requests
-    bt.registerSub(&c, Blueteeth::BT_MOVEMENT, Cereal::onAction);
-
+    cmd.registerSub(&c, Commands::CMD_MOVEMENT, Cereal::onAction);
     // Register camera to listen for camera requests
-    bt.registerSub(&cam, Blueteeth::BT_CAMERA_CAPTURE, Camera::onCapture);
+    cmd.registerSub(&cam, Commands::CMD_CAMERA_CAPTURE, Camera::onCapture);
+
+    cmd.registerSub(&bt, Commands::CMD_RESPONSE, Blueteeth::onWrite);
+
+    // Register read from HTTP
+    h.registerSub(&cmd, Htttp::HTTTP_SERIES_ACTIONS, Commands::onSeriesActions);
+    h.registerSub(&cmd, Htttp::HTTTP_ACTION, Commands::onAction);
+    h.registerSub(&cmd, Htttp::HTTTP_CMD_RESET, Commands::onReset);
+
+    // Register read from bluetooth
+    bt.registerSub(&cmd, Blueteeth::BT_SERIES_ACTIONS,
+                   Commands::onSeriesActions);
+    bt.registerSub(&cmd, Blueteeth::BT_ACTION, Commands::onAction);
+    bt.registerSub(&cmd, Blueteeth::BT_CMD_RESET, Commands::onReset);
 
     // Register camera on response
-    cam.registerSub(&bt, Camera::CAM_CAPTURE_RESULT, Blueteeth::onResponse);
-
+    cam.registerSub(&cmd, Camera::CAM_CAPTURE_RESULT, Commands::onResponse);
     // Register cereal to listen for movement calls
-    c.registerSub(&bt, Cereal::SERIAL_MAIN_WRITE_SUCCESS,
-                  Blueteeth::onResponse);
+    c.registerSub(&cmd, Cereal::SERIAL_MAIN_WRITE_SUCCESS,
+                  Commands::onResponse);
     // c.registerSub(&c, Cereal::SERIAL_MAIN_READ, Cereal::onAction);
 
     // Start the respective protocols
     bt.start();
     c.start();
     cam.start();
+    cmd.start();
+    h.start();
 
     // Blocking wait
     c.join();
     bt.join();
     cam.join();
+    cmd.join();
+    h.join();
 
     return 0;
 }

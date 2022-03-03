@@ -56,6 +56,7 @@ endif()
 add_subdirectory(external/fmt)
 add_subdirectory(external/json)
 add_subdirectory(external/concurrentqueue)
+add_subdirectory(external/http)
 
 # Dependencies
 find_package (Threads)
@@ -79,6 +80,7 @@ target_include_directories(${PROJECT_NAME}
     external/json/include
     external/concurrentqueue/include
     external/bluez/lib
+    external/http
     ${OpenCV_INCLUDE_DIRS}
 )
 
@@ -97,6 +99,7 @@ target_link_libraries(${PROJECT_NAME}
     concurrentqueue
     bluetooth
     GRPC_PROTO
+    httplib
     ${OpenCV_LIBS}
     ${WIRINGPI_LIB}
     # ${BLUEZ_LIB}

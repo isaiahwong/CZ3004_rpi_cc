@@ -62,6 +62,11 @@ class Blueteeth final : public Protocol {
    public:
     // Channels
     inline static const std::string BT_MAIN_READ = "BT_MAIN_READ";
+    inline static const std::string BT_MAIN_WRITE = "BT_MAIN_WRITE";
+    inline static const std::string BT_ACTION = "BT_ACTION";
+    inline static const std::string BT_SERIES_ACTIONS = "BT_SERIES_ACTIONS";
+    inline static const std::string BT_CMD_RESET = "BT_CMD_RESET";
+
     inline static const std::string BT_CAMERA_CAPTURE = "BT_CAMERA_CAPTURE";
     inline static const std::string BT_MOVEMENT = "BT_MOVEMENT";
 
@@ -74,6 +79,10 @@ class Blueteeth final : public Protocol {
     static void onResponse(void* c, Response* response);
 
     void onResponse(Response* response);
+
+    static void onWrite(void* c, Response* response);
+
+    void onWrite(Response* response);
 
     /**
      * @brief Forwarder static function to access Cereal onAction
@@ -88,6 +97,8 @@ class Blueteeth final : public Protocol {
     void onSeriesActions(Action& action);
 
     void onAction(Action& action);
+
+    void onReset();
 
     void setDelay(int instructiondelay) {
         this->instructionDelay = instructiondelay;

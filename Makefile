@@ -12,10 +12,10 @@ default:
 
 
 run_rpi:
-	./bin/RPi --serial="/dev/pts/6"\
+	./bin/RPi --serial="/dev/pts/3"\
 		--vision=localhost:50051\
 		--cameraopen=1\
-		--instructiondelay=250
+		--instructiondelay=350
 
 run_camera:
 	python cv/main.py

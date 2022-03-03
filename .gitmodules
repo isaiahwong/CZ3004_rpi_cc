@@ -19,3 +19,6 @@
 [submodule "external/bluez"]
 	path = external/bluez
 	url = https://github.com/bluez/bluez.git
+[submodule "external/http"]
+	path = external/http
+	url = https://github.com/yhirose/cpp-httplib.git

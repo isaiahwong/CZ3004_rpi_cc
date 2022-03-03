@@ -134,6 +134,7 @@ void Cereal::onAction(Action* action) {
     if (action == nullptr) return;
     Action a = *action;
     print(a.coordinate);
+
     try {
         // Switch cases
         if (a.action.compare(Movement::FORWARD) == 0)
@@ -195,7 +196,6 @@ void Cereal::writeClient(std::string msg) {
         // Truncates till LEN
         strncpy(buf, msg.c_str(), LEN);
         std::cout << buf << std::endl;
-        // buf[LEN - 1] = '\0';
         // SerialMessage s;
         // Empty e;
         // s.mutable_message()->assign(msg);

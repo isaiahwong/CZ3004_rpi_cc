@@ -213,3 +213,5 @@ cython_debug/
 env
 
 yolov5
+
+external

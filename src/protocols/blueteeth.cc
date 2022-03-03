@@ -294,6 +294,20 @@ void Blueteeth::resetCache() {
     printRed("Cache cleared");
 }
 
+void Blueteeth::onWrite(void *b, Response *response) {
+    static_cast<Blueteeth *>(b)->onWrite(response);
+}
+
+void Blueteeth::onWrite(Response *response) {
+    json j;
+    response->to_json(j);
+    std::string payload = j.dump();
+    int size = payload.size();
+
+    // Write back to client
+    write(client, payload.c_str(), size);
+}
+
 /**
  * @brief Publishes incoming bluetooth connections
  *
@@ -377,15 +391,14 @@ void Blueteeth::readClient() {
 
         // map to different channels
         if (a.type.compare(Action::TYPE_MOVE) == 0)
-            onAction(a);
+            this->publish(Blueteeth::BT_ACTION, a);
         else if (a.type.compare(Action::TYPE_CAPTURE) == 0)
-            onAction(a);
+            this->publish(Blueteeth::BT_ACTION, a);
         else if (a.type.compare(Action::TYPE_SERIES) == 0)
-            onSeriesActions(a);
-        else if (a.type.compare(Action::TYPE_RESET) == 0) {
-            resetCommands();
-            resetCache();
-        }
+            this->publish(Blueteeth::BT_SERIES_ACTIONS, a);
+        else if (a.type.compare(Action::TYPE_RESET) == 0)
+            this->publish(Blueteeth::BT_CMD_RESET, a);
+
         // Publish to generic main read for debug
         // this->publish(Blueteeth::BT_MAIN_READ, buf, bufflen);
         // Clear buffer

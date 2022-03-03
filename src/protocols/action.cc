@@ -28,16 +28,16 @@ void Action::from_json(const json& j, Action& a) {
     _from_json(j, a);
 
     // Attempt to parse array data
-    // try {
-    //     auto arr = j.at("data");
+    try {
+        auto arr = j.at("data");
 
-    //     for (auto it : arr) {
-    //         Action subaction;
-    //         _from_json(it, subaction);
-    //         a.data.push_back(subaction);
-    //         // a.data.push_back(Action::SharedPtrAction(action));
-    //     }
-    // } catch (const std::exception& exc) {
-    //     std::cout << exc.what() << std::endl;
-    // }
+        for (auto it : arr) {
+            Action subaction;
+            _from_json(it, subaction);
+            a.data.push_back(subaction);
+            // a.data.push_back(Action::SharedPtrAction(action));
+        }
+    } catch (const std::exception& exc) {
+        std::cout << exc.what() << std::endl;
+    }
 }
