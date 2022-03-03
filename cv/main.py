@@ -1,7 +1,7 @@
 import time
 import grpc
 import numpy as np
-import os 
+import os
 
 import cv2
 from tfmodel import TF, Result
@@ -50,17 +50,20 @@ class ImageServer(VisionServiceServicer):
         # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
         # imageid = self.model.predict(frame, req.width)
+        print(req.width, req.height)
         frame, results = self.model.predict(frame, req.width, req.height)
         result = self.filterImages(results)
-        cv2.imwrite('{}/out/image-{}-{}-{}.jpg'.format(self.pwd, result.name, result.imageid, time.time()), frame)
+        cv2.imwrite('{}/out/image-{}-{}-{}.jpg'.format(self.pwd,
+                    result.name, result.imageid, time.time()), frame)
         # cv2.imwrite('{}/out/image.jpg'.format(self.pwd), frame)
         status = 0 if str(result.imageid) == '-1' else 1
-        print("ImageId: {}, Name: {}, Distance: {}".format(result.imageid, result.name, result.distance))
+        print("ImageId: {}, Name: {}, Distance: {}".format(
+            result.imageid, result.name, result.distance))
         time.sleep(0.2)
         return VisionResponse(
-            imageid=str(result.imageid), 
-            status=status, 
-            name=result.name, 
+            imageid=str(result.imageid),
+            status=status,
+            name=result.name,
             distance=result.distance
         )
 

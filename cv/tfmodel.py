@@ -4,12 +4,14 @@ import numpy as np
 import importlib.util
 import os
 
+
 class Result:
     def __init__(self, imageid="", distance=0, name="", confidence=0):
         self.imageid = imageid
         self.distance = distance
         self.name = name
         self.confidence = confidence
+
 
 class TF:
     def __init__(self,
@@ -129,7 +131,7 @@ class TF:
                 self.output_details[0]['index'])[0]
 
             frame, results = self.draw(frame=frame, scores=scores,
-                              boxes=boxes, classes=classes)
+                                       boxes=boxes, classes=classes)
             # Resize back to camera resolution
             frame = cv2.resize(frame, (imageWidth, imageHeight))
             return frame, results
@@ -165,8 +167,8 @@ class TF:
                 # Look up object name from "labels" array using class index
                 # Example: 'person: 72%'
                 confidence = int(scores[i]*100)
-                name = self.getImageName(str(imageid));
-                
+                name = self.getImageName(str(imageid))
+
                 details = '{}, {}%'.format(imageid, confidence)
 
                 # Get font size
@@ -185,7 +187,18 @@ class TF:
                 cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-40), (
                     xmin+labelSize[0], label_ymin+baseLine-40), (255, 255, 255), cv2.FILLED)
                 cv2.putText(frame, name, (xmin, label_ymin-40),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text=
+
+                middlePoint = self.modelWidth / 2
+                currentMidPoint = xmin + ((xmax - xmin) / 2)
+
+                # +ve implies need to move left
+                # -ve implies need to move right
+                distanceAwayFromMidPoint = middlePoint - currentMidPoint
+                print(distanceAwayFromMidPoint)
+
+                # print('mid: {} xmin: {}, width: {}'.format(
+                #     currentMidPoint, xmin, middlePoint))
 
                 # print estimated distance in the top left corner
                 # dist = int(self.distanceestimate(ymax, ymin))
@@ -193,9 +206,9 @@ class TF:
                 # cv2.putText(frame, distance, (20, (20+i*30)),
                 #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
                 results.append(Result(
-                    imageid=str(imageid), 
-                    name = name,
-                    distance=xmax - xmin,
+                    imageid=str(imageid),
+                    name=name,
+                    distance=int(distanceAwayFromMidPoint),
                     confidence=confidence
                 ))
 

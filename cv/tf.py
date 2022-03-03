@@ -6,16 +6,18 @@ vid = cv2.VideoCapture(0)
 model = TF()
 
 while(True):
-    ret, frame = vid.read()
+    _, frame = vid.read()
 
-    f, label = model.predict(frame, 640, 480)
-    cv2.imshow('frame', f)
-      
+    try:
+        f, label = model.predict(frame, 640, 480)
+        cv2.imshow('frame', f)
+    except Exception as e:
+        pass
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-  
+
 # After the loop release the cap object
 vid.release()
 # Destroy all the windows
 cv2.destroyAllWindows()
-
