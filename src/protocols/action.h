@@ -179,6 +179,9 @@ class Action {
 
     inline static const std::string TYPE_SERIES = "series";
 
+    inline static const std::string TYPE_SERIES_INTERLEAVE =
+        "series_interleave";
+
     inline static const std::string TYPE_MOVE = "move";
 
     inline static const std::string TYPE_RESET = "reset";

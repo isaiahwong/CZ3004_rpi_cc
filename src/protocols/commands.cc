@@ -49,6 +49,29 @@ void Commands::onSeriesActions(Action *action) {
     }
 }
 
+void Commands::onSeriesInterleave(void *b, Action *action) {
+    static_cast<Commands *>(b)->onSeriesActions(action);
+}
+
+/**
+ * @brief Used to interleave commands
+ *
+ * @param action
+ */
+void Commands::onSeriesInterleave(Action *action) {
+    if (action->data.size() < 1) return;
+    printRed("Running series interleave");
+
+    // Empty Cache
+    Action *a;
+    while (cached.try_dequeue(a))
+        ;
+
+    // move commands to cache
+    while (commands.try_dequeue(a)) cached.enqueue(a);
+    printRed("Done copy commands -> cache");
+}
+
 void Commands::onResponse(void *b, Response *response) {
     static_cast<Commands *>(b)->onResponse(response);
 }
@@ -85,7 +108,7 @@ void Commands::onExecuteActions() {
     queue:
         commands.wait_dequeue(a);
         retries = 0;
-        restore = true;
+        // restore = true;
 
         std::this_thread::sleep_for(
             std::chrono::milliseconds(instructionDelay));
@@ -115,10 +138,10 @@ void Commands::onExecuteActions() {
             statusResponse.status = 0;
             statusResponse.result = "-1";
             // Execute camera strategy if pass commands are not cached
-            if (cached.size_approx() == 0) {
-                onCameraStrategy();
-                restore = false;
-            }
+            // if (cached.size_approx() == 0) {
+            //     onCameraStrategy();
+            //     restore = false;
+            // }
             break;
             // goto queue;
         }
@@ -140,9 +163,7 @@ void Commands::onExecuteActions() {
             continue;
         }
 
-        if (!restore) continue;
-
-        // Restore commands queue on next pass if set to false
+        // Restore commands queue if needed
         if (commands.size_approx() == 0 && cached.size_approx() > 0) {
             printRed("Restoring commands");
             Action a;

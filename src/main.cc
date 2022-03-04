@@ -57,6 +57,8 @@ int main(int argc, char *argv[]) {
     h.registerSub(&cmd, Htttp::HTTTP_SERIES_ACTIONS, Commands::onSeriesActions);
     h.registerSub(&cmd, Htttp::HTTTP_ACTION, Commands::onAction);
     h.registerSub(&cmd, Htttp::HTTTP_CMD_RESET, Commands::onReset);
+    h.registerSub(&cmd, Htttp::HTTTP_SERIES_INTERLEAVE,
+                  Commands::onSeriesInterleave);
 
     // Register read from bluetooth
     bt.registerSub(&cmd, Blueteeth::BT_SERIES_ACTIONS,

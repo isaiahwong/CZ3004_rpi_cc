@@ -62,6 +62,10 @@ class Commands final : public Protocol {
 
     void onSeriesActions(Action* action);
 
+    static void onSeriesInterleave(void* b, Action* action);
+
+    void onSeriesInterleave(Action* action);
+
     /**
      * @brief Forwarder static function to access Cereal onAction
      *
