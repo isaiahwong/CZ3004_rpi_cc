@@ -163,14 +163,13 @@ void Commands::onExecuteActions() {
             this->publish(Commands::CMD_RESPONSE, response);
             print("Command Executed\n\n");
 
+            // Remove this after image
             // Do not save commands or delay if it's an action strategy
-            if (a.action.compare(Action::ACTION_STRATEGY)) continue;
+            if (a.action.compare(Action::ACTION_STRATEGY) == 0) continue;
 
-            // We retry for calibrate and failed status
-            if (a.type.compare(Action::TYPE_CAPTURE) == 0 &&
-                (statusResponse.status != 1 ||
-                 a.action.find(Action::ACTION_CALIBRATE) !=
-                     std::string::npos)) {
+            // We stop the thread command queue for calibration and failed
+            // status
+            if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
                 // Back commands up in the event of interleave
                 if (cached.size_approx() == 0) {
                     printRed("Done copy commands -> cache");
@@ -178,6 +177,7 @@ void Commands::onExecuteActions() {
                     while (commands.try_dequeue(a)) cached.enqueue(a);
                 }
 
+                printRed("Waiting for mitigation");
                 // Wait for android commands
                 std::this_thread::sleep_for(
                     std::chrono::milliseconds(failCaptureDelay));
