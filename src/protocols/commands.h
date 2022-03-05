@@ -24,6 +24,10 @@ class Commands final : public Protocol {
 
     int instructionDelay = 500;
 
+    int failCaptureDelay = 1000;
+
+    int cameraRetries = 5;
+
     void resetCommands();
     void resetCache();
 
@@ -83,7 +87,7 @@ class Commands final : public Protocol {
     void onReset();
 
    public:
-    Commands(int instructionDelay);
+    Commands(int instructionDelay, int failCaptureDelay, int cameraRetries);
 
     void run();
 };

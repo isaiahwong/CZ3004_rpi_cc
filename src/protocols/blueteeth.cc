@@ -172,7 +172,7 @@ void Blueteeth::onExecuteActions() {
         try {
             // Send response to android to notify success
             // Echo back the coordinate given
-            Response response(a.type, statusResponse.result,
+            Response response(a.type, a.action, statusResponse.result,
                               statusResponse.name, statusResponse.status,
                               a.coordinate, a.prev_coordinate,
                               statusResponse.distance);

@@ -14,7 +14,7 @@ class Response {
     std::string name;
     std::string coordinate;
     std::string prev_coordinate;
-
+    std::string action;
     std::string type;
     int distance;
     int status;
@@ -29,6 +29,7 @@ class Response {
     Response() {
         result = "";
         name = "";
+        action = "";
         coordinate = "";
         prev_coordinate = "";
         type = "";
@@ -36,12 +37,13 @@ class Response {
         distance = 0;
     }
 
-    Response(std::string type, std::string result, std::string name, int status,
-             std::string coordinate, std::string prev_coordinate,
-             int distance) {
+    Response(std::string type, std::string action, std::string result,
+             std::string name, int status, std::string coordinate,
+             std::string prev_coordinate, int distance) {
         this->type = type;
         this->result = result;
         this->name = name;
+        this->action = action;
         this->status = status;
         this->coordinate = coordinate;
         this->prev_coordinate = prev_coordinate;
@@ -51,6 +53,7 @@ class Response {
     Response(int status) {
         this->status = status;
         this->result = "";
+        this->action = "";
         this->name = "";
         this->coordinate = "";
         prev_coordinate = "";
@@ -61,7 +64,9 @@ class Response {
     Response(std::string result, std::string name, int status, int distance) {
         this->result = result;
         this->name = name;
+        this->action = "";
         this->status = status;
+        this->action = action;
         this->coordinate = "";
         this->prev_coordinate = "";
         this->distance = distance;
@@ -75,6 +80,7 @@ class Response {
 
     void serialiseEmpty() {
         type = emptyToFill(type);
+        action = emptyToFill(action);
         name = emptyToFill(name);
         result = emptyToFill(result);
         coordinate = emptyToFill(coordinate);
@@ -83,6 +89,7 @@ class Response {
 
     void deserialiseEmpty() {
         type = fillToEmpty(type);
+        action = fillToEmpty(action);
         result = fillToEmpty(result);
         name = fillToEmpty(name);
         coordinate = fillToEmpty(coordinate);
@@ -91,6 +98,7 @@ class Response {
 
     void to_json(json& j) {
         j = json{{"type", type},
+                 {"action", action},
                  {"status", status},
                  {"result", result},
                  {"name", name},
@@ -101,6 +109,7 @@ class Response {
 
     static void from_json(const json& j, Response& a) {
         j.at("type").get_to(a.type);
+        j.at("action").get_to(a.action);
         j.at("status").get_to(a.status);
         j.at("result").get_to(a.result);
         j.at("name").get_to(a.name);
@@ -187,6 +196,10 @@ class Action {
     inline static const std::string TYPE_RESET = "reset";
 
     inline static const std::string TYPE_CAPTURE = "capture";
+
+    inline static const std::string ACTION_CALIBRATE = "calibrate";
+
+    inline static const std::string ACTION_STRATEGY = "strategy";
 
     void to_json(json& j, const Action& a);
 

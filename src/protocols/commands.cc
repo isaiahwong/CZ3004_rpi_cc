@@ -1,7 +1,10 @@
 #include "commands.h"
 
-Commands::Commands(int instructionDelay) {
+Commands::Commands(int instructionDelay, int failCaptureDelay,
+                   int cameraRetries) {
     this->instructionDelay = instructionDelay;
+    this->failCaptureDelay = failCaptureDelay;
+    this->cameraRetries = cameraRetries;
 }
 
 void Commands::run() {
@@ -50,7 +53,7 @@ void Commands::onSeriesActions(Action *action) {
 }
 
 void Commands::onSeriesInterleave(void *b, Action *action) {
-    static_cast<Commands *>(b)->onSeriesActions(action);
+    static_cast<Commands *>(b)->onSeriesInterleave(action);
 }
 
 /**
@@ -62,14 +65,15 @@ void Commands::onSeriesInterleave(Action *action) {
     if (action->data.size() < 1) return;
     printRed("Running series interleave");
 
-    // Empty Cache
-    Action *a;
-    while (cached.try_dequeue(a))
-        ;
+    if (cached.size_approx() == 0) {
+        printRed("Done copy commands -> cache");
+        Action a;
+        while (commands.try_dequeue(a)) cached.enqueue(a);
+    }
 
-    // move commands to cache
-    while (commands.try_dequeue(a)) cached.enqueue(a);
-    printRed("Done copy commands -> cache");
+    for (Action a : action->data) {
+        commands.enqueue(a);
+    }
 }
 
 void Commands::onResponse(void *b, Response *response) {
@@ -102,9 +106,16 @@ void Commands::onExecuteActions() {
 
     // TODO return stop
 
-    int retries = 0, MAX_RETRIES = 3;
+    int retries = 0, MAX_RETRIES = cameraRetries;
     bool restore = true;
     while (true) {
+        // Restore commands queue if needed
+        if (commands.size_approx() == 0 && cached.size_approx() > 0) {
+            printRed("Restoring commands");
+            Action a;
+            while (cached.try_dequeue(a)) commands.enqueue(a);
+        }
+
     queue:
         commands.wait_dequeue(a);
         retries = 0;
@@ -137,11 +148,6 @@ void Commands::onExecuteActions() {
             printRed("Max retries, skipping command");
             statusResponse.status = 0;
             statusResponse.result = "-1";
-            // Execute camera strategy if pass commands are not cached
-            // if (cached.size_approx() == 0) {
-            //     onCameraStrategy();
-            //     restore = false;
-            // }
             break;
             // goto queue;
         }
@@ -149,25 +155,38 @@ void Commands::onExecuteActions() {
         try {
             // Send response to android to notify success
             // Echo back the coordinate given
-            Response response(a.type, statusResponse.result,
+            Response response(a.type, a.action, statusResponse.result,
                               statusResponse.name, statusResponse.status,
                               a.coordinate, a.prev_coordinate,
                               statusResponse.distance);
 
             this->publish(Commands::CMD_RESPONSE, response);
-
             print("Command Executed\n\n");
+
+            // Do not save commands or delay if it's an action strategy
+            if (a.action.compare(Action::ACTION_STRATEGY)) continue;
+
+            // We retry for calibrate and failed status
+            if (a.type.compare(Action::TYPE_CAPTURE) == 0 &&
+                (statusResponse.status != 1 ||
+                 a.action.find(Action::ACTION_CALIBRATE) !=
+                     std::string::npos)) {
+                // Back commands up in the event of interleave
+                if (cached.size_approx() == 0) {
+                    printRed("Done copy commands -> cache");
+                    Action a;
+                    while (commands.try_dequeue(a)) cached.enqueue(a);
+                }
+
+                // Wait for android commands
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(failCaptureDelay));
+            }
+
         } catch (const std::exception &exc) {
             printRed("onExecuteActions Exeception: ");
             std::cout << exc.what() << std::endl;
             continue;
-        }
-
-        // Restore commands queue if needed
-        if (commands.size_approx() == 0 && cached.size_approx() > 0) {
-            printRed("Restoring commands");
-            Action a;
-            while (cached.try_dequeue(a)) commands.enqueue(a);
         }
     }
 }

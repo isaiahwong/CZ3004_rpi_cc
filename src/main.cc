@@ -33,7 +33,9 @@ int main(int argc, char *argv[]) {
     p.add<int>("cameraopen", 'c', "camera should open", false, 1);
     p.add<std::string>("vision", 'd', "vision address", true,
                        "localhost:50051");
-    p.add<int>("instructiondelay", 'e', "instruction delay", false, 200);
+    p.add<int>("instructiondelay", 'e', "instruction delay", false, 350);
+    p.add<int>("failcapturedelay", 'f', "Camera capture delay", false, 800);
+    p.add<int>("captureretries", 'g', "Camera fail capture retries", false, 5);
 
     // Run parser.
     // It returns only if command line arguments are valid.
@@ -42,7 +44,8 @@ int main(int argc, char *argv[]) {
 
     Blueteeth bt;
     Htttp h;
-    Commands cmd(p.get<int>("instructiondelay"));
+    Commands cmd(p.get<int>("instructiondelay"), p.get<int>("failcapturedelay"),
+                 p.get<int>("captureretries"));
     Cereal c(p.get<std::string>("serial"), 115200);
     Camera cam(p.get<std::string>("vision"), p.get<int>("cameraopen"));
 

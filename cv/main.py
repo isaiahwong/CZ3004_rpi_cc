@@ -48,18 +48,25 @@ class ImageServer(VisionServiceServicer):
 
     def SendFrame(self, req, ctx):
         # Reshape pixels back to its dimensions
-        frame = fast_reshape(req.image, req.width, req.height, req.channels)
+        # cv2.imwrite('{}/out/train/image{}.jpg'.format(self.pwd, self.count), frame)
+        # self.count += 1
+        # return VisionResponse(
+        #     imageid=str(1),
+        #     status=1,
+        #     name='',
+        #     distance=1
+        # )
         # imageid = self.model.predict(frame, req.width)
-        print(req.width, req.height)
+        frame = fast_reshape(req.image, req.width, req.height, req.channels)
         frame, results = self.model.predict(frame, req.width, req.height)
         result = self.filterImages(results)
-        cv2.imwrite('{}/out/image-{}-{}-{}.jpg'.format(self.pwd,
-                    result.name, result.imageid, time.time()), frame)
-        # cv2.imwrite('{}/out/image.jpg'.format(self.pwd), frame)
-        status = 0 if str(result.imageid) == '-1' else 1
+        cv2.imwrite('{}/out/image-{}-{}.jpg'.format(self.pwd,
+                    result.name, result.imageid), frame)
+
+        str_id = str(result.imageid)
+        status = 0 if str_id == '-1' or str_id == '10' else 1
         print("ImageId: {}, Name: {}, Distance: {}".format(
             result.imageid, result.name, result.distance))
-        time.sleep(0.2)
         return VisionResponse(
             imageid=str(result.imageid),
             status=status,
