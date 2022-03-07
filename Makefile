@@ -12,7 +12,7 @@ default:
 
 
 run_rpi:
-	./bin/RPi --serial="/dev/pts/5"\
+	./bin/RPi --serial="/dev/pts/3"\
 		--vision=localhost:50051\
 		--cameraopen=1\
 		--instructiondelay=350\
