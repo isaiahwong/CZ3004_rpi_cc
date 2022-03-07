@@ -17,7 +17,7 @@ run_rpi:
 		--cameraopen=1\
 		--instructiondelay=350\
 		--failcapturedelay=2000\
-		--captureretries=5
+		--captureretries=3
 
 run_camera:
 	python cv/main.py

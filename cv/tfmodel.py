@@ -195,7 +195,7 @@ class TF:
                 # +ve implies need to move left
                 # -ve implies need to move right
                 distanceAwayFromMidPoint = middlePoint - currentMidPoint
-                print(distanceAwayFromMidPoint)
+                # print(distanceAwayFromMidPoint)
 
                 # print('mid: {} xmin: {}, width: {}'.format(
                 #     currentMidPoint, xmin, middlePoint))

@@ -11,7 +11,7 @@ end = time.time()
 print("Model load: {}".format(end - start))
 
 # # Images
-img = cv2.imread('./model/18.jpg')
+img = cv2.imread('./out/image---1.jpg')
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 
