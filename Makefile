@@ -10,17 +10,23 @@ default:
 	make -C build 
 	cp ./build/RPi ./bin
 
+run_all:
+	make run_rpi &
+	make run_camera &
 
 run_rpi:
-	./bin/RPi --serial="/dev/pts/3"\
+	./bin/RPi --serial="/dev/pts/9"\
 		--vision=localhost:50051\
 		--cameraopen=1\
 		--instructiondelay=350\
 		--failcapturedelay=3000\
-		--captureretries=3
+		--captureretries=3 
 
 run_camera:
 	python cv/main.py
+
+kill:
+	sh ./kill.sh
 
 gen-protos:
 	make -C protos
