@@ -65,14 +65,34 @@ void Commands::onSeriesInterleave(Action *action) {
     if (action->data.size() < 1) return;
     printRed("Running series interleave");
 
+    // resumes waiting command thread
+    if (action->type.compare(Action::TYPE_NOOP) == 0) {
+        // Attempts to resume failed capture from commands queue
+        Response noop(1);
+        resumeQ.enqueue(noop);
+        return;
+    }
+
+    // backup commands
+    tryBackupCommands();
+
+    for (Action a : action->data) commands.enqueue(a);
+
+    // Attempts to resume failed capture from commands queue
+    Response noop(1);
+    resumeQ.enqueue(noop);
+}
+
+/**
+ * @brief Attempts to back up commands. Does not back up if cache is not empty
+ *
+ * @param action
+ */
+void Commands::tryBackupCommands() {
     if (cached.size_approx() == 0) {
         printRed("Done copy commands -> cache");
         Action a;
         while (commands.try_dequeue(a)) cached.enqueue(a);
-    }
-
-    for (Action a : action->data) {
-        commands.enqueue(a);
     }
 }
 
@@ -109,14 +129,13 @@ void Commands::onExecuteActions() {
     int retries = 0, MAX_RETRIES = cameraRetries;
     bool restore = true;
     while (true) {
+    queue:
         // Restore commands queue if needed
         if (commands.size_approx() == 0 && cached.size_approx() > 0) {
             printRed("Restoring commands");
             Action a;
             while (cached.try_dequeue(a)) commands.enqueue(a);
         }
-
-    queue:
         commands.wait_dequeue(a);
         retries = 0;
         // restore = true;
@@ -170,17 +189,13 @@ void Commands::onExecuteActions() {
             // We stop the thread command queue for calibration and failed
             // status
             if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
+                Response noop;
                 // Back commands up in the event of interleave
-                if (cached.size_approx() == 0) {
-                    printRed("Done copy commands -> cache");
-                    Action a;
-                    while (commands.try_dequeue(a)) cached.enqueue(a);
-                }
-
+                tryBackupCommands();
                 printRed("Waiting for mitigation");
-                // Wait for android commands
-                std::this_thread::sleep_for(
-                    std::chrono::milliseconds(failCaptureDelay));
+                // Blocking wait for interleave commands
+                resumeQ.wait_dequeue_timed(
+                    noop, std::chrono::milliseconds(failCaptureDelay));
             }
 
         } catch (const std::exception &exc) {

@@ -197,6 +197,8 @@ class Action {
 
     inline static const std::string TYPE_CAPTURE = "capture";
 
+    inline static const std::string TYPE_NOOP = "noop";
+
     inline static const std::string ACTION_CALIBRATE = "calibrate";
 
     inline static const std::string ACTION_STRATEGY = "strategy";

@@ -22,6 +22,8 @@ class Commands final : public Protocol {
 
     BlockingQueueRes statuses;
 
+    BlockingQueueRes resumeQ;
+
     int instructionDelay = 500;
 
     int failCaptureDelay = 1000;
@@ -30,6 +32,7 @@ class Commands final : public Protocol {
 
     void resetCommands();
     void resetCache();
+    void tryBackupCommands();
 
    public:
     inline static const std::string CMD_CAMERA_CAPTURE = "CMD_CAMERA_CAPTURE";
