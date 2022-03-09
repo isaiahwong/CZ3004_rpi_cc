@@ -95,7 +95,7 @@ class ImageServer(VisionServiceServicer):
         return result
 
     def stitchImages(self):
-        compileimage = cv2.imread('{}/compile.jpeg'.format(self.pwd))
+        compileimage = cv2.imread('{}/compiled.jpg'.format(self.pwd))
         filenames = list(glob.glob('{}/out/competition/image*.jpg'.format(self.pwd)))
         filenames.sort()
 
@@ -134,20 +134,25 @@ class ImageServer(VisionServiceServicer):
         results, result = None, None
         status = 0
 
-        for i in range(2):
-            frame, results = self.model.predict(frame, req.width, req.height)
-            result = self.filterImages(results)
-            str_id = str(result.imageid)
-            status = 0 if str_id == '-1' or str_id == '10' else 1
-            if status == 1:
-                break
-            frame = increase_brightness(frame)
+        frame, results = self.model.predict(frame, req.width, req.height)
+        result = self.filterImages(results)
+        str_id = str(result.imageid)
+        status = 0 if str_id == '-1' or str_id == '10' else 1
+
+        # for i in range(2):
+        #     frame, results = self.model.predict(frame, req.width, req.height)
+        #     result = self.filterImages(results)
+        #     str_id = str(result.imageid)
+        #     status = 0 if str_id == '-1' or str_id == '10' else 1
+        #     if status == 1:
+        #         break
+        #     frame = increase_brightness(frame)
 
         if status == 0:
-            cv2.imwrite('{}/out/failed/image.jpg'.format(self.pwd), frame)
+            cv2.imwrite('{}/out/failed/image.jpg'.format(self.pwd, self.count), frame)
         else:
-            cv2.imwrite('{}/out/competition/image-{}-{}.jpg'.format(self.pwd,
-                                                        result.name, self.count), frame)
+            cv2.imwrite('{}/out/competition/image-{}.jpg'.format(self.pwd,
+                                                        result.name), frame)
 
         self.stitchImages()
 
