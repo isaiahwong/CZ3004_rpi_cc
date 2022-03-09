@@ -15,7 +15,7 @@ run_all:
 	make run_rpi &
 
 run_rpi:
-	./bin/RPi --serial="/dev/pts/9"\
+	./bin/RPi --serial="/dev/pts/5"\
 		--vision=localhost:50051\
 		--cameraopen=1\
 		--instructiondelay=350\
@@ -34,7 +34,7 @@ kill:
 gen-protos:
 	make -C protos
 
-run-serial:
+run_serial:
 	socat -d -d pty,raw,echo=0 pty,raw,echo=0
 
 # make_cv:

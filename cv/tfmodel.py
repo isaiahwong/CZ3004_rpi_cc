@@ -139,78 +139,103 @@ class TF:
             print("error: {}".format(e))
             return None, []
 
+    def filterPred(self, scores=[], boxes=[], classes=[]):
+        """
+        We only accept one image per box for image rec
+        """
+        bestScore = None
+
+        for i in range(len(scores)):
+            if ((scores[i] < self.threshold)): 
+                continue
+
+            imageid = int(self.labels[int(classes[i])])
+            confidence = int(scores[i]*100)
+
+            if imageid == 10:
+                continue
+            
+            if bestScore == None or  confidence > bestScore[1]:
+                bestScore = (i, confidence)
+
+        if bestScore == None:
+            return [], [], []
+
+        i = bestScore[0]
+        return [scores[i]], [boxes[i]], [classes[i]]
+
     def draw(self, frame=None, scores=[], boxes=[[]], classes=[]):
         results = []
+
+        scores, boxes, classes = self.filterPred(scores=scores, boxes=boxes, classes=classes)
         # Loop over all detections and draw detection box if confidence is above minimum threshold
         for i in range(len(scores)):
-            if ((scores[i] > self.threshold) and (scores[i] <= 1.0)):
+            # Get bounding box coordinates and draw box
+            # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
+            ymin = int(max(1, (boxes[i][0] * self.modelHeight)))
+            xmin = int(max(1, (boxes[i][1] * self.modelWidth)))
+            ymax = int(
+                min(self.modelHeight, (boxes[i][2] * self.modelHeight)))
+            xmax = int(
+                min(self.modelWidth, (boxes[i][3] * self.modelWidth)))
 
-                # Get bounding box coordinates and draw box
-                # Interpreter can return coordinates that are outside of image dimensions, need to force them to be within image using max() and min()
-                ymin = int(max(1, (boxes[i][0] * self.modelHeight)))
-                xmin = int(max(1, (boxes[i][1] * self.modelWidth)))
-                ymax = int(
-                    min(self.modelHeight, (boxes[i][2] * self.modelHeight)))
-                xmax = int(
-                    min(self.modelWidth, (boxes[i][3] * self.modelWidth)))
+            cv2.rectangle(frame, (xmin, ymin),
+                            (xmax, ymax), (10, 255, 0), 2)
+            imageid = int(self.labels[int(classes[i])])
 
-                cv2.rectangle(frame, (xmin, ymin),
-                              (xmax, ymax), (10, 255, 0), 2)
-                imageid = int(self.labels[int(classes[i])])
+            self.yminavg[imageid-10] += ymin
+            self.xminavg[imageid-10] += xmin
+            self.ymaxavg[imageid-10] += ymax
+            self.xmaxavg[imageid-10] += xmax
+            self.average[imageid-10] += 1
 
-                self.yminavg[imageid-10] += ymin
-                self.xminavg[imageid-10] += xmin
-                self.ymaxavg[imageid-10] += ymax
-                self.xmaxavg[imageid-10] += xmax
-                self.average[imageid-10] += 1
+            # Look up object name from "labels" array using class index
+            # Example: 'person: 72%'
+            confidence = int(scores[i]*100)
+            name = self.getImageName(str(imageid))
 
-                # Look up object name from "labels" array using class index
-                # Example: 'person: 72%'
-                confidence = int(scores[i]*100)
-                name = self.getImageName(str(imageid))
+            details = '{}, {}%'.format(imageid, confidence)
 
-                details = '{}, {}%'.format(imageid, confidence)
+            # Get font size
+            labelSize, baseLine = cv2.getTextSize(
+                details, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
 
-                # Get font size
-                labelSize, baseLine = cv2.getTextSize(
-                    details, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
+            # Make sure not to draw imageid too close to top of window
+            label_ymin = max(ymin, labelSize[1] + 10)
+            # Draw white box to put imageid text in
+            cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (
+                xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED)
+            cv2.putText(frame, details, (xmin, label_ymin-7),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text
 
-                # Make sure not to draw imageid too close to top of window
-                label_ymin = max(ymin, labelSize[1] + 10)
-                # Draw white box to put imageid text in
-                cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-10), (
-                    xmin+labelSize[0], label_ymin+baseLine-10), (255, 255, 255), cv2.FILLED)
-                cv2.putText(frame, details, (xmin, label_ymin-7),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text
+            # Draw white box to put imageid text in
+            cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-40), (
+                xmin+labelSize[0], label_ymin+baseLine-40), (255, 255, 255), cv2.FILLED)
+            cv2.putText(frame, name, (xmin, label_ymin-40),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text=
 
-                # Draw white box to put imageid text in
-                cv2.rectangle(frame, (xmin, label_ymin-labelSize[1]-40), (
-                    xmin+labelSize[0], label_ymin+baseLine-40), (255, 255, 255), cv2.FILLED)
-                cv2.putText(frame, name, (xmin, label_ymin-40),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)  # Draw imageid text=
+            middlePoint = self.modelWidth / 2
+            currentMidPoint = xmin + ((xmax - xmin) / 2)
 
-                middlePoint = self.modelWidth / 2
-                currentMidPoint = xmin + ((xmax - xmin) / 2)
+            # +ve implies need to move left
+            # -ve implies need to move right
+            distanceAwayFromMidPoint = middlePoint - currentMidPoint
+            # print(distanceAwayFromMidPoint)
 
-                # +ve implies need to move left
-                # -ve implies need to move right
-                distanceAwayFromMidPoint = middlePoint - currentMidPoint
-                # print(distanceAwayFromMidPoint)
+            # print('mid: {} xmin: {}, width: {}'.format(
+            #     currentMidPoint, xmin, middlePoint))
 
-                # print('mid: {} xmin: {}, width: {}'.format(
-                #     currentMidPoint, xmin, middlePoint))
-
-                # print estimated distance in the top left corner
-                # dist = int(self.distanceestimate(ymax, ymin))
-                # distance = '{} mm'.format(dist)
-                # cv2.putText(frame, distance, (20, (20+i*30)),
-                #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-                results.append(Result(
-                    imageid=str(imageid),
-                    name=name,
-                    distance=int(distanceAwayFromMidPoint),
-                    confidence=confidence
-                ))
+            # print estimated distance in the top left corner
+            # dist = int(self.distanceestimate(ymax, ymin))
+            # distance = '{} mm'.format(dist)
+            # cv2.putText(frame, distance, (20, (20+i*30)),
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+            results.append(Result(
+                imageid=str(imageid),
+                name=name,
+                distance=int(distanceAwayFromMidPoint),
+                confidence=confidence
+            ))
 
         return frame, results
 
