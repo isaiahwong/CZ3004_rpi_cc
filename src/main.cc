@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     p.add<std::string>("vision", 'd', "vision address", true,
                        "localhost:50051");
     p.add<int>("instructiondelay", 'e', "instruction delay", false, 350);
-    p.add<int>("failcapturedelay", 'f', "Camera capture delay", false, 800);
+    p.add<int>("failcapturedelay", 'f', "Camera capture delay", false, 5000);
     p.add<int>("captureretries", 'g', "Camera fail capture retries", false, 5);
 
     // Run parser.

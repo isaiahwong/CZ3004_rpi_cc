@@ -30,6 +30,20 @@ void Commands::resetCache() {
     printRed("Cache cleared");
 }
 
+void Commands::resetResumeQ() {
+    Response r;
+    while (resumeQ.try_dequeue(r))
+        ;
+    printRed("Resume Q cleared");
+}
+
+void Commands::resetStatues() {
+    Response r;
+    while (statuses.try_dequeue(r))
+        ;
+    printRed("Statuses Q cleared");
+}
+
 void Commands::onAction(void *b, Action *action) {
     static_cast<Commands *>(b)->onAction(action);
 }
@@ -65,20 +79,13 @@ void Commands::onSeriesInterleave(Action *action) {
     if (action->data.size() < 1) return;
     printRed("Running series interleave");
 
-    // resumes waiting command thread
-    if (action->type.compare(Action::TYPE_NOOP) == 0) {
-        // Attempts to resume failed capture from commands queue
-        Response noop(1);
-        resumeQ.enqueue(noop);
-        return;
-    }
-
     // backup commands
     tryBackupCommands();
 
     for (Action a : action->data) commands.enqueue(a);
 
     // Attempts to resume failed capture from commands queue
+    resetResumeQ();
     Response noop(1);
     resumeQ.enqueue(noop);
 }
@@ -114,6 +121,8 @@ void Commands::onReset(void *b, Action *_) {
 void Commands::onReset() {
     resetCommands();
     resetCache();
+    resetResumeQ();
+    resetStatues();
 }
 
 void Commands::onExecuteActions(void *b) {
@@ -147,8 +156,10 @@ void Commands::onExecuteActions() {
                 this->publish(Commands::CMD_MOVEMENT, a);
             } else if (a.type.compare(Action::TYPE_CAPTURE) == 0) {
                 this->publish(Commands::CMD_CAMERA_CAPTURE, a);
+            } else if (a.type.compare(Action::TYPE_NOOP) == 0) {
+                goto queue;
             } else {
-                printRed("Unknown command in series");
+                printRed("Unknown command");
                 goto queue;
             }
 
@@ -183,8 +194,15 @@ void Commands::onExecuteActions() {
             print("Command Executed\n\n");
 
             // Remove this after image
-            // Do not save commands or delay if it's an action strategy
-            if (a.action.compare(Action::ACTION_STRATEGY) == 0) continue;
+            // Insight code. Strategy will always run the offset direction.
+            // We run the offset direction before moving on with queue
+            if (a.action.compare(Action::ACTION_STRATEGY) == 0) {
+                Action offsetCmd;
+                bool didReceiveOffset = commands.try_dequeue(offsetCmd);
+                if (didReceiveOffset &&
+                    offsetCmd.type.compare(Action::TYPE_MOVE) == 0)
+                    this->publish(Commands::CMD_MOVEMENT, offsetCmd);
+            }
 
             // We stop the thread command queue for calibration and failed
             // status
@@ -194,8 +212,9 @@ void Commands::onExecuteActions() {
                 tryBackupCommands();
                 printRed("Waiting for mitigation");
                 // Blocking wait for interleave commands
-                resumeQ.wait_dequeue_timed(
+                bool rdidReceive = resumeQ.wait_dequeue_timed(
                     noop, std::chrono::milliseconds(failCaptureDelay));
+                std::cout << failCaptureDelay << rdidReceive << std::endl;
             }
 
         } catch (const std::exception &exc) {

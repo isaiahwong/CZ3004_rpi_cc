@@ -19,7 +19,7 @@ run_rpi:
 		--vision=localhost:50051\
 		--cameraopen=1\
 		--instructiondelay=350\
-		--failcapturedelay=3000\
+		--failcapturedelay=5000\
 		--captureretries=3 
 
 run_camera:

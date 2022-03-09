@@ -26,12 +26,14 @@ class Commands final : public Protocol {
 
     int instructionDelay = 500;
 
-    int failCaptureDelay = 1000;
+    int failCaptureDelay = 5000;
 
     int cameraRetries = 5;
 
     void resetCommands();
     void resetCache();
+    void resetStatues();
+    void resetResumeQ();
     void tryBackupCommands();
 
    public:
