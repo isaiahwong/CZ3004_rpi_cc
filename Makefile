@@ -11,8 +11,8 @@ default:
 	cp ./build/RPi ./bin
 
 run_all:
-	make run_rpi &
 	make run_camera &
+	make run_rpi &
 
 run_rpi:
 	./bin/RPi --serial="/dev/pts/9"\
@@ -23,6 +23,9 @@ run_rpi:
 		--captureretries=3 
 
 run_camera:
+	if ls cv/out/competition/image* 1> /dev/null 2>&1; then\
+    	rm cv/out/competition/image*; \
+	fi	
 	python cv/main.py
 
 kill:

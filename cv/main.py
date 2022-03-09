@@ -73,6 +73,7 @@ class ImageServer(VisionServiceServicer):
         self.count = 0
         # self.model = YoloV5()
         self.model = TF()
+        self.t = time.time()
         self.pwd = os.path.dirname(__file__)
 
     def filterImages(self, results):
@@ -114,7 +115,7 @@ class ImageServer(VisionServiceServicer):
         imgTable = np.concatenate((row1, row2, row3), axis=0)
         try:
             table = cv2.resize(imgTable, (1920, 1080))
-            cv2.imwrite('{}/out/competition/compiled.jpg'.format(self.pwd), table)
+            cv2.imwrite('{}/out/competition/compiled-{}.jpg'.format(self.pwd, self.t), table)
         except Exception as e:
             print(e)
 
