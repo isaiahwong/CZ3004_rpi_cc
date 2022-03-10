@@ -16,7 +16,7 @@ class Result:
 class TF:
     def __init__(self,
                  modeldir="model",
-                 graph="detect.tflite",
+                 graph="detectV2.tflite",
                  labelmap="labelmap.txt",
                  threshold=0.5,
                  ):
