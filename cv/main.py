@@ -6,8 +6,9 @@ import glob
 
 import cv2
 from tfmodel import TF, Result
-from yolov5model import YoloV5
+# from yolov5model import YoloV5
 from concurrent import futures
+import threading
 
 from vision_pb2 import *
 from vision_pb2_grpc import *
@@ -75,6 +76,7 @@ class ImageServer(VisionServiceServicer):
         self.model = TF()
         self.t = time.time()
         self.pwd = os.path.dirname(__file__)
+        self.worker = threading.Thread(target=self.stitchImages)
 
     def filterImages(self, results):
         result = Result("-1", -1)
@@ -154,8 +156,9 @@ class ImageServer(VisionServiceServicer):
         else:
             cv2.imwrite('{}/out/competition/image-{}.jpg'.format(self.pwd,
                                                         result.name), frame)
-
-        self.stitchImages()
+        # Stich image, do not block execution seq
+        self.worker = threading.Thread(target=self.stitchImages)
+        self.worker.start()
 
         print("ImageId: {}, Name: {}, Distance: {}".format(
             result.imageid, result.name, result.distance))
