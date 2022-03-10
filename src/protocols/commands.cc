@@ -85,7 +85,7 @@ void Commands::onSeriesInterleave(Action *action) {
     for (Action a : action->data) commands.enqueue(a);
 
     // Attempts to resume failed capture from commands queue
-    resetResumeQ();
+    // resetResumeQ();
     Response noop(1);
     resumeQ.enqueue(noop);
 }
@@ -145,6 +145,10 @@ void Commands::onExecuteActions() {
             Action a;
             while (cached.try_dequeue(a)) commands.enqueue(a);
         }
+        // Clear blocking response queues
+        resetResumeQ();
+        resetStatues();
+
         commands.wait_dequeue(a);
         retries = 0;
         // restore = true;
@@ -197,11 +201,12 @@ void Commands::onExecuteActions() {
             // Insight code. Strategy will always run the offset direction.
             // We run the offset direction before moving on with queue
             if (a.action.compare(Action::ACTION_STRATEGY) == 0) {
-                Action offsetCmd;
-                bool didReceiveOffset = commands.try_dequeue(offsetCmd);
-                if (didReceiveOffset &&
-                    offsetCmd.type.compare(Action::TYPE_MOVE) == 0)
-                    this->publish(Commands::CMD_MOVEMENT, offsetCmd);
+                continue;
+                // Action offsetCmd;
+                // bool didReceiveOffset = commands.try_dequeue(offsetCmd);
+                // if (didReceiveOffset &&
+                //     offsetCmd.type.compare(Action::TYPE_MOVE) == 0)
+                //     this->publish(Commands::CMD_MOVEMENT, offsetCmd);
             }
 
             // We stop the thread command queue for calibration and failed
