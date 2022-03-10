@@ -36,6 +36,8 @@ int main(int argc, char *argv[]) {
     p.add<int>("instructiondelay", 'e', "instruction delay", false, 350);
     p.add<int>("failcapturedelay", 'f', "Camera capture delay", false, 5000);
     p.add<int>("captureretries", 'g', "Camera fail capture retries", false, 5);
+    p.add<int>("camwidth", 'h', "Camera width", false, 640);
+    p.add<int>("camheight", 'i', "Camera height", false, 480);
 
     // Run parser.
     // It returns only if command line arguments are valid.
@@ -47,7 +49,8 @@ int main(int argc, char *argv[]) {
     Commands cmd(p.get<int>("instructiondelay"), p.get<int>("failcapturedelay"),
                  p.get<int>("captureretries"));
     Cereal c(p.get<std::string>("serial"), 115200);
-    Camera cam(p.get<std::string>("vision"), p.get<int>("cameraopen"));
+    Camera cam(p.get<std::string>("vision"), p.get<int>("cameraopen"),
+               p.get<int>("camwidth"), p.get<int>("camheight"));
 
     // Register cereal to listen for movement requests
     cmd.registerSub(&c, Commands::CMD_MOVEMENT, Cereal::onAction);

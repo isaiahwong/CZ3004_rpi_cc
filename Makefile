@@ -20,7 +20,9 @@ run_rpi:
 		--cameraopen=1\
 		--instructiondelay=350\
 		--failcapturedelay=5000\
-		--captureretries=3 
+		--captureretries=3\
+		--camwidth=1280\
+		--camheight=720
 
 run_camera:
 	if ls cv/out/competition/image* 1> /dev/null 2>&1; then\

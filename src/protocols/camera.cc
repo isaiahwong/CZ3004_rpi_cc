@@ -6,8 +6,10 @@
 #include <chrono>
 #include <iostream>
 
-Camera::Camera(std::string addr, int open) {
+Camera::Camera(std::string addr, int open, int width, int height) {
     this->addr = addr;
+    this->width = width;
+    this->height = height;
     this->visionClient = new VisionClient(addr);
     this->videoCap = new cv::VideoCapture();
     this->q = new Queue();
@@ -25,6 +27,8 @@ void Camera::openCamera() {
 
     // Open selected camera using selected API
     this->videoCap->open(deviceID, apiID);
+    this->videoCap->set(cv::CAP_PROP_FRAME_WIDTH, width);
+    this->videoCap->set(cv::CAP_PROP_FRAME_HEIGHT, height);
     print("Camera: Camera opened");
 }
 

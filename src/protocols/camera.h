@@ -20,6 +20,9 @@ class Camera final : public Protocol {
    private:
     std::string name = "camera";
     std::string addr;
+    int width;
+    int height;
+
     int open;
 
     VisionClient *visionClient;
@@ -39,7 +42,7 @@ class Camera final : public Protocol {
     // Channels
     inline static const std::string CAM_CAPTURE_RESULT = "CAM_CAPTURE_RESULT";
 
-    Camera(std::string _addr, int open);
+    Camera(std::string _addr, int open, int width, int height);
     ~Camera();
 
     /**

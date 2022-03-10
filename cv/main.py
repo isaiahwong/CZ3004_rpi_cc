@@ -97,12 +97,13 @@ class ImageServer(VisionServiceServicer):
 
         return result
 
-    def stitchImages(self):
+    def stitchImages(self, width, height):
         compileimage = cv2.imread('{}/compiled.jpg'.format(self.pwd))
         filenames = list(glob.glob('{}/out/competition/image*.jpg'.format(self.pwd)))
         filenames.sort()
 
-        compileimage = cv2.resize(compileimage, (640, 480))
+        compileimage = cv2.resize(compileimage, (width, height))
+        #compileimage = cv2.resize(compileimage, (640, 480))
 
         img = [cv2.imread(file) for file in filenames]
         for i in range(9):
@@ -132,6 +133,7 @@ class ImageServer(VisionServiceServicer):
         #     distance=1
         # )
         # imageid = self.model.predict(frame, req.width)
+
         fail = False
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
         results, result = None, None
@@ -157,7 +159,7 @@ class ImageServer(VisionServiceServicer):
             cv2.imwrite('{}/out/competition/image-{}.jpg'.format(self.pwd,
                                                         result.name), frame)
         # Stich image, do not block execution seq
-        self.worker = threading.Thread(target=self.stitchImages)
+        self.worker = threading.Thread(target=self.stitchImages, args=(req.width, req.height))
         self.worker.start()
 
         print("ImageId: {}, Name: {}, Distance: {}".format(
@@ -172,7 +174,12 @@ class ImageServer(VisionServiceServicer):
 
 
 def main():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
+    server = grpc.server(
+        futures.ThreadPoolExecutor(max_workers=4),
+        options=[
+            ('grpc.max_receive_message_length',  100 * 1024 * 1024),
+        ]
+    )
     add_VisionServiceServicer_to_server(ImageServer(), server)
     server.add_insecure_port('[::]:50051')
     print("Starting CV")
