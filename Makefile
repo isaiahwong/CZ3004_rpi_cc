@@ -15,10 +15,10 @@ run_all:
 	make run_rpi &
 
 run_rpi:
-	./bin/RPi --serial="/dev/pts/5"\
+	./bin/RPi --serial="/dev/pts/2"\
 		--vision=localhost:50051\
-		--cameraopen=1\
-		--instructiondelay=350\
+		--cameraopen=0\
+		--instructiondelay=3050\
 		--failcapturedelay=10000\
 		--captureretries=3\
 		--camwidth=1280\

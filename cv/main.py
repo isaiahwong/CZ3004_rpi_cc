@@ -13,54 +13,6 @@ import threading
 from vision_pb2 import *
 from vision_pb2_grpc import *
 
-def increase_brightness(img, brightness=300,
-               contrast=127):
-   
-    brightness = int((brightness - 0) * (255 - (-255)) / (510 - 0) + (-255))
- 
-    contrast = int((contrast - 0) * (127 - (-127)) / (254 - 0) + (-127))
- 
-    if brightness != 0:
- 
-        if brightness > 0:
- 
-            shadow = brightness
- 
-            max = 255
- 
-        else:
- 
-            shadow = 0
-            max = 255 + brightness
- 
-        al_pha = (max - shadow) / 255
-        ga_mma = shadow
- 
-        # The function addWeighted calculates
-        # the weighted sum of two arrays
-        cal = cv2.addWeighted(img, al_pha,
-                              img, 0, ga_mma)
- 
-    else:
-        cal = img
- 
-    if contrast != 0:
-        Alpha = float(131 * (contrast + 127)) / (127 * (131 - contrast))
-        Gamma = 127 * (1 - Alpha)
- 
-        # The function addWeighted calculates
-        # the weighted sum of two arrays
-        cal = cv2.addWeighted(cal, Alpha,
-                              cal, 0, Gamma)
- 
-    # putText renders the specified text string in the image.
-    cv2.putText(cal, 'B:{},C:{}'.format(brightness,
-                                        contrast), (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
- 
-    return cal
-
-
 def fast_reshape(byteStr, width, height, channels):
     """
     Using JIT for faster numpy reshape
@@ -122,19 +74,9 @@ class ImageServer(VisionServiceServicer):
         except Exception as e:
             print(e)
 
-    def SendFrame(self, req, ctx):
-        # Reshape pixels back to its dimensions
-        # cv2.imwrite('{}/out/train/image{}.jpg'.format(self.pwd, self.count), frame)
-        # self.count += 1
-        # return VisionResponse(
-        #     imageid=str(1),
-        #     status=1,
-        #     name='',
-        #     distance=1
-        # )
-        # imageid = self.model.predict(frame, req.width)
-
+    def SendFrameImagePath(self, req, ctx):
         fail = False
+        # Reshape pixels back to its dimensions
         frame = fast_reshape(req.image, req.width, req.height, req.channels)
         results, result = None, None
         status = 0
@@ -152,6 +94,39 @@ class ImageServer(VisionServiceServicer):
         #     if status == 1:
         #         break
         #     frame = increase_brightness(frame)
+
+        if status == 0:
+            cv2.imwrite('{}/out/failed/image.jpg'.format(self.pwd, self.count), frame)
+        else:
+            cv2.imwrite('{}/out/competition/image-{}.jpg'.format(self.pwd,
+                                                        result.name), frame)
+        # Stich image, do not block execution seq
+        self.worker = threading.Thread(target=self.stitchImages, args=(req.width, req.height))
+        self.worker.start()
+
+        print("ImageId: {}, Name: {}, Distance: {}".format(
+            result.imageid, result.name, result.distance))
+        self.count += 1
+        return VisionResponse(
+            imageid=str(result.imageid),
+            status=status,
+            name=result.name,
+            distance=result.distance
+        )
+
+    def SendFrame(self, req, ctx):
+        fail = False
+        # Reshape pixels back to its dimensions
+        frame = fast_reshape(req.image, req.width, req.height, req.channels)
+        results, result = None, None
+        status = 0
+
+        frame, results = self.model.predict(frame, req.width, req.height)
+        result = self.filterImages(results)
+        str_id = str(result.imageid)
+        status = 0 if str_id == '-1' or str_id == '10' else 1
+
+   
 
         if status == 0:
             cv2.imwrite('{}/out/failed/image.jpg'.format(self.pwd, self.count), frame)

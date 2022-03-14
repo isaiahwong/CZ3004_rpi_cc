@@ -153,8 +153,9 @@ void Commands::onExecuteActions() {
         retries = 0;
         // restore = true;
 
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds(instructionDelay));
+        int minDelay = std::min(instructionDelay, a.delay);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(minDelay));
         while (true) {
             if (a.type.compare(Action::TYPE_MOVE) == 0) {
                 this->publish(Commands::CMD_MOVEMENT, a);

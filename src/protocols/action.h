@@ -128,6 +128,7 @@ class Action {
     std::string action;
     int angle;
     int length;
+    int delay;
     std::string distance;
     std::string coordinate;
     std::string prev_coordinate;
@@ -151,6 +152,7 @@ class Action {
         action = "";
         angle = 0;
         length = 0;
+        delay = 250;
         distance = "";
         coordinate = "";
         prev_coordinate = "";
