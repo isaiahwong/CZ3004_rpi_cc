@@ -1,5 +1,5 @@
 # RPi Module
-The RPi module is writen in `C++` leveraging on its speed and one level closer to bare metal.  
+The RPi module is writen in `C++` 
 
 # Unix Dependencies
 
